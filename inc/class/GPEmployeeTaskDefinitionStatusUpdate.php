@@ -1,6 +1,6 @@
 <?php
 	
-	/* GPEmployeeTaskDefinitonStatusUpdate - base task def status update class
+	/* GPEmployeeTaskDefinitionStatusUpdate - base task def status update class
 	*  Created by Obarey Inc. 06.06.2018
 	*
 	*  dependencies:
@@ -9,7 +9,7 @@
 	*		- GPTask.php
 	*/
 
-	class GPEmployeeTaskDefinitonStatusUpdate extends GPDataCommon {
+	class GPEmployeeTaskDefinitionStatusUpdate extends GPDataCommon {
 		
 		public function __construct( $val = null ){
 			parent::__construct( DBT_GPEMPLOYEETASKDEFINITIONSSTATUSUPDATES, array( "id", "name" ), $val );

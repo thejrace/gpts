@@ -1,6 +1,6 @@
 <?php
 	
-	/* GPEmployeeTaskDefiniton - base employee task definition class
+	/* GPEmployeeTaskDefinition - base employee task definition class
 	*  Created by Obarey Inc. 06.06.2018
 	*
 	*  dependencies:
@@ -9,7 +9,7 @@
 	*		- GPTask.php
 	*/
 
-	class GPEmployeeTaskDefiniton extends GPDataCommon {
+	class GPEmployeeTaskDefinition extends GPDataCommon {
 	
 		public function __construct( $val = null ){
 			parent::__construct( DBT_GPEMPLOYEETASKDEFINITIONS, array( "id" ), $val );
@@ -22,9 +22,6 @@
 				"task_id" => array(
 					"label" 		=> "İş ID",
 					"validation" 	=> array( "req" => true )
-				),
-				"parent_task_id" => array(
-					"label" 		=> "Paket İş ID"
 				),
 				"start" => array(
 					"label" 		=> "Başlangıç",

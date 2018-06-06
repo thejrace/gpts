@@ -1,0 +1,130 @@
+( @table gp_employee_groups ) ( @class GPEmployeeGroup )
+-------------------------------------------------------
+- id
+- name
+
+
+( @table gp_employees ) ( @class GPEmployee )
+--------------------------------------------
+- id
+- name
+- nick ( @huseyinsirma )
+- email
+- group_id
+- password ( programlar icin )
+- daily_plan_schema ( EMPTY ) ( gunluk saatlerini bu plana gore ata )
+- tasks ( EMPTY ) ( hangi isleri yaptiginin verisi json_array olabilir )
+
+
+( @table gp_employee_daily_plans ) ( @class GPEmployeeDailyPlan extends @class GPEmployeeDailyPlanSchema )
+----------------------------------------------------------------------------------------------------------
+- id
+- employee_id
+- active_date
+- task_order
+- start
+- end
+- status
+######--> gunluk plana ekleme - cikarma yapilabilir 
+######--> personel tetik verip ise basladigini ve bitirdiginin bildirimini yapabilecek
+( @test_data )
+plan_data = array(
+	array(
+		employee_id => ahmet ( object )
+		order => 1 ( sira articak order by )
+		active_date => 06.06.2018
+		start => 07:00
+		end => 08:00
+		status => Tamam, İzin, Tamamlanmadı vs..
+	), ...
+)
+
+
+( @table gp_employee_daily_plan_schemas ) ( @class GPEmployeeDailyPlanSchema )
+------------------------------------------------------------------------------
+- id
+- name
+- start
+- end
+- plan_interval ( kaç saatlik parçalara bölünecek )
+
+
+( @table gp_task_groups ) ( @class GPTaskGroup )
+--------------------------------------------------------
+- id
+- name ( kaporta, motor vs etiketlendirip, personele yönlendirebilmek için )
+
+
+( @table gp_tasks ) ( @class GPTask )
+----------------------------------------------
+- id
+- group_id
+- name
+- type ( paket - tekil )
+- definition
+
+
+( @table gp_sub_task_definitions ) ( @class GPSubTaskDefinition )
+---------------------------------------------------------------
+- id
+- parent_task_id ( is_tanimlarindan )
+- task_id ( tipi tekil olan is tanimi )
+- task_order ( sira )
+######--> paket is tanimlarinin içeriği, varolan işlerden seçilebilir veya yeni eklenebilir
+
+
+( @table gp_employee_task_definitions ) ( @class GPEmployeeTaskDefinition )
+--------------------------------------------------------------
+- id
+- employee_id
+- task_id
+- parent_task_id ( paket ve teklilerde 0 olacak, ama paket işlerin alt işlerinde, paket işin id si olacak )
+- start
+- time_length ( ortalama bitme süresi otomatik eklenecek veya kullanıcı kendi girecek )
+- end
+- status
+- date_added
+- date_last_update
+- added_employee
+######--> personele iş tanımlarken, tekli işleri oldugu gibi yukaridaki tabloya ekliyoruz ( parent_is = 0 şeklinde )
+######--> eger is paket ise, paketin alt işlerini alip ( parent_is = paket_is ) olacak sekilde tek tek tabloya ekliyoruz
+######--> ekstra paket işi de  ( parent_is = null ) olarak paketi de eklemeye unutmuyoruz
+######--> isleri listelerken WHERE parent_is = 0 diyebiliriz
+
+
+( @table gp_employee_task_definitions_status_updates ) ( @class GPEmployeeTaskDefinitionStatusUpdate )
+----------------------------------------------------------------------------------------------------
+- id
+- work_task_definition_id
+- type ( yorum - ilerleme kaydetme )
+- comments
+- date_added
+- added_employee
+#####--> iş tanımına diger kullanicilar yorum yazabilir
+#####--> ayrica işi yapan personel veya yoneticiler işin durumunu guncelleyip bitirebilir
+
+
+( @table gp_employee_periodic_task_definitions ) ( @class GPTask )
+-------------------------------------------------------------------------
+- id 
+- type ( grup - tekil )
+- task_id
+- employee_id ( paket - tekil ) 
+- employee_group_id 
+- task_interval ( ne zamanda bir örn. her gün, her ay )
+- time_length ( double ) isin süresi, start a eklenecek
+- end ( datetime )
+- date_last_defined ( en son ne zaman tanimlanmişiz verisi )
+#####--> bazi personellere ve gruplara devamlı yapılacak periyodik işler eklenecek
+#####--> sistem otomatik olarak, bu işleri personele atayacak
+#####--> start 
+
+@logic periyodik_tanimlama
+	- son_tanimlama verisinin üzerine, aralik eklenecek ve aktif zaman ile karşılaştırılacak, sonuca gore tekrar tanimlamalar yapilabilir
+	- is taniminin paket olup olmadigi kontrol edilmeli
+
+
+
+####### IDEA 1 ########
+-- task larin daha onceden bitirilme sürelerine göre, ortalama bitme süresi hesaplayip,
+-- task i define ederken tahmini bitiş tarihi otomatik atanabilir.

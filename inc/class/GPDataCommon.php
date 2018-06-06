@@ -9,6 +9,10 @@
 	*   - this is a common super class for database connected objects */
 	class GPDataCommon {
 		protected
+			// PDO object
+			$pdo,
+			// database table name
+			$table,
 			// status text
 			$returnText,
 			// array to keep object data
@@ -19,11 +23,6 @@
 			// this is for automated input checks and db add, update actions
 			// ( only non_empty keys, empty keys should be implemented customly )
 			$dbFormKeys = array();
-		private
-			// PDO object
-			$pdo,
-			// database table name
-			$table;
 		/*
 		*   constructor for GPDataCommon
 		*		@table : database table name
@@ -56,11 +55,11 @@
 			$this->pdo->query("DELETE FROM " . $this->table . " WHERE id = ?", array($this->details["id"]));
 			if( $this->pdo->error() ){
 				$this->returnText = "DB Hatası.[".$this->pdo->getErrorMessage()."]";
-				$this->ok = false;
 				return;
 			}
 			// clear data from object
 			$this->details = array();
+			$this->ok = true;
 			$this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
 		}
 		/*
@@ -72,13 +71,14 @@
 			$updateKeys = array();
 			$updateVals = array();
 			foreach( $this->dbFormKeys as $key => $value ){
+				// if key is not within the input skip it
+				if( !isset( $input[$key] ) ) continue;
 				// 1 - validation check
 				if( isset($value["validation"] ) ){
 					$Validation = new GPFormValidation;
 					foreach( $value["validation"] as $validationKey => $ruleValue ){
-						if( !$Validation->check( $validationKey, $input[$key], $ruleValue ) ){
+						if( !$Validation->check( $validationKey, $input[$key], $ruleValue, $value["label"] ) ){
 							$this->returnText = $Validation->getErrorMessage();
-							$this->ok = false;
 							return;
 						}
 					}
@@ -90,7 +90,6 @@
 						array( $input[$key], $this->details[$key] ))->results();
 					if( count($q) > 0 ){
 						$this->returnText = GPFormValidation::outErrorMessage( GPFormValidation::$ERROR_KEY_UNIQUE, $value["label"] );
-						$this->ok = false;
 						return;
 					}
 				}
@@ -99,13 +98,13 @@
 				$updateVals[] = $input[$key];
 			}
 			// update the database
-			$this->pdo->query("UPDATE " . $this->table . " SET " . implode(" = ?, " , $updateKeys ) . " WHERE id = ?",
-				array_merge($updateVals, array( $this->details["id"] ) );
+			$this->pdo->query("UPDATE " . $this->table . " SET " . implode(" = ?, " , $updateKeys ) . " = ? WHERE id = ?",
+				array_merge($updateVals, array( $this->details["id"] ) ));
 			if( $this->pdo->error() ){
 				$this->returnText = "DB Hatası.[".$this->pdo->getErrorMessage()."]";
-				$this->ok = false;
 				return;
 			}
+			$this->ok = true;
 			$this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
 		}
 		/*
@@ -116,13 +115,14 @@
 		public function add( $input ){
 			$insertArray = array();
 			foreach( $this->dbFormKeys as $key => $value ){
+				// if key is not within the input skip it
+				if( !isset( $input[$key] ) ) continue;
 				// 1 - validation check
 				if( isset($value["validation"] ) ){
 					$Validation = new GPFormValidation;
 					foreach( $value["validation"] as $validationKey => $ruleValue ){
-						if( !$Validation->check( $validationKey, $input[$key], $ruleValue ) ){
+						if( !$Validation->check( $validationKey, $input[$key], $ruleValue, $value["label"] ) ){
 							$this->returnText = $Validation->getErrorMessage();
-							$this->ok = false;
 							return;
 						}
 					}
@@ -132,7 +132,6 @@
 					$q = $this->pdo->query("SELECT * FROM " . $this->table . " WHERE " . $key . " = ?", array( $input[$key] ))->results();
 					if( count($q) > 0 ){
 						$this->returnText = GPFormValidation::outErrorMessage( GPFormValidation::$ERROR_KEY_UNIQUE, $value["label"] );
-						$this->ok = false;
 						return;
 					}
 				}
@@ -142,11 +141,11 @@
 			$this->pdo->insert( $this->table, $insertArray );
 			if( $this->pdo->error() ){
 				$this->returnText = "DB Hatası.[".$this->pdo->getErrorMessage()."]";
-				$this->ok = false;
 				return;
 			}
 			// get the inserted record's ID
 			$this->details["id"] = $this->pdo->lastInsertedId();
+			$this->ok = true;
 			$this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
 		}
 		/* getter for status text */
