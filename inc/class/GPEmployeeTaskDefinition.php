@@ -50,8 +50,21 @@
 				"status" => array(
 					"label" 		=> "Durum",
 					"validation" 	=> array( "posnum" => true )
+				),
+				"parent_definition_id" => array(
+					"label" 		=> "Üst Tanımlama ID",
+					"validation" 	=> array( "posnum" => true )
 				)
 			);
+		}
+
+		/**
+		* - delete method, super() + if task type is bundle, additionally delete the sub task definitions
+		*
+		*/
+
+		public function delete(){
+
 		}
 
 		/*
@@ -71,9 +84,12 @@
 				return;
 			}
 
+			// TODO: check if task is already defined to the employee
+
 			// add parent task or single task when task is single
 			parent::add( $input );
-			
+			$parentTaskID = $this->details["id"];
+
 			if( $ParentTask->getDetails("type") == GPTask::$BUNDLE ){
 				// bundle task, which means we need to add all sub tasks to the user,
 				// in addition to the bundle task
@@ -86,7 +102,7 @@
 						return;
 					}
 					// override the input values for sub task addition
-					$input["parent_task_id"] = $input["task_id"];
+					$input["parent_definition_id"] = $parentTaskID;
 					$input["task_id"] = $subTaskObject->getDetails("id");
 					// add each task
 					parent::add( $input );
