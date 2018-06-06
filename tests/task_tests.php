@@ -83,7 +83,7 @@
 
 		public static function deleteTest(){
 			$Task = new GPTask(7);
-			$Task->delete();
+			$Task->softDelete();
 			var_dump( $Task->getStatusFlag());
 			echo "<br>" . $Task->getReturnText();
 		}
