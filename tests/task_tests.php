@@ -77,9 +77,21 @@
 			print_r( $Task->getDetails() );
 		}
 
+		public static function editTest(){
+			// todo
+		}
+
+		public static function deleteTest(){
+			$Task = new GPTask(7);
+			$Task->delete();
+			var_dump( $Task->getStatusFlag());
+			echo "<br>" . $Task->getReturnText();
+		}
+
 		public static function main(){
 			//self::addTest();
 			//self::fetchTest();
+			self::deleteTest();
 		}
 
 	}
