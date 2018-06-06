@@ -62,6 +62,23 @@
 			$this->ok = true;
 			$this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
 		}
+
+		/*
+		*  keeps the record on the table only making it deleted = 1
+		*  we do this to not lost or cause an exception when dealing with previous definitons related to this object
+		*/
+		public function softDelete(){
+			$this->pdo->query("UPDATE " . $this->table . " SET deleted = ? WHERE id = ?", array( 1, $this->details["id"] ) );
+			if( $this->pdo->error() ){
+				$this->returnText = "DB Hatası.[".$this->pdo->getErrorMessage()."]";
+				return;
+			}
+			// clear data from object
+			$this->details = array();
+			$this->ok = true;
+			$this->returnText = GPFormValidation::$SUCCESS_MESSAGE; 
+		}
+
 		/*
 		*	database edit method, based on dbFormKeys defined in object's own constructor.
 		*	( can be overriden by the child class )
