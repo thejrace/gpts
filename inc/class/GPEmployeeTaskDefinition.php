@@ -62,9 +62,15 @@
 		* - delete method, super() + if task type is bundle, additionally delete the sub task definitions
 		*
 		*/
-
 		public function delete(){
-
+			// search for any sub task definitions and delete them
+			foreach( $this->pdo->query("SELECT * FROM " . $this->table . " WHERE parent_definition_id = ?", array( $this->details["id"]))->results() as $res ){
+				$Def = new GPEmployeeTaskDefinition( $res["id"] );
+				$Def->delete();
+			}
+			// delete definition at last to keep details array 
+			parent::delete();
+			if( !$this->getStatusFlag() ) return;
 		}
 
 		/*
