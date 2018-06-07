@@ -78,7 +78,7 @@ plan_data = array(
 - id
 - employee_id
 - task_id
-- parent_task_id ( paket ve teklilerde 0 olacak, ama paket işlerin alt işlerinde, paket işin id si olacak )
+- parent_definition_id ( paket ve teklilerde 0 olacak, ama paket işlerin alt işlerinde, parent in definition id si olacak )
 - start
 - time_length ( ortalama bitme süresi otomatik eklenecek veya kullanıcı kendi girecek )
 - end

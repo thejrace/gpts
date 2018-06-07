@@ -46,21 +46,26 @@
 			}
 		}
 
+		/*
+		* edit function to be implemented
+		*
+		*/
+
 		public function edit( $input ){
 			// init main edit function
 			parent::edit( $input );
 			if( !$this->getStatusFlag() ) return;
+
+			// TODO: edit subtasks
 			if( $this->details["type"] == self::$BUNDLE ){
 				// if bundle task is being edited, we do additional work for it's sub tasks
-
-				// 1 - check if sub task is removed or edited
+				// 1 - check if sub task is removed or added
 				// 2 - if it's removed, find definitions and edit the task_order' s accordingly
-
 			}
 		}
 
 		/*
-		*  - add method, only bundle task work is additionally added
+		*  - add method, only bundle task works are additionally added
 		*
 		*/
 		public function add( $input ){

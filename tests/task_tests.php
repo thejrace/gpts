@@ -91,7 +91,7 @@
 		public static function main(){
 			//self::addTest();
 			//self::fetchTest();
-			self::deleteTest();
+			//self::deleteTest();
 		}
 
 	}
