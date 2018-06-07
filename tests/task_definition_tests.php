@@ -19,13 +19,12 @@
 		$Def = new GPEmployeeTaskDefinition;
 		$Def->add(array(
 			"employee_id" 		=> 1,
-			"task_id" 			=> 2,
+			"task_id" 			=> 7,
 			"start" 			=> Common::getCurrentDatetime(),
 			"time_length" 		=> 10,
 			"date_added"	 	=> Common::getCurrentDatetime(),
 			"date_last_update" 	=> Common::getCurrentDatetime(),
 			"added_employee" 	=> 1
-
 		));
 		var_dump( $Def->getStatusFlag());
 		echo "<br>" . $Def->getReturnText(); 
@@ -33,32 +32,37 @@
 
 	function fetchTest(){
 		
-
-		echo "<br>" . $Employee->getReturnText(); 
-		print_r( $Employee->getDetails() );
+		$Def = new GPEmployeeTaskDefinition(1);
+		echo "<br>" . $Def->getReturnText(); 
+		print_r( $Def->getDetails() );
 	}
 
 	function editTest(){
 		
-
-		var_dump( $Employee->getStatusFlag() );
-		echo "<br>" . $Employee->getReturnText(); 
+		$Def = new GPEmployeeTaskDefinition(1);
+		$Def->edit(array(
+			"end" => Common::getCurrentDatetime(),
+			"status" => 5
+		));
+		var_dump( $Def->getStatusFlag() );
+		echo "<br>" . $Def->getReturnText(); 
 
 	}
 
 	function deleteTest(){
-		
-
-		var_dump( $Employee->getStatusFlag() );
-		echo "<br>" . $Employee->getReturnText(); 
+		// tested for both single and bundle task
+		$Def = new GPEmployeeTaskDefinition(27);
+		$Def->delete();
+		var_dump( $Def->getStatusFlag() );
+		echo "<br>" . $Def->getReturnText(); 
 	}
 
 	function main(){
 		echo '<pre>';
-		addTest();
+		//addTest();
 		//fetchTest();
 		//editTest();
-		//deleteTest();
+		deleteTest();
 	}
 
 	main();
