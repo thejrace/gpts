@@ -1,22 +1,17 @@
 <?php
-
+    /* Gitaş - Obarey Inc. 2018 */
 	require '../inc/defs.php';
 
 	require CLASS_DIR . "GPFormValidation.php";
 	require CLASS_DIR . "GPDataCommon.php";
 	require CLASS_DIR . "GPEmployee.php";
 
-	/* 
-	* Employee Tests - Obarey Inc.
-	* 	06.06.2018
-	*/
-
 	function addTest(){
 		$Employee = new GPEmployee;
 		$Employee->add(array(
-			"nick" 		=> "@obarey",
-			"email" 	=> "test@test.com",
-			"name" 		=> "Obarey Inc.",
+			"nick" 		=> "@eyup",
+			"email" 	=> "eyup@test.com",
+			"name" 		=> "Eyüp Bey",
 			"group_id" 	=> 2,
 			"password" 	=> "wazzabii"
 		));
@@ -52,7 +47,7 @@
 
 	function main(){
 		echo '<pre>';
-		//addTest();
+		addTest();
 		//fetchTest();
 		//editTest();
 		//deleteTest();

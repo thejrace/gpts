@@ -1,7 +1,7 @@
 <?php
-		
+    /* Gitaş - Obarey Inc. 2018 */
+
 	/* GPFormValidation - common form validation class with error outputs
-	*  Created by Obarey Inc. 06.06.2018
 	*
 	*  dependencies:
 	*		- none

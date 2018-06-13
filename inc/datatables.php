@@ -1,4 +1,5 @@
 <?php
+    /* Gitaş - Obarey Inc. 2018 */
 
 	define( "DBT_GPEMPLOYEES", "gp_employees" );
 	define( "DBT_GPEMPLOYEEGROUPS", "gp_employee_groups" );

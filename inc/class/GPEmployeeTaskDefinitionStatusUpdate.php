@@ -1,7 +1,7 @@
 <?php
-	
+    /* Gitaş - Obarey Inc. 2018 */
+
 	/* GPEmployeeTaskDefinitionStatusUpdate - base task def status update class
-	*  Created by Obarey Inc. 06.06.2018
 	*
 	*  dependencies:
 	*		- GPDataCommon.php

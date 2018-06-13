@@ -1,6 +1,6 @@
 <?php
 
-	
+	/* Gitaş - Obarey Inc. 2018 */
 
 	class Common {
 		// array sort ederken, hangi key onun icin tanimli

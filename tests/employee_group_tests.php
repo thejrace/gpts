@@ -1,15 +1,11 @@
 <?php
+    /* Gitaş - Obarey Inc. 2018 */
 
 	require '../inc/defs.php';
 
 	require CLASS_DIR . "GPFormValidation.php";
 	require CLASS_DIR . "GPDataCommon.php";
 	require CLASS_DIR . "GPEmployeeGroup.php";
-
-	/* 
-	* Employee Group Tests - Obarey Inc.
-	* 	06.06.2018
-	*/
 
 	function addTest(){
 		$EmployeeGroup = new GPEmployeeGroup;

@@ -1,4 +1,5 @@
-<?php 
+<?php
+/* Gitaş - Obarey Inc. 2017 */
 
 class DB {
 	private static $_instance = null;

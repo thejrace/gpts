@@ -1,5 +1,5 @@
 <?php
-
+    /* Gitaş - Obarey Inc. 2018 */
 	require '../inc/defs.php';
 
 	require CLASS_DIR . "GPFormValidation.php";
@@ -8,10 +8,6 @@
 	require CLASS_DIR . "GPTaskGroup.php";
 	require CLASS_DIR . "GPSubTaskDefinition.php";
 
-	/* 
-	* Task Tests - Obarey Inc.
-	* 	06.06.2018
-	*/
 	class TaskTest {
 		public static function addTest(){
 			$Task = new GPTask;
