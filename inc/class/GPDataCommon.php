@@ -52,6 +52,8 @@
 		*		@input : request parameters
 		*/
 		public function delete(){
+		    // reset action flag
+		    $this->ok = false;
 			$this->pdo->query("DELETE FROM " . $this->table . " WHERE id = ?", array($this->details["id"]));
 			if( $this->pdo->error() ){
 				$this->returnText = "DB Hatası.[".$this->pdo->getErrorMessage()."]";
@@ -68,6 +70,7 @@
 		*  we do this to not lost or cause an exception when dealing with previous definitons related to this object
 		*/
 		public function softDelete(){
+		    $this->ok = false;
 			$this->pdo->query("UPDATE " . $this->table . " SET deleted = ? WHERE id = ?", array( 1, $this->details["id"] ) );
 			if( $this->pdo->error() ){
 				$this->returnText = "DB Hatası.[".$this->pdo->getErrorMessage()."]";
@@ -85,6 +88,7 @@
 		*		@input : request parameters
 		*/
 		public function edit( $input ){
+		    $this->ok = false;
 			$updateKeys = array();
 			$updateVals = array();
 			foreach( $this->dbFormKeys as $key => $value ){
@@ -175,6 +179,23 @@
 			$this->ok = true;
 			$this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
 		}
+
+		/*
+		 *  update columns of DB record of object
+		 * */
+		public function editCol( $input ){
+		    $this->ok = false;
+		    foreach( $input as $key => $value ){
+		        $this->pdo->query("UPDATE " . $this->table . " SET ? = ? WHERE id = ?", array( $key, $value, $this->details["id"] ) );
+		        if( $this->pdo->error() ){
+		            $this->returnText = $this->pdo->getErrorMessage();
+		            break;
+                }
+            }
+            $this->ok = true;
+		    $this->returnText = "İşlem başarılı.";
+        }
+
 		/* getter for status text */
 		public function getReturnText(){
 			return $this->returnText;
