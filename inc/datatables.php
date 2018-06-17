@@ -15,3 +15,4 @@
 	define( "DBT_GPAPITRIGGERSNOTCHECKED", "gp_api_triggers_not_checked");
 	define( "DBT_APIUSERS", "gp_api_users");
 	define( "DBT_APIUSERDEVICES", "gp_api_user_devices");
+	define( "DBT_ADMINSESSIONTOKENS", "gp_admin_session_tokens");
