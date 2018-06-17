@@ -5,15 +5,17 @@
     *
     *  dependencies:
     *		- GPDataCommon.php
+    *       - GPApiAdminSessionToken.php
+    *       - GPApiUserDevice.php
     */
 
     class GPApiUser extends GPDataCommon {
 
         private $passwordHashOptions = array( 'cost' => 12 );
+        public static $ADMIN = 1, $NORMAL = 2;
+        private $adminFlag = false;
 
         public function __construct( $val = null ){
-            parent::__construct( DBT_APIUSERS, array( "id", "email" ), $val );
-
             $this->dbFormKeys = array(
                 "email" => array(
                     "label" 		=> "Eposta",
@@ -29,11 +31,95 @@
                     "validation" 	=> array( "req" => true, "posnum" => true )
                 ),
                 "date_added" => array(
-                    "label" 		=> "Grup",
+                    "label" 		=> "Eklenme Tarihi",
+                    "validation" 	=> array( "req" => true )
+                ),
+                "status" => array(
+                    "label" 		=> "Durum",
                     "validation" 	=> array( "req" => true )
                 )
             );
+            if( GPApiAdminSessionToken::validate() ){
+                // if class is created by system admin, we treat it like a regular data class
+                parent::__construct( DBT_APIUSERS, array( "id", "email" ), $val );
+                $this->adminFlag = true;
+            } else {
+                // if class is created by client, we ask them to login first
+                $this->pdo = DB::getInstance();
+                $this->table = DBT_APIUSERS;
+                $this->login( $val );
+            }
+        }
 
+        /*
+         *  - apiuser login
+         * */
+        public function login( $input ){
+            // in this case $val param is an array
+            if( !is_array( $input ) ){
+                $this->ok = false;
+                $this->returnText = "Formda eksiklikler var.";
+                return;
+            }
+            // validate the inputs first
+            $Validation = new GPFormValidation;
+            $validFlag = $Validation->check( "req", $input["email"], true, "Eposta" ) &&
+                         $Validation->check( "email", $input["email"], true, "Eposta" ) &&
+                         $Validation->check( "req", $input["password"], true, "Şifre" );
+            if( !$validFlag ){
+                $this->returnText = $Validation->getErrorMessage();
+                return;
+            }
+            // email check
+            $checkQuery = $this->pdo->query("SELECT * FROM " . $this->table . " WHERE email = ?", array($input["email"]))->results();
+            if( count($checkQuery) == 0 ){
+                $this->returnText = "Başarısız giriş.[1]";
+                return;
+            }
+            // password check
+            if( !password_verify( $input["password"], $checkQuery[0]["password"] ) ){
+                $this->returnText = "Başarısız giriş.[2]";
+                return;
+            }
+            $this->details = $checkQuery[0];
+            // admin login from panel check
+            if( isset($input["admin_panel_login"] ) && $this->details["user_group"] == self::$ADMIN ){
+                $Token = new GPApiAdminSessionToken;
+                $Token->add(array(
+                    "user_id" => $this->details["id"],
+                    "date_last_connected" => Common::getCurrentDateTime()
+                ));
+                $_SESSION["admin_panel_loggedin"] = true;
+                $_SESSION["admin_panel_user"] = $this->details["email"];
+                $_SESSION["admin_panel_user_id"] = $this->details["id"];
+                $this->returnText = "Giriş başarılı.";
+                $this->ok = true;
+                return;
+            }
+            // device check
+            $Device = new GPApiUserDevice( $input["device_hash"] );
+            if( $Device->getStatusFlag() && $Device->getDetails("status") == 1 ){
+                $Device->updateLastConnectNow();
+                $this->ok = true;
+                $this->returnText = "Giriş başarılı.";
+            } else {
+                $Device->add(array(
+                    "user_id"               => $this->details["id"],
+                    "type"                  => $input["device_type"],
+                    "name"                  => $input["device_name"],
+                    "hash"                  => $input["device_hash"],
+                    "ip"                    => Common::getIP(),
+                    "os"                    => $input["device_os"],
+                    "date_added"            => Common::getCurrentDateTime(),
+                    "date_last_connected"   => Common::getCurrentDateTime(),
+                    "status"                => 0
+                ));
+                if( !$Device->getStatusFlag() ){
+                    $this->returnText = $Device->getReturnText();
+                    return;
+                }
+                $this->returnText = "Cihaz onayı gerek. Sistem yöneticinizle irtibata geçin.";
+            }
         }
 
         /*
@@ -41,11 +127,16 @@
          *
          * */
         public function add( $input ){
+            if( !$this->adminFlag ){
+                $this->returnText = "Yetkiniz yok.";
+                return;
+            }
             // overwrite input[password] with hashed version
             $hash = password_hash( $input["password"], PASSWORD_BCRYPT, $this->passwordHashOptions );
             $input["password"] = $hash;
             parent::add( $input );
         }
+
 
 
     }
