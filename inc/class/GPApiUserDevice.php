@@ -15,7 +15,6 @@
             $this->dbFormKeys = array(
                 "user_id" => array(
                     "label" 		=> "Kullanıcı ID",
-                    "unique" => true,
                     "validation" 	=> array( "req" => true )
                 ),
                 "type" => array(
@@ -28,6 +27,7 @@
                 ),
                 "hash" => array(
                     "label" 		=> "Cihaz Hash",
+                    "unique"        => true,
                     "validation" 	=> array( "req" => true )
                 ),
                 "ip" => array(
@@ -47,8 +47,7 @@
                     "validation" 	=> array( "req" => true )
                 ),
                 "status" => array(
-                    "label" 		=> "Cihaz Durum",
-                    "validation" 	=> array( "req" => true )
+                    "label" 		=> "Cihaz Durum"
                 )
             );
         }
