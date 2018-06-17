@@ -45,8 +45,6 @@
             loginPage();
             die;
         }
-
-
         function fetch(){
             $Admin = new GPApiUser(2);
             var_dump( $Admin->getStatusFlag());
