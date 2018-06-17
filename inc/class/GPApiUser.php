@@ -96,13 +96,28 @@
                 $this->ok = true;
                 return;
             }
+            // check inputs for device info
+            $validFlagForDevices =
+                isset( $input["device_hash"] ) &&
+                isset( $input["device_type"] ) &&
+                isset( $input["device_name"] ) &&
+                isset( $input["device_os"] );
+            if( !$validFlagForDevices ){
+                $this->returnText = "Formda eksiklikler var.";
+                return;
+            }
             // device check
             $Device = new GPApiUserDevice( $input["device_hash"] );
-            if( $Device->getStatusFlag() && $Device->getDetails("status") == 1 ){
-                $Device->updateLastConnectNow();
-                $this->ok = true;
-                $this->returnText = "Giriş başarılı.";
+            if( $Device->getStatusFlag() ){
+                if( $Device->getDetails("status") == 1 ){
+                    $Device->updateLastConnectNow();
+                    $this->ok = true;
+                    $this->returnText = "Giriş başarılı.";
+                } else {
+                    $this->returnText = "Cihaz onayı gerek. Sistem yöneticinizle irtibata geçin.[1]";
+                }
             } else {
+                // device is not registered
                 $Device->add(array(
                     "user_id"               => $this->details["id"],
                     "type"                  => $input["device_type"],
@@ -112,13 +127,13 @@
                     "os"                    => $input["device_os"],
                     "date_added"            => Common::getCurrentDateTime(),
                     "date_last_connected"   => Common::getCurrentDateTime(),
-                    "status"                => 0
+                    "status"                => "0"
                 ));
                 if( !$Device->getStatusFlag() ){
                     $this->returnText = $Device->getReturnText();
                     return;
                 }
-                $this->returnText = "Cihaz onayı gerek. Sistem yöneticinizle irtibata geçin.";
+                $this->returnText = "Cihaz onayı gerek. Sistem yöneticinizle irtibata geçin.[2]";
             }
         }
 
