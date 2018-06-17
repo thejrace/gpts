@@ -186,7 +186,7 @@
 		public function editCol( $input ){
 		    $this->ok = false;
 		    foreach( $input as $key => $value ){
-		        $this->pdo->query("UPDATE " . $this->table . " SET ? = ? WHERE id = ?", array( $key, $value, $this->details["id"] ) );
+		        $this->pdo->query("UPDATE " . $this->table . " SET ".$key." = ? WHERE id = ?", array( $value, $this->details["id"] ) );
 		        if( $this->pdo->error() ){
 		            $this->returnText = $this->pdo->getErrorMessage();
 		            break;
