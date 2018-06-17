@@ -52,7 +52,7 @@
 
             case 'daily_plan_schemas_download':
 
-                $DATA = DB::getInstance()->query("SELECT * FROM " . DBT_GPEMPLOYEEDAILYPLANSCHEMAS . " ORDER BY name DESC LIMIT {$_POST["start_index"]},{$_POST["rrp"]}")->results();
+                $DATA = DB::getInstance()->query("SELECT * FROM " . DBT_GPEMPLOYEEDAILYPLANSCHEMAS . " ORDER BY name LIMIT {$_POST["start_index"]},{$_POST["rrp"]}")->results();
 
             break;
 
