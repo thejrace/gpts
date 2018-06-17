@@ -191,6 +191,7 @@
 		            $this->returnText = $this->pdo->getErrorMessage();
 		            break;
                 }
+                $this->details[$key] = $value;
             }
             $this->ok = true;
 		    $this->returnText = "İşlem başarılı.";
