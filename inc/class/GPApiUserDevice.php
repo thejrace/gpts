@@ -9,6 +9,7 @@
 
     class GPApiUserDevice extends GPDataCommon {
 
+        public static $PC = 1, $MOBILE = 2;
         public function __construct( $val = null ){
             parent::__construct( DBT_APIUSERDEVICES, array( "id", "hash" ), $val );
             $this->dbFormKeys = array(
