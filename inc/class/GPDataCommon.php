@@ -88,8 +88,13 @@
 			$updateKeys = array();
 			$updateVals = array();
 			foreach( $this->dbFormKeys as $key => $value ){
-				// if key is not within the input skip it
-				if( !isset( $input[$key] ) ) continue;
+                // if non required key is not within the input skip it
+                if( !isset( $input[$key] ) && !isset($value["validation"]["req"]) ) continue;
+                // if required input is not within $_POST
+                if( !isset($input[$key])){
+                    $this->returnText = $value["label"] . " verisi yok.";
+                    return;
+                }
 				// 1 - validation check
 				if( isset($value["validation"] ) ){
 					$Validation = new GPFormValidation;
