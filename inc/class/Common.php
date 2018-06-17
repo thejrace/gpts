@@ -110,9 +110,9 @@
 		}
 
 		public static function generateUniqueRandomString( $table, $col, $length ){
-			$str = self::generate_random_string( $length );
+			$str = self::generateRandomString( $length );
 			if( DB::getInstance()->query("SELECT * FROM ". $table . " WHERE ".$col." = ?", array( $str ) )->count() != 0 ){
-				self::generate_unique_random_string( $table, $col, $lenth );
+				self::generateUniqueRandomString( $table, $col, $length );
 			}
 			return $str;
 		}
