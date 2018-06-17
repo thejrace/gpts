@@ -7,7 +7,7 @@
     *		- GPDataCommon.php
     */
 
-    class GPUser extends GPDataCommon {
+    class GPApiUser extends GPDataCommon {
 
         public function __construct( $val = null ){
             parent::__construct( DBT_APIUSERS, array( "id", "email", "nick" ), $val );
