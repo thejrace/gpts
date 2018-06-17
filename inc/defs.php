@@ -14,5 +14,7 @@
     define("INC_DIR", MAIN_DIR . "inc/");
     define("CLASS_DIR", INC_DIR . "class/");
 
+    if( !isset($_SESSION) ) session_start();
+
     require CLASS_DIR . "Common.php";
     require CLASS_DIR . "DB.php";
