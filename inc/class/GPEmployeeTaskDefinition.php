@@ -48,9 +48,11 @@
 					"validation" 	=> array( "req" => true )
 				),
 				"status" => array(
-					"label" 		=> "Durum",
-					"validation" 	=> array( "posnum" => true )
+					"label" 		=> "Durum"
 				),
+                "comments" => array(
+                    "label" 		=> "Yorumlar"
+                ),
 				"parent_definition_id" => array(
 					"label" 		=> "Üst Tanımlama ID",
 					"validation" 	=> array( "posnum" => true )
