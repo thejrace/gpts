@@ -32,7 +32,7 @@
                     "label" 		=> "Durum"
                 ),
                 "status_code" => array(
-                    "label" 		=> "Durum"
+                    "label" 		=> "Durum Kodu"
                 ),
                 "edited" => array(
                     "label" 		=> "Düzenlendi"
