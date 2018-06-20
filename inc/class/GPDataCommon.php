@@ -22,7 +22,10 @@
 			// db - form keys
 			// this is for automated input checks and db add, update actions
 			// ( only non_empty keys, empty keys should be implemented customly )
-			$dbFormKeys = array();
+			$dbFormKeys = array(),
+            // for classses that has archive tables, flag to determine
+            // which table to fetch data
+            $archiveFlag = false;
 		/*
 		*   constructor for GPDataCommon
 		*		@table : database table name
@@ -36,6 +39,10 @@
 			if( isset($val) ){
 				// we search for each unique key
 				foreach( $keys as $key ){
+                    // if we look for an archive record, we replace 'id' col with 'prev_id'
+                    // because id on the archive table has no meaning, we look for id that record had
+                    // on the real table
+				    if( $this->archiveFlag ) if( $key == "id" ) $key = "prev_id";
 					$query = $this->pdo->query("SELECT * FROM " . $this->table . " WHERE " . $key . " = ?", array( $val ) )->results();
 					if( count( $query ) == 1 ){
 						$this->details = $query[0];
