@@ -11,7 +11,7 @@
 
 	class GPEmployeeTaskDefinition extends GPDataCommon {
 	
-		public function __construct( $val = null ){
+		public function __construct( $val = null, $archive = false ){
 			parent::__construct( DBT_GPEMPLOYEETASKDEFINITIONS, array( "id" ), $val );
 			// unique groups should be on top to save time for unique checks
 			$this->dbFormKeys = array(
