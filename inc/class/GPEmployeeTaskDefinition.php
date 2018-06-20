@@ -13,6 +13,7 @@
 	
 		public function __construct( $val = null, $archive = false ){
 		    if( isset($val) && isset($archive) && $archive ) $this->archiveFlag = true;
+            $this->archiveTable = DBT_GPEMPLOYEEDAILYPLANSARCHIVE;
 			parent::__construct( DBT_GPEMPLOYEETASKDEFINITIONS, array( "id" ), $val );
 			// unique groups should be on top to save time for unique checks
 			$this->dbFormKeys = array(
