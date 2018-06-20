@@ -35,4 +35,69 @@
 				)
 			);
 		}
+
+		/*
+		 *  define the given plan schema to employee
+		 *  @dailyPlanArray : array containing array of daily plan input data and dailyPlanSchema ID
+		 *     dividing DailyPlanSchema into DailyPlan objects done on the clients program
+		 *     we just add them to DB on serverside
+		 * */
+		public function definePlan( $dailyPlanArray ){
+            // define plan items
+            foreach( $dailyPlanArray["daily_plan"] as $dailyPlanInputItem ){
+                $DailyPlan = new GPEmployeeDailyPlan;
+                $DailyPlan->add( $dailyPlanInputItem );
+                if( !$DailyPlan->getStatusFlag() ){
+                    $this->returnText = $DailyPlan->getReturnText();
+                    return;
+                }
+            }
+            // check daily plan schema
+            $DailyPlanSchema = new GPEmployeeDailyPlanSchema( $dailyPlanArray["daily_plan_schema_id"] );
+            if( !$DailyPlanSchema->getStatusFlag() ){
+                $this->returnText = $DailyPlanSchema->getReturnText();
+                return;
+            }
+            // disable old definitions
+            $this->removeOldPlanDefinitions();
+            // define plan schema to employee
+            $DailyPlanDef = new GPEmployeeDailyPlanDefinition;
+            $DailyPlanDef->add(array(
+                "employee_id"           => $this->details["id"],
+                "daily_plan_schema_id"  => $DailyPlanSchema->getDetails("id"),
+                "date_added"            => Common::getCurrentDate(),
+                "status"                => 1
+            ));
+
+            $this->ok = true;
+            $this->returnText = "İşlem tamamlandı.";
+        }
+
+        /*
+         *  - finds and disables old plan definitions
+         * */
+        private function removeOldPlanDefinitions(){
+		    foreach( $this->getPlanDefinitions() as $planDef ){
+		        $DailyPlanDef = new GPEmployeeDailyPlanDefinition( $planDef["id"] );
+		        if( $DailyPlanDef->getStatusFlag() ){
+		            $DailyPlanDef->editCol(array(
+		                "status" => "0"
+                    ));
+                }
+            }
+        }
+
+        /*
+         *  - get plans defined to the employee
+         *    @status : optional status where condition
+         * */
+        public function getPlanDefinitions( $status = null ){
+            if( isset($status) ){
+                return $this->pdo->query("SELECT * FROM " . DBT_GPEMPLOYEEDAILYPLANDEFINITIONS . " WHERE employee_id = ? && status = ?", array( $this->details["id"], $status ) )->results();
+            } else {
+                return $this->pdo->query("SELECT * FROM " . DBT_GPEMPLOYEEDAILYPLANDEFINITIONS . " WHERE employee_id = ?", array( $this->details["id"] ) )->results();
+            }
+
+        }
+
 	}
