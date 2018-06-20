@@ -16,10 +16,6 @@
 					"label" 		=> "Personel ID",
 					"validation" 	=> array( "req" => true )
 				),
-				"active_date" => array(
-					"label" 		=> "Tarih",
-					"validation" 	=> array( "req" => true )
-				),
 				"plan_order" => array(
 					"label" 		=> "Sıra",
 					"validation" 	=> array( "req" => true, "posnum" => true )
@@ -32,11 +28,14 @@
 					"label" 		=> "Bitiş",
 					"validation" 	=> array( "req" => true )
 				),
-                "stats" => array(
-                    "label" 		=> "Bitiş"
+                "status" => array(
+                    "label" 		=> "Durum"
+                ),
+                "status_code" => array(
+                    "label" 		=> "Durum"
                 ),
                 "edited" => array(
-                    "label" 		=> "Bitiş"
+                    "label" 		=> "Düzenlendi"
                 )
 			);
 		}
