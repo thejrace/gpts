@@ -34,6 +34,9 @@
 				),
                 "stats" => array(
                     "label" 		=> "Bitiş"
+                ),
+                "edited" => array(
+                    "label" 		=> "Bitiş"
                 )
 			);
 		}
