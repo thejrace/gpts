@@ -57,7 +57,10 @@
 				"parent_definition_id" => array(
 					"label" 		=> "Üst Tanımlama ID",
 					"validation" 	=> array( "posnum" => true )
-				)
+				),
+                "deleted" => array(
+                    "label" 		=> "Silinmiş"
+                )
 			);
 		}
 
