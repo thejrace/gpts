@@ -27,7 +27,7 @@
 				"plan_interval" => array(
 					"label" 		=> "Aralık",
 					"validation" 	=> array( "req" => true, "posnum" => true )
-				),
+				)
 			);
 		}
 	}

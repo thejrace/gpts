@@ -136,7 +136,6 @@
                 $this->returnText = "Cihaz onayı gerek. Sistem yöneticinizle irtibata geçin.[2]";
             }
         }
-
         /*
          * - add method, additional to the parent's add method we hash the password
          *
@@ -151,7 +150,4 @@
             $input["password"] = $hash;
             parent::add( $input );
         }
-
-
-
     }
