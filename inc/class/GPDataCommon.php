@@ -13,6 +13,8 @@
 			$pdo,
 			// database table name
 			$table,
+            // database archive table name if exists
+            $archiveTable,
 			// status text
 			$returnText,
 			// array to keep object data
