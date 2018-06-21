@@ -12,7 +12,7 @@
         // status definitons
         public static $PAST = 0,   // past definitons
                       $ACTIVE = 1, // current definiton
-                      $FUTURE = 3; // if employee's plan is changed, new daily definiton will be this one
+                      $FUTURE = 2; // if employee's plan is changed, new daily definiton will be this one
 
         public function __construct( $val = null ){
             parent::__construct( DBT_GPEMPLOYEEDAILYPLANDEFINITIONS, array( "id" ), $val );
