@@ -122,4 +122,20 @@
 				}
 			}
 		}
-	}
+
+		public function moveToArchiveTable(){
+            parent::moveToArchiveTable();
+            if( !$this->ok ) return;
+            // reset status flag
+            $this->ok = false;
+            // archive all status updates
+            $query = $this->pdo->query("SELECT id FROM " . DBT_GPEMPLOYEETASKDEFINITIONSSTATUSUPDATES . " WHERE work_task_definition_id = ?", array( $this->details["id"] ))->results();
+            foreach( $query as $res ){
+                $StatusUpdate = new GPEmployeeTaskDefinitionStatusUpdate( $res["id"] );
+                if( !$StatusUpdate->ok ) continue;
+                $StatusUpdate->moveToArchiveTable();
+            }
+            $this->ok = true;
+        }
+
+    }
