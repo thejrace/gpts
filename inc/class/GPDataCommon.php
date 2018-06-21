@@ -206,6 +206,32 @@
 		    $this->returnText = "İşlem başarılı.";
         }
 
+        /*
+         *  - moves the record to archive table
+         *
+         * */
+        public function moveToArchiveTable(){
+            $insertArray = array(
+                "prev_id" => $this->details["id"]
+            );
+            foreach( $this->details as $key => $val ){
+                // check if key exists in the database table, just in case
+                // if we added additional pair to the details array
+                if( !isset($this->dbFormKeys[$key]) ) continue;
+                $insertArray[$key] = $val;
+            }
+            $this->pdo->insert( $this->archiveTable, $insertArray );
+            if( $this->pdo->error() ){
+                $this->returnText = $this->pdo->getErrorMessage();
+                return;
+            }
+            // remove record from actual table
+            $this->delete();
+            if( !$this->ok ) return;
+            // save id for if additional actions will be done by child class
+            $this->details["id"] = $insertArray["prev_id"];
+            $this->ok = true;
+        }
 		/* getter for status text */
 		public function getReturnText(){
 			return $this->returnText;
