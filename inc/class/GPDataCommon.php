@@ -22,8 +22,8 @@
 			// status flag ( can be used with action, db check )
 			$ok = false,
 			// db - form keys
-			// this is for automated input checks and db add, update actions
-			// ( only non_empty keys, empty keys should be implemented customly )
+			// this is for automated input checks for db add, update actions
+			// must contain all cols of the table except id
 			$dbFormKeys = array(),
             // for classses that has archive tables, flag to determine
             // which table to fetch data
@@ -36,7 +36,8 @@
 		*/ 
 		public function __construct( $table, $keys, $val = null ){
 			$this->pdo = DB::getInstance();
-			$this->table = $table;
+			// set table according to archiveFlag
+			( $this->archiveFlag ) ? $this->table = $this->archiveTable : $this->table = $table;
 			// if search value is set, we look for it in the database
 			if( isset($val) ){
 				// we search for each unique key
