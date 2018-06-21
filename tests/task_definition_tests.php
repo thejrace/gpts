@@ -71,7 +71,7 @@
 		echo '<pre>';
 		//addTest();
 		//fetchTest();
-		fetchArchiveTest();
+		//fetchArchiveTest();
 		//editTest();
 		//deleteTest();
         //archiveTest();
