@@ -32,7 +32,10 @@
 				"group_id" => array(
 					"label" 		=> "Grup",
 					"validation" 	=> array( "req" => true, "posnum" => true )
-				)
+				),
+                "has_task" => array(
+                    "label" 		=> "Görev Tanımlı"
+                )
 			);
 		}
 
