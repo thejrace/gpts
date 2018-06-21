@@ -32,6 +32,13 @@
 		print_r( $Def->getDetails() );
 	}
 
+    function fetchArchiveTest(){
+
+        $Def = new GPEmployeeTaskDefinition(18, true);
+        echo "<br>" . $Def->getReturnText();
+        print_r( $Def->getDetails() );
+    }
+
 	function editTest(){
 		
 		$Def = new GPEmployeeTaskDefinition(1);
@@ -53,7 +60,7 @@
 	}
 
 	function archiveTest(){
-        $Def = new GPEmployeeTaskDefinition(15);
+        $Def = new GPEmployeeTaskDefinition(18);
         $Def->moveToArchiveTable();
         var_dump( $Def->getStatusFlag() );
         echo "<br>" . $Def->getReturnText();
@@ -64,9 +71,10 @@
 		echo '<pre>';
 		//addTest();
 		//fetchTest();
+		fetchArchiveTest();
 		//editTest();
 		//deleteTest();
-        archiveTest();
+        //archiveTest();
 	}
 
 	main();
