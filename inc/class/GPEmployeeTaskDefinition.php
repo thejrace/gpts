@@ -123,18 +123,25 @@
 			}
 		}
 
+
+		/*
+		 *  - parent method + archives status update records defined to the task definition
+		 * */
 		public function moveToArchiveTable(){
             parent::moveToArchiveTable();
             if( !$this->ok ) return;
-            // reset status flag
+            // reset status flag and text
             $this->ok = false;
+            $this->returnText = "";
             // archive all status updates
             $query = $this->pdo->query("SELECT id FROM " . DBT_GPEMPLOYEETASKDEFINITIONSSTATUSUPDATES . " WHERE work_task_definition_id = ?", array( $this->details["id"] ))->results();
             foreach( $query as $res ){
                 $StatusUpdate = new GPEmployeeTaskDefinitionStatusUpdate( $res["id"] );
+                // if update is not found for some reason, dont break the loop
                 if( !$StatusUpdate->ok ) continue;
                 $StatusUpdate->moveToArchiveTable();
             }
+            $this->returnText = "İşlem tamamlandı.";
             $this->ok = true;
         }
 
