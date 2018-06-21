@@ -52,12 +52,21 @@
 		echo "<br>" . $Def->getReturnText(); 
 	}
 
+	function archiveTest(){
+        $Def = new GPEmployeeTaskDefinition(15);
+        $Def->moveToArchiveTable();
+        var_dump( $Def->getStatusFlag() );
+        echo "<br>" . $Def->getReturnText();
+
+    }
+
 	function main(){
 		echo '<pre>';
 		//addTest();
 		//fetchTest();
 		//editTest();
 		//deleteTest();
+        archiveTest();
 	}
 
 	main();
