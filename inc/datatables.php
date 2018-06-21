@@ -13,6 +13,7 @@
 	define( "DBT_GPEMPLOYEETASKDEFINITIONS", "gp_employee_task_definitions" );
 	define( "DBT_GPEMPLOYEETASKDEFINITIONSARCHIVE", "gp_employee_task_definitions_archive" );
 	define( "DBT_GPEMPLOYEETASKDEFINITIONSSTATUSUPDATES", "gp_employee_task_definitions_status_updates" );
+	define( "DBT_GPEMPLOYEETASKDEFINITIONSSTATUSUPDATESARCHIVE", "gp_employee_task_definitions_status_updates_archive" );
 	define( "DBT_GPEMPLOYEEPERIODICTASKDEFINITIONS", "gp_employee_periodic_task_definitions" );
 	define( "DBT_GPAPITRIGGERS", "gp_api_triggers");
 	define( "DBT_GPAPITRIGGERSNOTCHECKED", "gp_api_triggers_not_checked");
