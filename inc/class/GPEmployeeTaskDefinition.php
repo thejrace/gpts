@@ -102,7 +102,6 @@
 			// add parent task or single task when task is single
 			parent::add( $input );
 			$parentTaskID = $this->details["id"];
-
 			if( $ParentTask->getDetails("type") == GPTask::$BUNDLE ){
 				// bundle task, which means we need to add all sub tasks to the user,
 				// in addition to the bundle task
@@ -121,6 +120,8 @@
 					parent::add( $input );
 				}
 			}
+			// raise employee's has_task flag
+			$Employee->editCol(array( "has_task" => 1 ));
 		}
 
 
