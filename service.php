@@ -3,6 +3,7 @@
     /* main web service */
 	require 'inc/defs.php';
 
+	require CLASS_DIR . "GPDBFetch.php";
 	require CLASS_DIR . "GPFormValidation.php";
 	require CLASS_DIR . "GPDataCommon.php";
 	require CLASS_DIR . "GPEmployee.php";
@@ -15,28 +16,12 @@
 
 		switch( $_POST["req"] ){
 
-			// test
-			case 'employees_download':
 
-				$q = DB::getInstance()->query("SELECT id, name, email, group_id, nick FROM " . DBT_GPEMPLOYEES )->results();
-				foreach( $q as $key => $val ){
+            case 'app_server_sync':
 
-					if( $val["name"] == "Serpil Boyacıoğlu" ){
-						$q[$key]["task_status"] = 1;
-					} else if( $val["name"] == "Veli Konstantin" ) {
-						$q[$key]["task_status"] = 2;
-					} else {
-						$q[$key]["task_status"] = 0;
-					}
 
-					$q[$key]["task_count"] = 3;
-					
-					$q[$key]["group"] = "Filo Yönetim";
-				}
-				$DATA = $q;
 
-			break;
-
+            break;
 
 			case 'add_daily_plan_schema':
 				require CLASS_DIR . "GPEmployeeDailyPlanSchema.php";
@@ -51,15 +36,60 @@
 			break;
 
             case 'daily_plan_schemas_download':
-
-                $DATA = DB::getInstance()->query("SELECT * FROM " . DBT_GPEMPLOYEEDAILYPLANSCHEMAS . " ORDER BY name LIMIT {$_POST["start_index"]},{$_POST["rrp"]}")->results();
-
+                $DATA = GPDBFetch::action( DBT_GPEMPLOYEEDAILYPLANSCHEMAS, array(),
+                    array(
+                        "limit"          => $_POST["rrp"],
+                        "start_index"    => $_POST["start_index"],
+                         "order_by"       => array( "name ASC" )
+                    ));
             break;
 
             case 'daily_plan_schemas_search':
-                $DATA = DB::getInstance()->query("SELECT * FROM " . DBT_GPEMPLOYEEDAILYPLANSCHEMAS .
-                    " WHERE name LIKE ? || name LIKE ? || name LIKE ? ORDER BY name DESC LIMIT {$_POST["start_index"]},{$_POST["rrp"]}",
-                    array( "%".$_POST["keyword"], $_POST["keyword"]."%", "%".$_POST["keyword"]."%"))->results();
+                $DATA = GPDBFetch::search( DBT_GPEMPLOYEEDAILYPLANSCHEMAS, array(),
+                    array(
+                        "limit"          => $_POST["rrp"],
+                        "start_index"    => $_POST["start_index"],
+                        "order_by"       => array( "name ASC" )
+                    ), array("key" => "name", "keyword" => $_POST["keyword"] ));
+            break;
+
+            // test
+            case 'employees_download':
+                $q = GPDBFetch::action( DBT_GPEMPLOYEES, array( "id", "name", "email", "group_id", "nick" ),
+                    array(
+                        "limit"          => $_POST["rrp"],
+                        "start_index"    => $_POST["start_index"],
+                        "order_by"       => array( "name ASC" )
+                    ));
+                foreach( $q as $key => $val ){
+                    if( $val["name"] == "Serpil Boyacıoğlu" ){
+                        $q[$key]["task_status"] = 1;
+                    } else if( $val["name"] == "Veli Konstantin" ) {
+                        $q[$key]["task_status"] = 2;
+                    } else {
+                        $q[$key]["task_status"] = 0;
+                    }
+                    $q[$key]["task_count"] = 3;
+                    $q[$key]["group"] = "Filo Yönetim";
+                }
+                $DATA = $q;
+            break;
+
+            case 'employees_search':
+                $q = GPDBFetch::search( DBT_GPEMPLOYEES, array( "id", "name", "email", "group_id", "nick" ),
+                    array(
+                        "limit"          => $_POST["rrp"],
+                        "start_index"    => $_POST["start_index"],
+                        "order_by"       => array( "name ASC" )
+                    ),
+                    array( "key" => "name", "keyword" => $_POST["keyword"] ));
+
+                foreach( $q as $key => $val ){
+                    $q[$key]["task_status"] = 2;
+                    $q[$key]["task_count"] = 3;
+                    $q[$key]["group"] = "Filo Yönetim";
+                }
+                $DATA = $q;
             break;
 
 
