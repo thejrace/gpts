@@ -46,15 +46,6 @@
 		 *     we just add them to DB on serverside
 		 * */
 		public function definePlan( $dailyPlanArray ){
-            // define plan items
-            foreach( $dailyPlanArray["daily_plan"] as $dailyPlanInputItem ){
-                $DailyPlan = new GPEmployeeDailyPlan;
-                $DailyPlan->add( $dailyPlanInputItem );
-                if( !$DailyPlan->getStatusFlag() ){
-                    $this->returnText = $DailyPlan->getReturnText();
-                    return;
-                }
-            }
             // check daily plan schema
             $DailyPlanSchema = new GPEmployeeDailyPlanSchema( $dailyPlanArray["daily_plan_schema_id"] );
             if( !$DailyPlanSchema->getStatusFlag() ){
@@ -71,7 +62,15 @@
                 "date_added"            => Common::getCurrentDate(),
                 "status"                => 1
             ));
-
+            // define plan items
+            foreach( $dailyPlanArray["daily_plan"] as $dailyPlanInputItem ){
+                $DailyPlan = new GPEmployeeDailyPlan;
+                $DailyPlan->add( $dailyPlanInputItem );
+                if( !$DailyPlan->getStatusFlag() ){
+                    $this->returnText = $DailyPlan->getReturnText();
+                    return;
+                }
+            }
             $this->ok = true;
             $this->returnText = "İşlem tamamlandı.";
         }
