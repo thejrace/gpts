@@ -20,12 +20,33 @@
      */
     class GPApiTrigger extends GPDataCommon {
 
+        public static $ACTION_ADD    = 1,
+                      $ACTION_EDIT   = 2,
+                      $ACTION_DELETE = 3;
+
         public function __construct( $val = null ){
             parent::__construct( DBT_GPAPITRIGGERS, array( "id" ), $val );
-
-
-
+            $this->dbFormKeys = array(
+                "item_type" => array(           // employee, plan schema etc.
+                    "label" 		=> "Tip",
+                    "validation" 	=> array( "req" => true )
+                ),
+                "item_action_type" => array(   // update, delete, add
+                    "label" 		=> "Hareket Tipi",
+                    "validation" 	=> array( "req" => true )
+                ),
+                "item_id" => array(           // item db data ID
+                    "label" 		=> "Data ID",
+                    "validation" 	=> array( "req" => true )
+                ),
+                "item_key" => array(         // data hashmap key on clients app
+                    "label" 		=> "Data Key",
+                    "validation" 	=> array( "req" => true )
+                ),
+                "date_added" => array(
+                    "label" 		=> "Eklenme Tarihi",
+                    "validation" 	=> array( "req" => true )
+                )
+            );
         }
-
-
     }
