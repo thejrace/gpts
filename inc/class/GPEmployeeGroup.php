@@ -12,6 +12,8 @@
 
 		public function __construct( $val = null ){
 			parent::__construct( DBT_GPEMPLOYEEGROUPS, array( "id", "name" ), $val );
+            $this->apiTriggerKey = "name";
+            $this->apiTriggerType = 3;
 			// unique groups should be on top to save time for unique checks
 			$this->dbFormKeys = array(
 				"name" => array(

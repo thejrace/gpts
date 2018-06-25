@@ -13,6 +13,8 @@
 
 		public function __construct( $val = null ){
 			parent::__construct( DBT_GPTASKS, array( "id", "name" ), $val );
+            $this->apiTriggerKey = "name";
+            $this->apiTriggerType = 4;
 			// unique groups should be on top to save time for unique checks
 			$this->dbFormKeys = array(
 				"name" => array(

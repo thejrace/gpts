@@ -10,6 +10,8 @@
 	class GPEmployeeDailyPlanSchema extends GPDataCommon {
 		public function __construct( $val = null ){
 			parent::__construct( DBT_GPEMPLOYEEDAILYPLANSCHEMAS, array( "id" ), $val );
+            $this->apiTriggerKey = "name";
+            $this->apiTriggerType = 2;
 			$this->dbFormKeys = array(
 				"name" => array(
 					"label" 		=> "İsim",

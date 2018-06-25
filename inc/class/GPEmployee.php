@@ -9,10 +9,10 @@
 	*/
 	class GPEmployee extends GPDataCommon {
 
-	    public static $TRIGGERKEY = 1;
-
 		public function __construct( $val = null ){
 			parent::__construct( DBT_GPEMPLOYEES, array( "id", "name", "nick", "email"), $val );
+			$this->apiTriggerKey = "nick";
+			$this->apiTriggerType = 1;
 			// unique groups should be on top to save time for unique checks
 			$this->dbFormKeys = array(
 				"nick" => array(
