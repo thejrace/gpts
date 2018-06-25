@@ -27,7 +27,10 @@
 			$dbFormKeys = array(),
             // for classses that has archive tables, flag to determine
             // which table to fetch data
-            $archiveFlag = false;
+            $archiveFlag = false,
+            // api trigger vars
+            $apiTriggerType,
+            $apiTriggerKey;
 		/*
 		*   constructor for GPDataCommon
 		*		@table : database table name
@@ -231,6 +234,25 @@
             if( !$this->ok ) return;
             // save id for if additional actions will be done by child class
             $this->details["id"] = $insertArray["prev_id"];
+            $this->ok = true;
+        }
+
+        /*
+         *  - common api trigger insert method
+         * */
+        public function addApiTrigger( $actionType ){
+            $this->ok = false;
+            $ApiTrigger = new GPApiTrigger();
+            $ApiTrigger->add(array(
+                "item_type"         => $this->apiTriggerType,
+                "item_action_type"  => $actionType,
+                "item_id"           => $this->details["id"],
+                "item_key"          => $this->apiTriggerKey
+            ));
+            if( !$ApiTrigger->getStatusFlag() ){
+                $this->returnText = $ApiTrigger->getReturnText();
+                return;
+            }
             $this->ok = true;
         }
 		/* getter for status text */
