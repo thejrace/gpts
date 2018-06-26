@@ -12,7 +12,7 @@
         $DATA = array();
 
         // login
-        $User = new GPApiUser(array(
+        /*$User = new GPApiUser(array(
             "email" => $_POST["email"],
             "password" => $_POST["password"],
             "device_hash" => $_POST["device_hash"],
@@ -26,7 +26,7 @@
                 "text" => $User->getReturnText(),
                 "oh" => $_POST
             )));
-        }
+        }*/
 
         switch ($_POST["req"]) {
 
