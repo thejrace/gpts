@@ -245,14 +245,13 @@
             // not all objects extend this class has trigger action
             if(!isset($this->apiTriggerType)) return true; // dont cause error for non trigger data
             $ApiTrigger = new GPApiTrigger();
-            $ApiTrigger->add(array(
+            if( !$ApiTrigger->add(array(
                 "item_type"         => $this->apiTriggerType,
                 "item_action_type"  => $actionType,
                 "item_id"           => $this->details["id"],
                 "item_key"          => $this->apiTriggerKey,
                 "date_added"        => Common::getCurrentDateTime()
-            ));
-            if( !$ApiTrigger->getStatusFlag() ){
+            )) ){
                 $this->returnText = $ApiTrigger->getReturnText();
                 return false;
             }

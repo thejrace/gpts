@@ -22,8 +22,8 @@
     define("LOGINPARAMS", array(
         "email"         => "ahmet@obarey.com",
         "password"      => "wazzabii308",
-        "device_hash"   => "test hash",
-        "device_name"   => "test device name",
+        "device_hash"   => "test hash 3",
+        "device_name"   => "test device name 2",
         "device_type"   => 1,
         "device_os"     => "Windows"
     ));
@@ -39,7 +39,7 @@
             array_merge(LOGINPARAMS,
                 array(
                     "req"               => "add_daily_plan_schema",
-                    "name"              => "Test Obarey 5",
+                    "name"              => "Test Obarey 7",
                     "start"             => "08:00",
                     "end"               => "13:00",
                     "plan_interval"     => "55"

@@ -118,7 +118,7 @@
                 }
             } else {
                 // device is not registered
-                $Device->add(array(
+                if( !$Device->add(array(
                     "user_id"               => $this->details["id"],
                     "type"                  => $input["device_type"],
                     "name"                  => $input["device_name"],
@@ -128,8 +128,7 @@
                     "date_added"            => Common::getCurrentDateTime(),
                     "date_last_connected"   => Common::getCurrentDateTime(),
                     "status"                => "0"
-                ));
-                if( !$Device->getStatusFlag() ){
+                )) ) {
                     $this->returnText = $Device->getReturnText();
                     return false;
                 }
