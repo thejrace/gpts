@@ -50,7 +50,7 @@
             $DailyPlanSchema = new GPEmployeeDailyPlanSchema( $dailyPlanArray["daily_plan_schema_id"] );
             if( !$DailyPlanSchema->getStatusFlag() ){
                 $this->returnText = $DailyPlanSchema->getReturnText();
-                return;
+                return false;
             }
             // disable old definitions
             $this->removeOldPlanDefinitions();
@@ -65,14 +65,13 @@
             // define plan items
             foreach( $dailyPlanArray["daily_plan"] as $dailyPlanInputItem ){
                 $DailyPlan = new GPEmployeeDailyPlan;
-                $DailyPlan->add( $dailyPlanInputItem );
-                if( !$DailyPlan->getStatusFlag() ){
+                if( $DailyPlan->add( $dailyPlanInputItem ) ){
                     $this->returnText = $DailyPlan->getReturnText();
-                    return;
+                    return false;
                 }
             }
-            $this->ok = true;
             $this->returnText = "İşlem tamamlandı.";
+            return true;
         }
 
         /*

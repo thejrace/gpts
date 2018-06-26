@@ -29,7 +29,7 @@
             // which table to fetch data
             $archiveFlag = false,
             // api trigger vars
-            $apiTriggerType,
+            $apiTriggerType = null,
             $apiTriggerKey;
 		/*
 		*   constructor for GPDataCommon
@@ -66,16 +66,16 @@
 		*/
 		public function delete(){
 		    // reset action flag
-		    $this->ok = false;
 			$this->pdo->query("DELETE FROM " . $this->table . " WHERE id = ?", array($this->details["id"]));
 			if( $this->pdo->error() ){
 				$this->returnText = "DB Hatası.[".$this->pdo->getErrorMessage()."]";
-				return;
+				return false;
 			}
+            if( !$this->addApiTrigger( GPApiTrigger::$ACTION_DELETE ) ) return false;
 			// clear data from object
 			$this->details = array();
-			$this->ok = true;
 			$this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
+			return true;
 		}
 
 		/*
@@ -83,16 +83,16 @@
 		*  we do this to not lost or cause an exception when dealing with previous definitons related to this object
 		*/
 		public function softDelete(){
-		    $this->ok = false;
 			$this->pdo->query("UPDATE " . $this->table . " SET deleted = ? WHERE id = ?", array( 1, $this->details["id"] ) );
 			if( $this->pdo->error() ){
 				$this->returnText = "DB Hatası.[".$this->pdo->getErrorMessage()."]";
-				return;
+				return false;
 			}
+            if( !$this->addApiTrigger( GPApiTrigger::$ACTION_DELETE ) ) return false;
 			// clear data from object
 			$this->details = array();
-			$this->ok = true;
-			$this->returnText = GPFormValidation::$SUCCESS_MESSAGE; 
+			$this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
+			return true;
 		}
 
 		/*
@@ -101,7 +101,6 @@
 		*		@input : request parameters
 		*/
 		public function edit( $input ){
-		    $this->ok = false;
 			$updateKeys = array();
 			$updateVals = array();
 			foreach( $this->dbFormKeys as $key => $value ){
@@ -110,7 +109,7 @@
                 // if required input is not within $_POST
                 if( !isset($input[$key])){
                     $this->returnText = $value["label"] . " verisi yok.";
-                    return;
+                    return false;
                 }
 				// 1 - validation check
 				if( isset($value["validation"] ) ){
@@ -118,7 +117,7 @@
 					foreach( $value["validation"] as $validationKey => $ruleValue ){
 						if( !$Validation->check( $validationKey, $input[$key], $ruleValue, $value["label"] ) ){
 							$this->returnText = $Validation->getErrorMessage();
-							return;
+							return false;
 						}
 					}
 				}
@@ -129,7 +128,7 @@
 						array( $input[$key], $this->details[$key] ))->results();
 					if( count($q) > 0 ){
 						$this->returnText = GPFormValidation::outErrorMessage( GPFormValidation::$ERROR_KEY_UNIQUE, $value["label"] );
-						return;
+						return false;
 					}
 				}
 				// add vals and keys to collection
@@ -141,10 +140,12 @@
 				array_merge($updateVals, array( $this->details["id"] ) ));
 			if( $this->pdo->error() ){
 				$this->returnText = "DB Hatası.[".$this->pdo->getErrorMessage()."]";
-				return;
+				return false;
 			}
-			$this->ok = true;
+			// add api trigger
+            if( !$this->addApiTrigger( GPApiTrigger::$ACTION_EDIT ) ) return false;
 			$this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
+			return true;
 		}
 		/*
 		*	database add method, based on dbFormKeys defined in object's own constructor
@@ -159,7 +160,7 @@
 				// if required input is not within $_POST
                 if( !isset($input[$key])){
                     $this->returnText = $value["label"] . " verisi yok.";
-                    return;
+                    return false;
                 }
 				// 1 - validation check
 				if( isset($value["validation"] ) ){
@@ -167,7 +168,7 @@
 					foreach( $value["validation"] as $validationKey => $ruleValue ){
 						if( !$Validation->check( $validationKey, $input[$key], $ruleValue, $value["label"] ) ){
 							$this->returnText = $Validation->getErrorMessage();
-							return;
+							return false;
 						}
 					}
 				}
@@ -176,7 +177,7 @@
 					$q = $this->pdo->query("SELECT * FROM " . $this->table . " WHERE " . $key . " = ?", array( $input[$key] ))->results();
 					if( count($q) > 0 ){
 						$this->returnText = GPFormValidation::outErrorMessage( GPFormValidation::$ERROR_KEY_UNIQUE, $value["label"] );
-						return;
+						return false;
 					}
 				}
 				// input is ok, save it
@@ -185,29 +186,30 @@
 			$this->pdo->insert( $this->table, $insertArray );
 			if( $this->pdo->error() ){
 				$this->returnText = "DB Hatası.[".$this->pdo->getErrorMessage()."]";
-				return;
+				return false;
 			}
 			// get the inserted record's ID
 			$this->details["id"] = $this->pdo->lastInsertedId();
-			$this->ok = true;
+            if( !$this->addApiTrigger( GPApiTrigger::$ACTION_ADD ) ) return false;
 			$this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
+			return true;
 		}
 
 		/*
 		 *  update columns of DB record of object
 		 * */
 		public function editCol( $input ){
-		    $this->ok = false;
 		    foreach( $input as $key => $value ){
 		        $this->pdo->query("UPDATE " . $this->table . " SET ".$key." = ? WHERE id = ?", array( $value, $this->details["id"] ) );
 		        if( $this->pdo->error() ){
 		            $this->returnText = $this->pdo->getErrorMessage();
-		            break;
+		            return false;
                 }
                 $this->details[$key] = $value;
             }
-            $this->ok = true;
+            if( !$this->addApiTrigger( GPApiTrigger::$ACTION_EDIT ) ) return false;
 		    $this->returnText = "İşlem başarılı.";
+		    return true;
         }
 
         /*
@@ -227,33 +229,41 @@
             $this->pdo->insert( $this->archiveTable, $insertArray );
             if( $this->pdo->error() ){
                 $this->returnText = $this->pdo->getErrorMessage();
-                return;
+                return false;
             }
             // remove record from actual table
-            $this->delete();
-            if( !$this->ok ) return;
+            if( !$this->delete() ) return false;
             // save id for if additional actions will be done by child class
             $this->details["id"] = $insertArray["prev_id"];
-            $this->ok = true;
+            return true;
         }
 
         /*
          *  - common api trigger insert method
          * */
         public function addApiTrigger( $actionType ){
-            $this->ok = false;
+            // not all objects extend this class has trigger action
+            if(!isset($this->apiTriggerType)) return true; // dont cause error for non trigger data
             $ApiTrigger = new GPApiTrigger();
             $ApiTrigger->add(array(
                 "item_type"         => $this->apiTriggerType,
                 "item_action_type"  => $actionType,
                 "item_id"           => $this->details["id"],
-                "item_key"          => $this->apiTriggerKey
+                "item_key"          => $this->apiTriggerKey,
+                "date_added"        => Common::getCurrentDateTime()
             ));
             if( !$ApiTrigger->getStatusFlag() ){
                 $this->returnText = $ApiTrigger->getReturnText();
-                return;
+                return false;
             }
-            $this->ok = true;
+            // add not seen records for other users' devices
+            foreach( $this->pdo->query("SELECT id FROM " . DBT_APIUSERDEVICES . " WHERE id != ?",array( Client::getDevice()->getDetails("id") ) )->results() as $deviceData ){
+                $this->pdo->insert( DBT_GPAPITRIGGERSNOTCHECKED, array(
+                    "trigger_id" => $ApiTrigger->getDetails("id"),
+                    "device_id"  => $deviceData["id"]
+                ));
+            }
+            return true;
         }
 		/* getter for status text */
 		public function getReturnText(){

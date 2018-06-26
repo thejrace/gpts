@@ -55,8 +55,7 @@
 
 		public function edit( $input ){
 			// init main edit function
-			parent::edit( $input );
-			if( !$this->getStatusFlag() ) return;
+			if( !parent::edit( $input ) ) return false;
 
 			// TODO: edit subtasks
 			if( $this->details["type"] == self::$BUNDLE ){
@@ -72,8 +71,7 @@
 		*/
 		public function add( $input ){
 			// first add the task to the database
-			parent::add( $input );
-			if( !$this->getStatusFlag() ) return;
+			if( !parent::add( $input ) ) return false;
 			// then we check for sub tasks
 			if( $input["type"] == self::$BUNDLE ){
 				// if a bundle task is being added,
@@ -105,6 +103,7 @@
 					$taskOrder++;
 				}
 			}
+			return true;
 		}
 
 		

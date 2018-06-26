@@ -76,8 +76,8 @@
 				$Def->delete();
 			}
 			// delete definition at last to keep details array 
-			parent::delete();
-			if( !$this->getStatusFlag() ) return;
+			if( !parent::delete() ) return false;
+            return true;
 		}
 
 		/*
@@ -88,19 +88,19 @@
 			$Employee = new GPEmployee( $input["employee_id"]);
 			if( !$Employee->getStatusFlag() ){
 				$this->returnText = $Employee->getReturnText();
-				return;
+				return false;
 			}
 			// check the task that wanted to be defined to the employee
 			$ParentTask = new GPTask( $input["task_id"] );
 			if( !$ParentTask->getStatusFlag() ){
 				$this->returnText = $ParentTask->getReturnText();
-				return;
+				return false;
 			}
 
 			// TODO: check if task is already defined to the employee
 
 			// add parent task or single task when task is single
-			parent::add( $input );
+			if( !parent::add( $input ) ) return false;
 			$parentTaskID = $this->details["id"];
 			if( $ParentTask->getDetails("type") == GPTask::$BUNDLE ){
 				// bundle task, which means we need to add all sub tasks to the user,
@@ -111,17 +111,18 @@
 					$SubTask = new GPTask( $subTaskObject->getDetails("id") );
 					if( !$SubTask->getStatusFlag() ){
 						$SubTask->returnText = $ParentTask->getReturnText();
-						return;
+						return false;
 					}
 					// override the input values for sub task addition
 					$input["parent_definition_id"] = $parentTaskID;
 					$input["task_id"] = $subTaskObject->getDetails("id");
 					// add each task
-					parent::add( $input );
+					if( !parent::add( $input ) ) return false;
 				}
 			}
 			// raise employee's has_task flag
-			$Employee->editCol(array( "has_task" => 1 ));
+			if( !$Employee->editCol(array( "has_task" => 1 )) ) return false;
+			return true;
 		}
 
 
@@ -129,10 +130,8 @@
 		 *  - parent method + archives status update records defined to the task definition
 		 * */
 		public function moveToArchiveTable(){
-            parent::moveToArchiveTable();
-            if( !$this->ok ) return;
+            if( !parent::moveToArchiveTable() ) return false;
             // reset status flag and text
-            $this->ok = false;
             $this->returnText = "";
             // archive all status updates
             $query = $this->pdo->query("SELECT id FROM " . DBT_GPEMPLOYEETASKDEFINITIONSSTATUSUPDATES . " WHERE work_task_definition_id = ?", array( $this->details["id"] ))->results();
@@ -143,7 +142,7 @@
                 $StatusUpdate->moveToArchiveTable();
             }
             $this->returnText = "İşlem tamamlandı.";
-            $this->ok = true;
+            return true;
         }
 
     }

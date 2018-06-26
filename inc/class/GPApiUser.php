@@ -47,7 +47,7 @@
                 // if class is created by client, we ask them to login first
                 $this->pdo = DB::getInstance();
                 $this->table = DBT_APIUSERS;
-                $this->login( $val );
+                $this->ok = $this->login( $val );
             }
         }
 
@@ -57,9 +57,8 @@
         public function login( $input ){
             // in this case $val param is an array
             if( !is_array( $input ) ){
-                $this->ok = false;
                 $this->returnText = "Formda eksiklikler var.";
-                return;
+                return false;
             }
             // validate the inputs first
             $Validation = new GPFormValidation;
@@ -68,18 +67,18 @@
                          $Validation->check( "req", $input["password"], true, "Şifre" );
             if( !$validFlag ){
                 $this->returnText = $Validation->getErrorMessage();
-                return;
+                return false;
             }
             // email check
             $checkQuery = $this->pdo->query("SELECT * FROM " . $this->table . " WHERE email = ?", array($input["email"]))->results();
             if( count($checkQuery) == 0 ){
                 $this->returnText = "Başarısız giriş.[1]";
-                return;
+                return false;
             }
             // password check
             if( !password_verify( $input["password"], $checkQuery[0]["password"] ) ){
                 $this->returnText = "Başarısız giriş.[2]";
-                return;
+                return false;
             }
             $this->details = $checkQuery[0];
             // admin login from panel check
@@ -93,8 +92,7 @@
                 $_SESSION["admin_panel_user"] = $this->details["email"];
                 $_SESSION["admin_panel_user_id"] = $this->details["id"];
                 $this->returnText = "Giriş başarılı.";
-                $this->ok = true;
-                return;
+                return true;
             }
             // check inputs for device info
             $validFlagForDevices =
@@ -104,17 +102,19 @@
                 isset( $input["device_os"] );
             if( !$validFlagForDevices ){
                 $this->returnText = "Formda eksiklikler var.";
-                return;
+                return false;
             }
             // device check
             $Device = new GPApiUserDevice( $input["device_hash"] );
             if( $Device->getStatusFlag() ){
                 if( $Device->getDetails("status") == 1 ){
                     $Device->updateLastConnectNow();
-                    $this->ok = true;
+                    Client::init( $this, $Device );
                     $this->returnText = "Giriş başarılı.";
+                    return true;
                 } else {
                     $this->returnText = "Cihaz onayı gerek. Sistem yöneticinizle irtibata geçin.[1]";
+                    return false;
                 }
             } else {
                 // device is not registered
@@ -131,9 +131,10 @@
                 ));
                 if( !$Device->getStatusFlag() ){
                     $this->returnText = $Device->getReturnText();
-                    return;
+                    return false;
                 }
                 $this->returnText = "Cihaz onayı gerek. Sistem yöneticinizle irtibata geçin.[2]";
+                return false;
             }
         }
         /*
@@ -143,11 +144,12 @@
         public function add( $input ){
             if( !$this->adminFlag ){
                 $this->returnText = "Yetkiniz yok.";
-                return;
+                return false;
             }
             // overwrite input[password] with hashed version
             $hash = password_hash( $input["password"], PASSWORD_BCRYPT, $this->passwordHashOptions );
             $input["password"] = $hash;
-            parent::add( $input );
+            if( !parent::add( $input ) ) return false;
+            return true;
         }
     }
