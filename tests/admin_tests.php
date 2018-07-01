@@ -11,9 +11,9 @@
     if( $_POST ){
         if( $_POST["req"] == "admin_panel_login"){
             $Admin = new GPApiUser(array(
-                "email" => "ahmet@obarey.com",
-                "password" => "wazzabii308",
-                "admin_panel_login" => true
+                "api_email" => "ahmet@obarey.com",
+                "api_password" => "wazzabii308",
+                "api_admin_panel_login" => true
             ));
             var_dump( $Admin->getStatusFlag());
             echo "<br>" . $Admin->getReturnText();

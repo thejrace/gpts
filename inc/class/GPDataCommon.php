@@ -30,7 +30,8 @@
             $archiveFlag = false,
             // api trigger vars
             $apiTriggerType = null,
-            $apiTriggerKey;
+            $apiTriggerKey,
+            $cacheDataFileName = "obarey";
 		/*
 		*   constructor for GPDataCommon
 		*		@table : database table name
@@ -260,6 +261,13 @@
                 $this->pdo->insert( DBT_GPAPITRIGGERSNOTCHECKED, array(
                     "trigger_id" => $ApiTrigger->getDetails("id"),
                     "device_id"  => $deviceData["id"]
+                ));
+            }
+            // update cached data if exists
+            if( $this->cacheDataFileName != "obarey" ){
+                $this->pdo->insert(DBT_GPCACHEDDATAFLAGS, array(
+                    "file_name"     => $this->cacheDataFileName,
+                    "date_added"    => Common::getCurrentDateTime()
                 ));
             }
             return true;

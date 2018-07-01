@@ -1,6 +1,5 @@
 <?php
 
-
     define("URL", "http://localhost/gpts/service.php");
 
     function serializeParams( $data ){
@@ -20,12 +19,12 @@
     }
 
     define("LOGINPARAMS", array(
-        "email"         => "ahmet@obarey.com",
-        "password"      => "wazzabii308",
-        "device_hash"   => "test hash 3",
-        "device_name"   => "test device name 2",
-        "device_type"   => 1,
-        "device_os"     => "Windows"
+        "api_email"         => "ahmet@obarey.com",
+        "api_password"      => "wazzabii308",
+        "api_device_hash"   => "test hash 3",
+        "api_device_name"   => "test device name 2",
+        "api_device_type"   => 1,
+        "api_device_os"     => "Windows"
     ));
 
     function loginTest(){  // 27.06.2018 OK
@@ -39,10 +38,47 @@
             array_merge(LOGINPARAMS,
                 array(
                     "req"               => "add_daily_plan_schema",
-                    "name"              => "Test Obarey 7",
+                    "name"              => "Test Obarey 9",
                     "start"             => "08:00",
                     "end"               => "13:00",
                     "plan_interval"     => "55"
+                )
+            )
+        ));
+    }
+
+    function app_server_sync_test(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "app_server_sync"
+                )
+            )
+        ));
+    }
+
+    function add_employee_test(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "add_employee",
+                    "nick" 		        => "@eyupp",
+                    "email" 	        => "eyup2@test.com",
+                    "name" 		        => "Eyüp Bey 2",
+                    "employee_group" 	=> "Filo Yönetim",
+                    "phone_1"           => "0533",
+                    "phone_2"           => ""
+                )
+            )
+        ));
+    }
+
+    function add_employee_group_test(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "add_employee_group",
+                    "name" 		        => "Mühendis"
                 )
             )
         ));
@@ -53,3 +89,6 @@
     echo '<pre>';
     //loginTest();
     //add_daily_plan_schema_test();
+    //app_server_sync_test();
+    //add_employee_test();
+    //add_employee_group_test();

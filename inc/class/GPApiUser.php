@@ -62,27 +62,27 @@
             }
             // validate the inputs first
             $Validation = new GPFormValidation;
-            $validFlag = $Validation->check( "req", $input["email"], true, "Eposta" ) &&
-                         $Validation->check( "email", $input["email"], true, "Eposta" ) &&
-                         $Validation->check( "req", $input["password"], true, "Şifre" );
+            $validFlag = $Validation->check( "req", $input["api_email"], true, "Eposta" ) &&
+                         $Validation->check( "email", $input["api_email"], true, "Eposta" ) &&
+                         $Validation->check( "req", $input["api_password"], true, "Şifre" );
             if( !$validFlag ){
                 $this->returnText = $Validation->getErrorMessage();
                 return false;
             }
             // email check
-            $checkQuery = $this->pdo->query("SELECT * FROM " . $this->table . " WHERE email = ?", array($input["email"]))->results();
+            $checkQuery = $this->pdo->query("SELECT * FROM " . $this->table . " WHERE email = ?", array($input["api_email"]))->results();
             if( count($checkQuery) == 0 ){
                 $this->returnText = "Başarısız giriş.[1]";
                 return false;
             }
             // password check
-            if( !password_verify( $input["password"], $checkQuery[0]["password"] ) ){
+            if( !password_verify( $input["api_password"], $checkQuery[0]["password"] ) ){
                 $this->returnText = "Başarısız giriş.[2]";
                 return false;
             }
             $this->details = $checkQuery[0];
             // admin login from panel check
-            if( isset($input["admin_panel_login"] ) && $this->details["user_group"] == self::$ADMIN ){
+            if( isset($input["api_admin_panel_login"] ) && $this->details["user_group"] == self::$ADMIN ){
                 $Token = new GPApiAdminSessionToken;
                 $Token->add(array(
                     "user_id" => $this->details["id"],
@@ -96,16 +96,16 @@
             }
             // check inputs for device info
             $validFlagForDevices =
-                isset( $input["device_hash"] ) &&
-                isset( $input["device_type"] ) &&
-                isset( $input["device_name"] ) &&
-                isset( $input["device_os"] );
+                isset( $input["api_device_hash"] ) &&
+                isset( $input["api_device_type"] ) &&
+                isset( $input["api_device_name"] ) &&
+                isset( $input["api_device_os"] );
             if( !$validFlagForDevices ){
                 $this->returnText = "Formda eksiklikler var.";
                 return false;
             }
             // device check
-            $Device = new GPApiUserDevice( $input["device_hash"] );
+            $Device = new GPApiUserDevice( $input["api_device_hash"] );
             if( $Device->getStatusFlag() ){
                 if( $Device->getDetails("status") == 1 ){
                     $Device->updateLastConnectNow();
@@ -120,11 +120,11 @@
                 // device is not registered
                 if( !$Device->add(array(
                     "user_id"               => $this->details["id"],
-                    "type"                  => $input["device_type"],
-                    "name"                  => $input["device_name"],
-                    "hash"                  => $input["device_hash"],
+                    "type"                  => $input["api_device_type"],
+                    "name"                  => $input["api_device_name"],
+                    "hash"                  => $input["api_device_hash"],
                     "ip"                    => Common::getIP(),
-                    "os"                    => $input["device_os"],
+                    "os"                    => $input["api_device_os"],
                     "date_added"            => Common::getCurrentDateTime(),
                     "date_last_connected"   => Common::getCurrentDateTime(),
                     "status"                => "0"

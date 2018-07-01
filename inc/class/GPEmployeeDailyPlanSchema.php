@@ -12,6 +12,7 @@
 			parent::__construct( DBT_GPEMPLOYEEDAILYPLANSCHEMAS, array( "id" ), $val );
             $this->apiTriggerKey = "name";
             $this->apiTriggerType = 2;
+            $this->cacheDataFileName = "plan_schemas.cache";
 			$this->dbFormKeys = array(
 				"name" => array(
 					"label" 		=> "İsim",

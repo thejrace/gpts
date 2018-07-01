@@ -3,8 +3,6 @@
     /* main web service */
 	require 'inc/defs.php';
 
-	require CLASS_DIR . "GPEmployee.php";
-
 	if( $_POST ) {
 
         $OK = 1;
@@ -12,13 +10,13 @@
         $DATA = array();
 
         // login
-        /*$User = new GPApiUser(array(
-            "email" => $_POST["email"],
-            "password" => $_POST["password"],
-            "device_hash" => $_POST["device_hash"],
-            "device_name" => $_POST["device_name"],
-            "device_type" => $_POST["device_type"],
-            "device_os" => $_POST["device_os"]
+        $User = new GPApiUser(array(
+            "api_email"         => $_POST["api_email"],
+            "api_password"      => $_POST["api_password"],
+            "api_device_hash"   => $_POST["api_device_hash"],
+            "api_device_name"   => $_POST["api_device_name"],
+            "api_device_type"   => $_POST["api_device_type"],
+            "api_device_os"     => $_POST["api_device_os"]
         ));
         if (!$User->getStatusFlag()) {
             die(json_encode(array(
@@ -26,14 +24,38 @@
                 "text" => $User->getReturnText(),
                 "oh" => $_POST
             )));
-        }*/
+        }
 
         switch ($_POST["req"]) {
 
             case 'app_server_sync':
 
+                $q = GPDBFetch::action(DBT_GPAPITRIGGERSNOTCHECKED, array("trigger_id"), array(), array("keys" => "device_id = ?", "vals" => array(Client::getDevice()->getDetails("id"))));
+                foreach( $q as $triggerData ){
+                    $ApiTrigger = new GPApiTrigger($triggerData["trigger_id"]);
+                    if( !$ApiTrigger->getStatusFlag() ) continue;
+                    $DATA[] = $ApiTrigger->getDetails();
+                }
 
             break;
+
+            case 'download_cached_data':
+
+                //$DATA["user_groups"] = "obarey";
+                //$DATA["plan_schemas"] = "iteroy";
+
+            break;
+
+            case 'app_server_sync_init':
+
+                // download static data for first sync or if some
+                // cached files in client's computer are deleted
+
+
+
+            break;
+
+
 
             case 'add_daily_plan_schema':
                 require CLASS_DIR . "GPEmployeeDailyPlanSchema.php";
@@ -44,7 +66,7 @@
                 // last inserted id
                 $DATA = $Schema->getDetails("id");
 
-                break;
+            break;
 
             case 'daily_plan_schemas_download':
                 $DATA = GPDBFetch::action(DBT_GPEMPLOYEEDAILYPLANSCHEMAS, array(),
@@ -53,7 +75,7 @@
                         "start_index" => $_POST["start_index"],
                         "order_by" => array("name ASC")
                     ));
-                break;
+            break;
 
             case 'daily_plan_schemas_search':
                 $DATA = GPDBFetch::search(DBT_GPEMPLOYEEDAILYPLANSCHEMAS, array(),
@@ -62,11 +84,40 @@
                         "start_index" => $_POST["start_index"],
                         "order_by" => array("name ASC")
                     ), array("key" => "name", "keyword" => $_POST["keyword"]));
-                break;
+            break;
+
+            case 'employee_groups_download':
+                $DATA = GPDBFetch::action(DBT_GPEMPLOYEEGROUPS, array(),
+                    array(
+                        "limit" => $_POST["rrp"],
+                        "start_index" => $_POST["start_index"],
+                        "order_by" => array("name ASC")
+                    ));
+            break;
+
+            case 'employee_groups_search':
+                $DATA = GPDBFetch::search(DBT_GPEMPLOYEEGROUPS, array(),
+                    array(
+                        "limit" => $_POST["rrp"],
+                        "start_index" => $_POST["start_index"],
+                        "order_by" => array("name ASC")
+                    ), array("key" => "name", "keyword" => $_POST["keyword"]));
+            break;
+
+            case 'add_employee_group':
+
+                require CLASS_DIR . "GPEmployeeGroup.php";
+                $EmployeeGroup = new GPEmployeeGroup();
+                $OK = (int) $EmployeeGroup->add( $_POST );
+                $DATA = $EmployeeGroup->getDetails("id");
+                $TEXT = $EmployeeGroup->getReturnText();
+
+            break;
+
 
             // test
             case 'employees_download':
-                $q = GPDBFetch::action(DBT_GPEMPLOYEES, array("id", "name", "email", "group_id", "nick"),
+                $q = GPDBFetch::action(DBT_GPEMPLOYEES, array("id", "name", "email", "employee_group", "nick"),
                     array(
                         "limit" => $_POST["rrp"],
                         "start_index" => $_POST["start_index"],
@@ -81,13 +132,12 @@
                         $q[$key]["task_status"] = 0;
                     }
                     $q[$key]["task_count"] = 3;
-                    $q[$key]["group"] = "Filo Yönetim";
                 }
                 $DATA = $q;
                 break;
 
             case 'employees_search':
-                $q = GPDBFetch::search(DBT_GPEMPLOYEES, array("id", "name", "email", "group_id", "nick"),
+                $q = GPDBFetch::search(DBT_GPEMPLOYEES, array("id", "name", "email", "employee_group", "nick"),
                     array(
                         "limit" => $_POST["rrp"],
                         "start_index" => $_POST["start_index"],
@@ -101,8 +151,17 @@
                     $q[$key]["group"] = "Filo Yönetim";
                 }
                 $DATA = $q;
-                break;
+            break;
 
+            case 'add_employee':
+
+                require CLASS_DIR . "GPEmployee.php";
+                $Employee = new GPEmployee();
+                $OK = (int) $Employee->add($_POST);
+                $DATA = $Employee->getDetails("id");
+                $TEXT = $Employee->getReturnText();
+
+            break;
 
         }
 

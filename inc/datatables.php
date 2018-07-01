@@ -20,3 +20,4 @@
 	define( "DBT_APIUSERS", "gp_api_users");
 	define( "DBT_APIUSERDEVICES", "gp_api_user_devices");
 	define( "DBT_ADMINSESSIONTOKENS", "gp_admin_session_tokens");
+	define( "DBT_GPCACHEDDATAFLAGS", "gp_cached_data_flags");

@@ -7,6 +7,8 @@
 	*		- GPDataCommon.php
 	*		
 	*/
+
+	// todo Employee eklenince ApiUser olarakta bi kayıt yapılacak
 	class GPEmployee extends GPDataCommon {
 
 		public function __construct( $val = null ){
@@ -29,10 +31,16 @@
 					"label" 		=> "İsim",
 					"validation" 	=> array( "req" => true )
 				),
-				"group_id" => array(
+				"employee_group" => array(
 					"label" 		=> "Grup",
-					"validation" 	=> array( "req" => true, "posnum" => true )
+					"validation" 	=> array( "req" => true )
 				),
+                "phone_1" => array(
+                    "label" 		=> "Tel 1"
+                ),
+                "phone_2" => array(
+                    "label" 		=> "Tel 2"
+                ),
                 "has_task" => array(
                     "label" 		=> "Görev Tanımlı"
                 )
