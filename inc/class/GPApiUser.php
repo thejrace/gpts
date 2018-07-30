@@ -30,6 +30,10 @@
                     "label" 		=> "Grup",
                     "validation" 	=> array( "req" => true, "posnum" => true )
                 ),
+                "permissions" => array(
+                    "label" 		=> "İzinler",
+                    "validation" 	=> array( "req" => true )
+                ),
                 "date_added" => array(
                     "label" 		=> "Eklenme Tarihi",
                     "validation" 	=> array( "req" => true )
@@ -39,7 +43,16 @@
                     "validation" 	=> array( "req" => true )
                 )
             );
-            if( GPApiAdminSessionToken::validate() ){
+            if( !is_array( $val) ){
+                // object class
+                parent::__construct( DBT_APIUSERS, array( "id", "email" ), $val );
+            } else {
+                // login action
+                $this->pdo = DB::getInstance();
+                $this->table = DBT_APIUSERS;
+                $this->ok = $this->login( $val );
+            }
+            /*if( GPApiAdminSessionToken::validate() ){
                 // if class is created by system admin, we treat it like a regular data class
                 parent::__construct( DBT_APIUSERS, array( "id", "email" ), $val );
                 $this->adminFlag = true;
@@ -48,7 +61,7 @@
                 $this->pdo = DB::getInstance();
                 $this->table = DBT_APIUSERS;
                 $this->ok = $this->login( $val );
-            }
+            }*/
         }
 
         /*
@@ -82,7 +95,7 @@
             }
             $this->details = $checkQuery[0];
             // admin login from panel check
-            if( isset($input["api_admin_panel_login"] ) && $this->details["user_group"] == self::$ADMIN ){
+            if( /*isset($input["api_admin_panel_login"] ) &&*/ $this->details["user_group"] == self::$ADMIN ){
                 $Token = new GPApiAdminSessionToken;
                 $Token->add(array(
                     "user_id" => $this->details["id"],
@@ -91,8 +104,8 @@
                 $_SESSION["admin_panel_loggedin"] = true;
                 $_SESSION["admin_panel_user"] = $this->details["email"];
                 $_SESSION["admin_panel_user_id"] = $this->details["id"];
-                $this->returnText = "Giriş başarılı.";
-                return true;
+                /*$this->returnText = "Giriş başarılı.";
+                return true;*/
             }
             // check inputs for device info
             $validFlagForDevices =
@@ -141,10 +154,11 @@
          *
          * */
         public function add( $input ){
-            if( !$this->adminFlag ){
+            // todo permission check
+            /*if( !$this->adminFlag ){
                 $this->returnText = "Yetkiniz yok.";
                 return false;
-            }
+            }*/
             // overwrite input[password] with hashed version
             $hash = password_hash( $input["password"], PASSWORD_BCRYPT, $this->passwordHashOptions );
             $input["password"] = $hash;

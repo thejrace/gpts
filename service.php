@@ -26,6 +26,9 @@
             )));
         }
 
+
+        // todo - permission check yap each action için
+
         switch ($_POST["req"]) {
 
             case 'app_server_sync':
@@ -41,8 +44,9 @@
 
             case 'download_cached_data':
 
-                //$DATA["user_groups"] = "obarey";
-                //$DATA["plan_schemas"] = "iteroy";
+                /*$DATA["user_groups"] = "obarey";
+                $DATA["permissions_template"] = "obarey";
+                $DATA["plan_schemas"] = "iteroy";*/
 
             break;
 
@@ -117,6 +121,8 @@
 
             // test
             case 'employees_download':
+
+                // todo - kullanıcının astı olan employee ler çekilecek
                 $q = GPDBFetch::action(DBT_GPEMPLOYEES, array("id", "name", "email", "employee_group", "nick"),
                     array(
                         "limit" => $_POST["rrp"],
@@ -134,9 +140,13 @@
                     $q[$key]["task_count"] = 3;
                 }
                 $DATA = $q;
-                break;
+
+            break;
 
             case 'employees_search':
+
+                // todo - kullanıcının astı olan employee ler çekilecek
+
                 $q = GPDBFetch::search(DBT_GPEMPLOYEES, array("id", "name", "email", "employee_group", "nick"),
                     array(
                         "limit" => $_POST["rrp"],
@@ -155,12 +165,43 @@
 
             case 'add_employee':
 
+                require CLASS_DIR . "GPEmployeeGroup.php";
                 require CLASS_DIR . "GPEmployee.php";
                 $Employee = new GPEmployee();
                 $OK = (int) $Employee->add($_POST);
                 $DATA = $Employee->getDetails("id");
                 $TEXT = $Employee->getReturnText();
 
+            break;
+
+            case 'tasks_download':
+                $q = GPDBFetch::action(DBT_GPTASKS, array("id", "name", "group_id", "type", "definition"),
+                    array(
+                        "limit" => $_POST["rrp"],
+                        "start_index" => $_POST["start_index"],
+                        "order_by" => array("name ASC")
+                    ), array( "keys" => "deleted = ?", "vals" => array(0)  ));
+                foreach ($q as $key => $val) {
+                    $q[$key]["group"] = "Obarey grup.";
+                }
+                $DATA = $q;
+            break;
+
+            case 'tasks_search':
+                $q = GPDBFetch::search(DBT_GPTASKS,  array("id", "name", "group_id", "type", "definition"),
+                    array(
+                        "limit" => $_POST["rrp"],
+                        "start_index" => $_POST["start_index"],
+                        "order_by" => array("name ASC")
+                    ),
+                    array("key" => "name", "keyword" => $_POST["keyword"]),
+                    array( "keys" => "deleted = ?", "vals" => array(0)  ));
+                foreach ($q as $key => $val) {
+                    $q[$key]["task_status"] = 2;
+                    $q[$key]["task_count"] = 3;
+                    $q[$key]["group"] = "Filo Yönetim";
+                }
+                $DATA = $q;
             break;
 
         }

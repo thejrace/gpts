@@ -1,6 +1,7 @@
 <?php
 
     define("URL", "http://localhost/gpts/service.php");
+    //define("URL", "http://178.18.206.163/gpts_web_service/service.php");
 
     function serializeParams( $data ){
         $joinArray = array();
@@ -14,8 +15,8 @@
         curl_setopt($ch, CURLOPT_POSTFIELDS, serializeParams($postData));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $execResult = curl_exec($ch);
-        //return $execResult;
-        return json_decode( $execResult, true );
+        return $execResult;
+        //return json_decode( $execResult, true );
     }
 
     define("LOGINPARAMS", array(
@@ -62,9 +63,9 @@
             array_merge(LOGINPARAMS,
                 array(
                     "req"               => "add_employee",
-                    "nick" 		        => "@eyupp",
-                    "email" 	        => "eyup2@test.com",
-                    "name" 		        => "Eyüp Bey 2",
+                    "nick" 		        => "@coldplay",
+                    "email" 	        => "cold@test.com",
+                    "name" 		        => "Coldplay",
                     "employee_group" 	=> "Filo Yönetim",
                     "phone_1"           => "0533",
                     "phone_2"           => ""
@@ -83,8 +84,6 @@
             )
         ));
     }
-
-
 
     echo '<pre>';
     //loginTest();

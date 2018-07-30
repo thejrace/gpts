@@ -21,7 +21,14 @@
 					"label" 		=> "İsim",
 					"unique"		=> true,
 					"validation" 	=> array( "req" => true )
-				)
+				),
+                "parent" => array(
+                    "label" 		=> "Üst Grup"
+                ),
+                "permissions" => array(
+                    "label" 		=> "İzinler",
+                    "validation" 	=> array( "req" => true )
+                ) // todo cache de olmayacak
 			);
 		}
 

@@ -47,6 +47,29 @@
 			);
 		}
 
+		public function add( $input ){
+		    $EmpGroup = new GPEmployeeGroup( $input["employee_group"]);
+		    if( !$EmpGroup->getStatusFlag() ) return false;
+		    // form submits employee_group's name, we convert it to id
+		    $input["employee_group"] = $EmpGroup->getDetails("id");
+		    // add the employee
+		    if( !parent::add( $input ) ) return false;
+		    // crate api_user account for employee
+            $ApiUser = new GPApiUser();
+            if( !$ApiUser->add(array(
+                "email"         => $input["email"],
+                "password"      => "gitas_".$input["email"], // default password
+                "user_group"    => GPApiUser::$NORMAL, // add as a normal user
+                "permissions"   => $EmpGroup->getDetails("permissions"), // inherit employee group's permissions
+                "date_added"    => Common::getCurrentDateTime(),
+                "status"        => 1
+            ))){
+                $this->returnText = $ApiUser->getReturnText();
+                return false;
+            }
+            return true;
+        }
+
 		/*
 		 *  define the given plan schema to employee
 		 *  @dailyPlanArray : array containing array of daily plan input data and dailyPlanSchema ID
