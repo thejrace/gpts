@@ -85,9 +85,35 @@
         ));
     }
 
+    function add_relation_test(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "add_employee_relation",
+                    "parent_employee" 	=> "1",
+                    "child_employee"    => "2"
+                )
+            )
+        ));
+    }
+
+    function get_relations_test(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "add_employee_relation",
+                    "parent_employee" 	=> "1",
+                    "child_employee"    => "2"
+                )
+            )
+        ));
+    }
+
     echo '<pre>';
     //loginTest();
     //add_daily_plan_schema_test();
     //app_server_sync_test();
     //add_employee_test();
     //add_employee_group_test();
+    //add_relation_test();
+    get_relations_test();

@@ -18,6 +18,8 @@
      *		- GPDataCommon.php
      *
      */
+
+    // todo kullanıcıyı ilgilendiren trigger leri ayıklamak lazım
     class GPApiTrigger extends GPDataCommon {
 
         public static $ACTION_ADD    = 1,

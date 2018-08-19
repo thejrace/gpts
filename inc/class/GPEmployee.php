@@ -132,4 +132,42 @@
 
         }
 
+        /*
+         *  adds sub employee relations to current object
+         * */
+        public function addRelation( $subEmployeeID ){
+            // check if two employees have already related
+            $Relation = new GPEmployeeRelation( $this->details["id"], $subEmployeeID );
+            if( $Relation->getStatusFlag() ){
+                $this->returnText = "Bu iki personel zaten ilişkilendirilmiş.";
+                return false;
+            }
+            $Relation = new GPEmployeeRelation();
+            if( !$Relation->add(array(
+                "parent_employee"  => $this->details["id"],
+                "child_employee"   => $subEmployeeID
+            )) ){
+                $this->returnText = $Relation->getReturnText();
+                return false;
+            }
+
+            // todo API TRIGGER
+
+            $this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
+            return true;
+        }
+
+        /*
+         *  returns employee's sub employees as GPEmployee objects
+         *  it's a fetch - search action
+         *  todo GPDBFetch connect!!
+         * */
+        public function getRelations(){
+
+        }
+
+        public function searchRelations( $keyword ){
+
+        }
+
 	}

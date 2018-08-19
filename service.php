@@ -174,6 +174,18 @@
 
             break;
 
+            // TODO - SYSTEM ADMIN ONLY
+            case 'add_employee_relation':
+
+                require CLASS_DIR . "GPEmployeeRelation.php";
+                require CLASS_DIR . "GPEmployee.php";
+
+                $Parent = new GPEmployee($_POST["parent_employee"]);
+                $Parent->addRelation( $_POST["child_employee"]);
+                $TEXT = $Parent->getReturnText();
+
+            break;
+
             case 'tasks_download':
                 $q = GPDBFetch::action(DBT_GPTASKS, array("id", "name", "group_id", "type", "definition"),
                     array(
