@@ -34,6 +34,18 @@
         ));
     }
 
+    function employees_download(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "employees_download",
+                    "rrp"               => "10",
+                    "start_index"             => "0"
+                )
+            )
+        ));
+    }
+
     function add_daily_plan_schema_test(){  // 27.06.2018 OK
         print_r( post(URL,
             array_merge(LOGINPARAMS,
@@ -97,23 +109,12 @@
         ));
     }
 
-    function get_relations_test(){
-        print_r( post(URL,
-            array_merge(LOGINPARAMS,
-                array(
-                    "req"               => "add_employee_relation",
-                    "parent_employee" 	=> "1",
-                    "child_employee"    => "2"
-                )
-            )
-        ));
-    }
-
     echo '<pre>';
     //loginTest();
+    employees_download();
     //add_daily_plan_schema_test();
     //app_server_sync_test();
     //add_employee_test();
     //add_employee_group_test();
     //add_relation_test();
-    get_relations_test();
+    //get_relations_test();

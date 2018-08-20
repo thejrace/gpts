@@ -119,49 +119,21 @@
             break;
 
 
-            // test
             case 'employees_download':
 
-                // todo - kullanıcının astı olan employee ler çekilecek
-                $q = GPDBFetch::action(DBT_GPEMPLOYEES, array("id", "name", "email", "employee_group", "nick"),
-                    array(
-                        "limit" => $_POST["rrp"],
-                        "start_index" => $_POST["start_index"],
-                        "order_by" => array("name ASC")
-                    ));
-                foreach ($q as $key => $val) {
-                    if ($val["name"] == "Serpil Boyacıoğlu") {
-                        $q[$key]["task_status"] = 1;
-                    } else if ($val["name"] == "Veli Konstantin") {
-                        $q[$key]["task_status"] = 2;
-                    } else {
-                        $q[$key]["task_status"] = 0;
-                    }
-                    $q[$key]["task_count"] = 3;
-                }
-                $DATA = $q;
+                require CLASS_DIR . "GPEmployee.php";
+                $Employee = new GPEmployee($User->getDetails("email"));
+                $DATA = $Employee->getRelatedEmployeesForDesktopApp(array("id", "name", "email", "employee_group", "nick"), $_POST["rrp"], $_POST["start_index"]);
 
             break;
 
             case 'employees_search':
 
-                // todo - kullanıcının astı olan employee ler çekilecek
+                require CLASS_DIR . "GPEmployee.php";
+                $Employee = new GPEmployee($User->getDetails("email"));
+                $DATA = $Employee->searchRelatedEmployeesForDesktopApp($_POST["keyword"], array("id", "name", "email", "employee_group", "nick"), $_POST["rrp"], $_POST["start_index"]);
 
-                $q = GPDBFetch::search(DBT_GPEMPLOYEES, array("id", "name", "email", "employee_group", "nick"),
-                    array(
-                        "limit" => $_POST["rrp"],
-                        "start_index" => $_POST["start_index"],
-                        "order_by" => array("name ASC")
-                    ),
-                    array("key" => "name", "keyword" => $_POST["keyword"]));
-
-                foreach ($q as $key => $val) {
-                    $q[$key]["task_status"] = 2;
-                    $q[$key]["task_count"] = 3;
-                    $q[$key]["group"] = "Filo Yönetim";
-                }
-                $DATA = $q;
-            break;
+                break;
 
             case 'add_employee':
 

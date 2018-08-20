@@ -158,16 +158,64 @@
         }
 
         /*
-         *  returns employee's sub employees as GPEmployee objects
+         *  returns employee's sub employees for desktop application
          *  it's a fetch - search action
-         *  todo GPDBFetch connect!!
          * */
-        public function getRelations(){
-
+        public function getRelatedEmployeesForDesktopApp( $colsToFetch, $rrp, $startIndex ){
+            // get related child employees' ID's to filter others out for SQL fetch
+            $fetchParams = $this->prepareRelatedEmployeesSQL();
+            $q = GPDBFetch::action(DBT_GPEMPLOYEES, $colsToFetch,
+                array(
+                    "limit" => $rrp,
+                    "start_index" => $startIndex,
+                    "order_by" => array("name ASC")
+                ),
+                array( "keys" => implode(" || ", $fetchParams[0]), "vals" => $fetchParams[1] )
+            );
+            foreach ($q as $key => $val) {
+                if ($val["name"] == "Serpil Boyacıoğlu") {
+                    $q[$key]["task_status"] = 1;
+                } else if ($val["name"] == "Veli Konstantin") {
+                    $q[$key]["task_status"] = 2;
+                } else {
+                    $q[$key]["task_status"] = 0;
+                }
+                $q[$key]["task_count"] = 3;
+            }
+            return $q;
         }
 
-        public function searchRelations( $keyword ){
+        /*
+         *  returns employee's sub employees for desktop application's search action
+         * */
+        public function searchRelatedEmployeesForDesktopApp( $keyword, $colsToFetch, $rrp, $startIndex ){
+            $fetchParams = $this->prepareRelatedEmployeesSQL();
+            $q = GPDBFetch::search(DBT_GPEMPLOYEES, $colsToFetch,
+                array(
+                    "limit" => $rrp,
+                    "start_index" => $startIndex,
+                    "order_by" => array("name ASC")
+                ),
+                array("key" => "name", "keyword" => $keyword),
+                array( "keys" => implode(" || ", $fetchParams[0]), "vals" => $fetchParams[1] ));
+            foreach ($q as $key => $val) {
+                $q[$key]["task_status"] = 2;
+                $q[$key]["task_count"] = 3;
+                $q[$key]["group"] = "Filo Yönetim";
+            }
+            return $q;
+        }
 
+        // common method to prepare parameters for GPDBFetch actions to download related employees
+        private function prepareRelatedEmployeesSQL(){
+            $childrenEmps = $this->pdo->query("SELECT child_employee FROM " . DBT_GPEMPLOYEERELATIONS . " WHERE parent_employee = ?", array( $this->details["id"]))->results();
+            $whereKeys = array();
+            $whereVals = array();
+            foreach( $childrenEmps as $c ){
+                $whereVals[] = $c["child_employee"];
+                $whereKeys[] = " id = ? ";
+            }
+            return array( $whereKeys, $whereVals );
         }
 
 	}
