@@ -12,7 +12,7 @@
     class GPApiUser extends GPDataCommon {
 
         private $passwordHashOptions = array( 'cost' => 12 );
-        public static $ADMIN = 1, $NORMAL = 2;
+        public static $ROOT = 0, $ADMIN = 1, $NORMAL = 2;
         private $adminFlag = false;
 
         public function __construct( $val = null ){
@@ -164,5 +164,13 @@
             $input["password"] = $hash;
             if( !parent::add( $input ) ) return false;
             return true;
+        }
+
+        /*
+         *  delete user, this method is triggered from Employee->delete() method.
+         *  additional actions to the super->delete() will be performed here, ( deleting devices etc. )
+         * */
+        public function delete(){
+
         }
     }

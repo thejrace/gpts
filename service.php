@@ -62,6 +62,8 @@
 
 
             case 'add_daily_plan_schema':
+
+                // todo permission check
                 require CLASS_DIR . "GPEmployeeDailyPlanSchema.php";
 
                 $Schema = new GPEmployeeDailyPlanSchema();
@@ -73,6 +75,9 @@
             break;
 
             case 'daily_plan_schemas_download':
+
+                // todo permission check
+
                 $DATA = GPDBFetch::action(DBT_GPEMPLOYEEDAILYPLANSCHEMAS, array(),
                     array(
                         "limit" => $_POST["rrp"],
@@ -82,6 +87,9 @@
             break;
 
             case 'daily_plan_schemas_search':
+
+                // todo permission check
+
                 $DATA = GPDBFetch::search(DBT_GPEMPLOYEEDAILYPLANSCHEMAS, array(),
                     array(
                         "limit" => $_POST["rrp"],
@@ -91,6 +99,9 @@
             break;
 
             case 'employee_groups_download':
+
+                // todo permission check
+
                 $DATA = GPDBFetch::action(DBT_GPEMPLOYEEGROUPS, array(),
                     array(
                         "limit" => $_POST["rrp"],
@@ -100,6 +111,9 @@
             break;
 
             case 'employee_groups_search':
+
+                // todo permission check
+
                 $DATA = GPDBFetch::search(DBT_GPEMPLOYEEGROUPS, array(),
                     array(
                         "limit" => $_POST["rrp"],
@@ -109,6 +123,8 @@
             break;
 
             case 'add_employee_group':
+
+                // todo permission check
 
                 require CLASS_DIR . "GPEmployeeGroup.php";
                 $EmployeeGroup = new GPEmployeeGroup();
@@ -121,6 +137,8 @@
 
             case 'employees_download':
 
+                // todo permission check
+
                 require CLASS_DIR . "GPEmployee.php";
                 $Employee = new GPEmployee($User->getDetails("email"));
                 $DATA = $Employee->getRelatedEmployeesForDesktopApp(array("id", "name", "email", "employee_group", "nick"), $_POST["rrp"], $_POST["start_index"]);
@@ -129,6 +147,8 @@
 
             case 'employees_search':
 
+                // todo permission check
+
                 require CLASS_DIR . "GPEmployee.php";
                 $Employee = new GPEmployee($User->getDetails("email"));
                 $DATA = $Employee->searchRelatedEmployeesForDesktopApp($_POST["keyword"], array("id", "name", "email", "employee_group", "nick"), $_POST["rrp"], $_POST["start_index"]);
@@ -136,6 +156,8 @@
                 break;
 
             case 'add_employee':
+
+                // todo permission check
 
                 require CLASS_DIR . "GPEmployeeGroup.php";
                 require CLASS_DIR . "GPEmployee.php";
@@ -159,6 +181,9 @@
             break;
 
             case 'tasks_download':
+
+                // todo permission check
+
                 $q = GPDBFetch::action(DBT_GPTASKS, array("id", "name", "group_id", "type", "definition"),
                     array(
                         "limit" => $_POST["rrp"],
@@ -172,6 +197,9 @@
             break;
 
             case 'tasks_search':
+
+                // todo permission check
+
                 $q = GPDBFetch::search(DBT_GPTASKS,  array("id", "name", "group_id", "type", "definition"),
                     array(
                         "limit" => $_POST["rrp"],
@@ -186,6 +214,25 @@
                     $q[$key]["group"] = "Filo Yönetim";
                 }
                 $DATA = $q;
+            break;
+
+            case 'add_work':
+
+                require CLASS_DIR . "GPEmployeeWorkSubItem.php";
+                require CLASS_DIR . "GPEmployeeWork.php";
+
+                $GPWork = new GPEmployeeWork();
+                $OK = (int)$GPWork->add($_POST);
+                $TEXT = $GPWork->getReturnText();
+
+            break;
+
+            case 'work_search':
+
+                require CLASS_DIR . "GPEmployeeWorkSubItem.php";
+                require CLASS_DIR . "GPEmployeeWork.php";
+                $DATA = GPEmployeeWork::search( $_POST["search_keyword"] );
+
             break;
 
         }

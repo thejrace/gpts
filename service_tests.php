@@ -109,12 +109,26 @@
         ));
     }
 
+    function add_work(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "add_work",
+                    "name" 	            => "Test Work OBarey",
+                    "details"           => "test details",
+                    "sub_items"         => "id=0#name=Testobo1#details=testers#step_order=1#status=0|id=0#name=Keke 2#details=#step_order=2#status=0|id=0#name=Bbebe 1234#details=#step_order=3#status=0"
+                )
+            )
+        ));
+    }
+
     echo '<pre>';
     //loginTest();
-    employees_download();
+    //employees_download();
     //add_daily_plan_schema_test();
     //app_server_sync_test();
     //add_employee_test();
     //add_employee_group_test();
     //add_relation_test();
     //get_relations_test();
+    //add_work();

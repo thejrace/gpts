@@ -22,6 +22,7 @@
 	define( "DBT_ADMINSESSIONTOKENS", "gp_admin_session_tokens");
 	define( "DBT_GPCACHEDDATAFLAGS", "gp_cached_data_flags");
 	define( "DBT_GPEMPLOYEEWORKS", "gp_employee_works");
-	define( "DBT_GPEMPLOYEE_WORKS_STEPS", "gp_employee_works_steps");
+	define( "DBT_GPEMPLOYEEWORKTEMPLATES", "gp_employee_work_templates");
+	define( "DBT_GPEMPLOYEEWORKSSUBITEMS", "gp_employee_works_sub_items");
 	define( "DBT_GPEMPLOYEEWORKSVALIDATIONREQUESTS", "gp_employee_works_validation_requests");
 	define( "DBT_GPEMPLOYEERELATIONS", "gp_employee_relations");

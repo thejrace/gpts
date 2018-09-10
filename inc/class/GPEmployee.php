@@ -151,7 +151,7 @@
                 return false;
             }
 
-            // todo API TRIGGER
+            // todo API TRIGGER??
 
             $this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
             return true;
