@@ -21,7 +21,20 @@ class GPEmployeeWorkTemplate extends GPDataCommon {
 
     }
 
-
-
+    /*
+     *  converts work to template and returns insert array
+     * */
+    public static function convert( GPEmployeeWork $workObject ){
+        // check if template already exists
+        $Template = new GPEmployeeWorkTemplate( $workObject->getDetails("name") );
+        if( $Template->getStatusFlag() ) return false;
+        // download subitems and convert them to json objects for db
+        $workObject->fetchSubItems();
+        return array(
+            "name" => $workObject->getDetails("name"),
+            "details" => $workObject->getDetails("details"),
+            "sub_items" => json_encode($workObject->getDetails("sub_items"))
+        );
+    }
 
 }

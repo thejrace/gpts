@@ -116,7 +116,18 @@
                     "req"               => "add_work",
                     "name" 	            => "Test Work OBarey",
                     "details"           => "test details",
-                    "sub_items"         => "id=0#name=Testobo1#details=testers#step_order=1#status=0|id=0#name=Keke 2#details=#step_order=2#status=0|id=0#name=Bbebe 1234#details=#step_order=3#status=0"
+                    "sub_items_encoded" => "id=0#name=Testobo1#details=testers#step_order=1#status=0|id=0#name=Keke 2#details=#step_order=2#status=0|id=0#name=Bbebe 1234#details=#step_order=3#status=0"
+                )
+            )
+        ));
+    }
+
+    function work_change_status(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "complete_work",
+                    "item_id" 	        => "2"
                 )
             )
         ));
@@ -132,3 +143,4 @@
     //add_relation_test();
     //get_relations_test();
     //add_work();
+    //work_change_status();

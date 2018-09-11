@@ -1,12 +1,12 @@
 <?php
     /* Gitaş - Obarey Inc. 2018 */
     class GPEmployeeWork extends GPDataCommon {
-
-
-
-
-
-        public function __construct( $val = null){
+        public static $STATUS_ACTIVE = 0,
+                      $STATUS_COMPLETED = 1,
+                      $STATUS_EXPIRED = 2;
+        public function __construct( $val = null, $archive = false ){
+            if( isset($val) && isset($archive) && $archive ) $this->archiveFlag = true;
+            $this->archiveTable = DBT_GPEMPLOYEEWORKSARCHIVE;
             parent::__construct( DBT_GPEMPLOYEEWORKS, array( "id" ), $val );
             $this->dbFormKeys = array(
                 "name" => array(
@@ -26,6 +26,9 @@
                 "added_employee" => array(
                     "label" 		=> "Ekleyen Personel",
                     "validation" 	=> array( "req" => true )
+                ),
+                "sub_items" => array(
+                    "label" 		=> "Alt Adımlar"
                 )
             );
         }
@@ -35,8 +38,10 @@
             $input["date_added"] = Common::getCurrentDateTime();
             $input["added_employee"] = Client::getUser()->getDetails("id");
             if( !parent::add( $input ) ) return false;
-            $subItems = explode( "|", $input["sub_items"] );
+            $subItems = explode( "|", $input["sub_items_encoded"] );
             foreach( $subItems as $itemEncoded ){
+                // add parent work id to encoded string
+                $itemEncoded .= "#parent_work_id=".$this->details["id"];
                 $GWorkSubItem = new GPEmployeeWorkSubItem();
                 if( !$GWorkSubItem->add( $itemEncoded ) ){
                     $this->returnText = $GWorkSubItem->getReturnText();
@@ -45,8 +50,60 @@
             }
         }
 
-        public function changeStatus( $newStatus ){
+        /*
+         *  @$returnObjFlag = flag to determine return type ( GPEmployeeWorkSubItem(true) or assoc array(false) )
+         * */
+        public function fetchSubItems( $returnObjFlag = false ){
+            $this->details["sub_items"] = array();
+            if( $this->archiveFlag ){
+                // todo archived works are holds their sub items in sub_items column
 
+            } else {
+                // fetch from db
+                $query = $this->pdo->query("SELECT * FROM " . DBT_GPEMPLOYEEWORKSSUBITEMS . " WHERE parent_work_id = ? ORDER BY step_order DESC", array( $this->details["id"]))->results();
+                if( $returnObjFlag ){
+                    foreach( $query as $subItemData ) $this->details["sub_items"][] = new GPEmployeeWorkSubItem( $subItemData );
+                } else {
+                    foreach( $query as $subItemData ) $this->details["sub_items"][] = $subItemData;
+                }
+            }
+        }
+
+        public function changeStatus( $newStatus ){
+            $this->editCol( array("status" => $newStatus ) );
+            if( $newStatus == self::$STATUS_COMPLETED ){
+                // try to convert it to template if not already exists
+                $convertOutput = GPEmployeeWorkTemplate::convert( $this );
+                if( is_array( $convertOutput ) ){
+                    $Template = new GPEmployeeWorkTemplate();
+                    if( !$Template->add( $convertOutput ) ){
+                        $this->returnText = $Template->getReturnText();
+                        return false;
+                    }
+                    // we already fetchSubitems in Template::convert, so we can use it when
+                    // moving item to archive
+                    $this->details["sub_items"] = $convertOutput["sub_items"];
+                    $subItemsTemp = json_decode( $convertOutput["sub_items"], true );
+                }
+                // move work data to archive
+                if( !isset($this->details["sub_items"] ) ){
+                    // if Template::convert is not performed, we fetch sub items and format them as json data
+                    $this->fetchSubItems();
+                    // keep a copy for deleting sub items from their tables
+                    $subItemsTemp = $this->details["sub_items"];
+                    $this->details["sub_items"] = json_encode( $this->details["sub_items"] );
+                }
+                if( !$this->moveToArchiveTable() ) return false;
+                // remove all subitems from table
+                foreach( $subItemsTemp as $subItemData ){
+                    $SubItem = new GPEmployeeWorkSubItem( $subItemData["id"] );
+                    $SubItem->delete();
+                }
+            } else if( $newStatus == self::$STATUS_EXPIRED ) {
+                // todo
+            }
+
+            return true;
         }
 
     }

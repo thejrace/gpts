@@ -227,6 +227,22 @@
 
             break;
 
+            case 'complete_work':
+
+                require CLASS_DIR . "GPEmployeeWorkTemplate.php";
+                require CLASS_DIR . "GPEmployeeWorkSubItem.php";
+                require CLASS_DIR . "GPEmployeeWork.php";
+
+                $GPWork = new GPEmployeeWork( $_POST["item_id"] );
+                if( $GPWork->getStatusFlag() ){
+                    if( !$GPWork->changeStatus(GPEmployeeWork::$STATUS_COMPLETED)) $OK = 0;
+                } else {
+                    $OK = 0;
+                }
+                $TEXT = $GPWork->getReturnText();
+
+            break;
+
             case 'work_search':
 
                 require CLASS_DIR . "GPEmployeeWorkSubItem.php";
