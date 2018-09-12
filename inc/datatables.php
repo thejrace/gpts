@@ -25,5 +25,7 @@
 	define( "DBT_GPEMPLOYEEWORKSARCHIVE", "gp_employee_works_archive");
 	define( "DBT_GPEMPLOYEEWORKTEMPLATES", "gp_employee_works_templates");
 	define( "DBT_GPEMPLOYEEWORKSSUBITEMS", "gp_employee_works_sub_items");
+	define( "DBT_GPEMPLOYEEWORKDEFINITIONS", "gp_employee_work_definitions");
+	define( "DBT_GPEMPLOYEEWORKDEFINITIONSARCHIVE", "gp_employee_work_definitions_archive");
 	define( "DBT_GPEMPLOYEEWORKSVALIDATIONREQUESTS", "gp_employee_works_validation_requests");
 	define( "DBT_GPEMPLOYEERELATIONS", "gp_employee_relations");

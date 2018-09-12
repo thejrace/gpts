@@ -37,4 +37,13 @@ class GPEmployeeWorkTemplate extends GPDataCommon {
         );
     }
 
+    public static function search( $keyword, $colsToFetch = array( "name", "details", "sub_items") ){
+        return GPDBFetch::search(DBT_GPEMPLOYEEWORKTEMPLATES, $colsToFetch,
+            array(
+                "order_by" => array("name ASC")
+            ),
+            array( "key" => "name", "keyword" => $keyword )
+        );
+    }
+
 }

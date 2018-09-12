@@ -133,6 +133,17 @@
         ));
     }
 
+    function search_work_template(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "search_work_template",
+                    "search_keyword" 	=> "obarey"
+                )
+            )
+        ));
+    }
+
     echo '<pre>';
     //loginTest();
     //employees_download();
@@ -144,3 +155,4 @@
     //get_relations_test();
     //add_work();
     //work_change_status();
+    search_work_template();

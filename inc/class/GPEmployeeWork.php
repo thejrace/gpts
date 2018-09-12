@@ -102,7 +102,6 @@
             } else if( $newStatus == self::$STATUS_EXPIRED ) {
                 // todo
             }
-
             return true;
         }
 

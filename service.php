@@ -243,11 +243,10 @@
 
             break;
 
-            case 'work_search':
+            case 'search_work_template':
 
-                require CLASS_DIR . "GPEmployeeWorkSubItem.php";
-                require CLASS_DIR . "GPEmployeeWork.php";
-                $DATA = GPEmployeeWork::search( $_POST["search_keyword"] );
+                require CLASS_DIR . "GPEmployeeWorkTemplate.php";
+                $DATA = GPEmployeeWorkTemplate::search( $_POST["search_keyword"] );
 
             break;
 
