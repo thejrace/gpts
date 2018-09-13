@@ -73,7 +73,7 @@ class GPEmployeeWorkSubItem extends GPDataCommon {
             foreach( $params as $param ){
                 $data = explode("=", $param );
                 // we dont send status and validation data, instead we use their default val on the database
-                if( $data[0] == "status" || $data[0] == "needs_validation" ) continue;
+                //if( $data[0] == "status" || $data[0] == "needs_validation" ) continue;
                 $paramsOrdered[ $data[0] ] = $data[1];
             }
         }

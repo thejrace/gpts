@@ -224,6 +224,7 @@
                 $GPWork = new GPEmployeeWork();
                 $OK = (int)$GPWork->add($_POST);
                 $TEXT = $GPWork->getReturnText();
+                $DATA = $GPWork->getDetails("id");
 
             break;
 

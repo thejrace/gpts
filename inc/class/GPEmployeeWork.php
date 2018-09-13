@@ -48,6 +48,7 @@
                     return false;
                 }
             }
+            return true;
         }
 
         /*
