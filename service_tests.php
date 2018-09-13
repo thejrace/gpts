@@ -144,6 +144,16 @@
         ));
     }
 
+    function download_employee_active_works(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "download_employee_active_works"
+                )
+            )
+        ));
+    }
+
     echo '<pre>';
     //loginTest();
     //employees_download();
@@ -155,4 +165,5 @@
     //get_relations_test();
     //add_work();
     //work_change_status();
-    search_work_template();
+    //search_work_template();
+    download_employee_active_works();

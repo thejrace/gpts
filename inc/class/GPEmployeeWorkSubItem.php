@@ -57,8 +57,9 @@ class GPEmployeeWorkSubItem extends GPDataCommon {
      * */
     public function add( $input, $addToExistingWork = false ){
         $paramsOrdered = array(
-            "date_added"        => Common::getCurrentDateTime(),
-            "added_employee"    => Client::getUser()->getDetails("id")
+            "date_added"          => Common::getCurrentDateTime(),
+            "added_employee"      => Client::getUser()->getDetails("id"),
+            "date_last_modified"  => Common::getCurrentDateTime()
         );
         $params = explode("#", $input);
         if( $addToExistingWork ){

@@ -23,6 +23,12 @@
                     "label" 		=> "Eklenme Tarihi",
                     "validation" 	=> array( "req" => true )
                 ),
+                "due_date" => array(
+                    "label" 		=> "Bitiş Tarihi"
+                ),
+                "date_last_modified" => array(
+                    "label" 		=> "Son Düzenlenme Tarihi"
+                ),
                 "added_employee" => array(
                     "label" 		=> "Ekleyen Personel",
                     "validation" 	=> array( "req" => true )
@@ -37,6 +43,10 @@
             // first add the task to the database
             $input["date_added"] = Common::getCurrentDateTime();
             $input["added_employee"] = Client::getUser()->getDetails("id");
+            $input["date_last_modified"] = Common::getCurrentDateTime();
+            // for desktop app
+            $this->details["date_added"] = $input["date_added"];
+            $this->details["date_last_modified"] = $input["date_last_modified"];
             if( !parent::add( $input ) ) return false;
             $subItems = explode( "|", $input["sub_items_encoded"] );
             foreach( $subItems as $itemEncoded ){

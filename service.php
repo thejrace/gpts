@@ -224,7 +224,10 @@
                 $GPWork = new GPEmployeeWork();
                 $OK = (int)$GPWork->add($_POST);
                 $TEXT = $GPWork->getReturnText();
-                $DATA = $GPWork->getDetails("id");
+                $DATA = array(
+                    "id" => $GPWork->getDetails("id"),
+                    "date_added" => $GPWork->getDetails("date_added")
+                );
 
             break;
 
@@ -248,6 +251,17 @@
 
                 require CLASS_DIR . "GPEmployeeWorkTemplate.php";
                 $DATA = GPEmployeeWorkTemplate::search( $_POST["search_keyword"] );
+
+            break;
+
+            case 'download_employee_active_works':
+
+                require CLASS_DIR . "GPEmployeeWorkSubItem.php";
+                require CLASS_DIR . "GPEmployeeWork.php";
+                require CLASS_DIR . "GPEmployee.php";
+
+                $Employee = new GPEmployee( $User->getDetails("email") );
+                $DATA = $Employee->getActiveWorks();
 
             break;
 

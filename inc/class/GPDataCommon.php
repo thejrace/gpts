@@ -291,4 +291,9 @@
 			}
 			return $this->details;
 		}
+
+		public function setDetails( $key, $val ){
+		    $this->details[$key] = $val;
+        }
+
 	}
