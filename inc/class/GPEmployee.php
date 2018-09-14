@@ -218,12 +218,10 @@
             return array( $whereKeys, $whereVals );
         }
 
-        public function getActiveWorks(){
+        private function getWorks( $settings, $whereClause = null ){
             $q = GPDBFetch::action(DBT_GPEMPLOYEEWORKS, array("id", "name", "details", "date_added", "status", "due_date", "date_last_modified"),
-                array(
-                    "order_by" => array("id DESC")
-                ),
-                array( "keys" => "status = ?", "vals" => array(GPEmployeeWork::$STATUS_ACTIVE) )
+                $settings,
+                $whereClause
             );
             // fetch sub items and add them to output array
             foreach( $q as $index => $workItem ){
@@ -234,6 +232,26 @@
                 $q[$index] = $workItem;
             }
             return $q;
+        }
+
+        public function getActiveWorks(){
+            return $this->getWorks(
+                array(
+                    "order_by" => array("id DESC")
+                ),
+                array(
+                    "keys" => "status = ?",
+                    "vals" => array(GPEmployeeWork::$STATUS_ACTIVE)
+                )
+            );
+        }
+
+        public function getLastWorks(){
+            return $this->getWorks(
+                array(
+                    "order_by" => array("date_added ASC")
+                )
+            );
         }
 
 	}

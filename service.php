@@ -254,14 +254,14 @@
 
             break;
 
-            case 'download_employee_active_works':
+            case 'download_employee_last_works':
 
                 require CLASS_DIR . "GPEmployeeWorkSubItem.php";
                 require CLASS_DIR . "GPEmployeeWork.php";
                 require CLASS_DIR . "GPEmployee.php";
 
                 $Employee = new GPEmployee( $User->getDetails("email") );
-                $DATA = $Employee->getActiveWorks();
+                $DATA = $Employee->getLastWorks();
 
             break;
 

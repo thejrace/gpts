@@ -55,30 +55,34 @@ class GPEmployeeWorkSubItem extends GPDataCommon {
     /*
      *  @input -> params are seperated with # ( name=x#details=y#... )
      * */
-    public function add( $input, $addToExistingWork = false ){
+    public function add( $input ){
         $paramsOrdered = array(
             "date_added"          => Common::getCurrentDateTime(),
             "added_employee"      => Client::getUser()->getDetails("id"),
             "date_last_modified"  => Common::getCurrentDateTime()
         );
         $params = explode("#", $input);
-        if( $addToExistingWork ){
-
-            // additional param here is parentWorkID
-
-            foreach( $params as $param ){
-                $data = explode("=", $param );
-                $paramsOrdered[ $data[0] ] = $data[1];
-            }
-        } else {
-            foreach( $params as $param ){
-                $data = explode("=", $param );
-                // we dont send status and validation data, instead we use their default val on the database
-                //if( $data[0] == "status" || $data[0] == "needs_validation" ) continue;
-                $paramsOrdered[ $data[0] ] = $data[1];
-            }
+        foreach( $params as $param ){
+            $data = explode("=", $param );
+            // we dont send status and validation data, instead we use their default val on the database
+            //if( $data[0] == "status" || $data[0] == "needs_validation" ) continue;
+            $paramsOrdered[ $data[0] ] = $data[1];
         }
         if( !parent::add( $paramsOrdered ) ) return false;
+        return true;
+    }
+
+    public function edit( $input ){
+        $paramsOrdered = array(
+            "date_last_modified"  => Common::getCurrentDateTime()
+        );
+        $params = explode("#", $input);
+        // additional param here is parentWorkID
+        foreach( $params as $param ){
+            $data = explode("=", $param );
+            $paramsOrdered[ $data[0] ] = $data[1];
+        }
+        if( !parent::edit( $paramsOrdered ) ) return false;
         return true;
     }
 
