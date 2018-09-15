@@ -245,6 +245,8 @@
 
             break;
 
+
+            // deprecated ( 15.09.2018 )
             case 'complete_work':
 
                 require CLASS_DIR . "GPEmployeeWorkTemplate.php";
@@ -268,15 +270,42 @@
 
             break;
 
+            // deprecated ( 15.09.2018 )
             case 'download_employee_active_works':
-
-
                 require CLASS_DIR . "GPEmployeeWorkSubItem.php";
                 require CLASS_DIR . "GPEmployeeWork.php";
                 require CLASS_DIR . "GPEmployee.php";
 
                 $Employee = new GPEmployee( $User->getDetails("email") );
                 $DATA = $Employee->getActiveWorks();
+            break;
+
+            case 'employee_works_download':
+
+                require CLASS_DIR . "GPEmployeeWorkSubItem.php";
+                require CLASS_DIR . "GPEmployeeWork.php";
+                require CLASS_DIR . "GPEmployee.php";
+
+                $Employee = new GPEmployee( $User->getDetails("email") );
+                $DATA = $Employee->getWorksForDesktopApp(
+                    array("id", "name", "details", "date_added", "status", "due_date", "date_last_modified"),
+                    $_POST["rrp"], $_POST["start_index"], array("id DESC"), $_POST["status_filter"]
+                );
+
+            break;
+
+            case 'employee_works_search':
+
+                require CLASS_DIR . "GPEmployeeWorkSubItem.php";
+                require CLASS_DIR . "GPEmployeeWork.php";
+                require CLASS_DIR . "GPEmployee.php";
+
+                $Employee = new GPEmployee( $User->getDetails("email") );
+                $DATA = $Employee->searchWorksForDekstopApp(
+                    $_POST["keyword"],
+                    array("id", "name", "details", "date_added", "status", "due_date", "date_last_modified"),
+                    $_POST["rrp"], $_POST["start_index"], array("id DESC"), $_POST["status_filter"]
+                );
 
             break;
 

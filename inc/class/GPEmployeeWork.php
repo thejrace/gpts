@@ -14,6 +14,9 @@
                     "label" 		=> "İsim",
                     "validation" 	=> array( "req" => true )
                 ),
+                "employee_id" => array(
+                    "label" 		=> "Tanımlanan Personel"
+                ),
                 "status" => array(
                     "label" 		=> "Durum"
                 ),
@@ -43,10 +46,13 @@
             // first add the task to the database
             $input["date_added"] = Common::getCurrentDateTime();
             $input["added_employee"] = Client::getUser()->getDetails("id");
+            // if employee defined his/her job employee_id is not submitted
+            // if it's defined to the employee, it will be included in the form
+            if( !isset($input["employee_id"]) ) $input["employee_id"] = $input["added_employee"];
             $input["date_last_modified"] = Common::getCurrentDateTime();
             // for desktop app
-            $this->details["date_added"] = $input["date_added"];
-            $this->details["date_last_modified"] = $input["date_last_modified"];
+            /*$this->details["date_added"] = $input["date_added"];
+            $this->details["date_last_modified"] = $input["date_last_modified"];*/
             if( !parent::add( $input ) ) return false;
             if( $input["sub_items_encoded"] != "" ){
                 $subItems = explode( "|", $input["sub_items_encoded"] );

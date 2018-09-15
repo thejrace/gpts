@@ -40,7 +40,7 @@
                 array(
                     "req"               => "employees_download",
                     "rrp"               => "10",
-                    "start_index"             => "0"
+                "start_index"             => "0"
                 )
             )
         ));
@@ -123,17 +123,6 @@
         ));
     }
 
-    function work_change_status(){
-        print_r( post(URL,
-            array_merge(LOGINPARAMS,
-                array(
-                    "req"               => "complete_work",
-                    "item_id" 	        => "2"
-                )
-            )
-        ));
-    }
-
     function search_work_template(){
         print_r( post(URL,
             array_merge(LOGINPARAMS,
@@ -145,6 +134,7 @@
         ));
     }
 
+    // deprecated ( 15.09.2018 )
     function download_employee_active_works(){
         print_r( post(URL,
             array_merge(LOGINPARAMS,
@@ -154,6 +144,36 @@
             )
         ));
     }
+
+
+    function employee_works_download(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "employee_works_download",
+                    "rrp"               => "10",
+                    "start_index"       => "0",
+                    "status_filter"     => "1"
+                )
+            )
+        ));
+    }
+
+    function employee_works_search(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "employee_works_search",
+                    "rrp"               => "10",
+                    "start_index"       => "0",
+                    "status_filter"     => "0",
+                    "keyword"           => "kayne"
+                )
+            )
+        ));
+    }
+
+
 
     function edit_work(){
         print_r( post(URL,
@@ -169,6 +189,9 @@
             )
         ));
     }
+
+
+
     echo '<pre>';
     //loginTest();
     //employees_download();
@@ -182,4 +205,6 @@
     //work_change_status();
     //search_work_template();
     //download_employee_active_works();
-    edit_work();
+    //employee_works_download();
+    employee_works_search();
+    //edit_work();

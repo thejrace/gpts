@@ -218,6 +218,77 @@
             return array( $whereKeys, $whereVals );
         }
 
+
+
+        public function getWorksForDesktopApp( $colsToFetch, $rrp, $startIndex, $orderBy, $statusFilter ){
+            $archiveFlag = false;
+            // only active works are in main table, others are saved in archive table
+            if( $statusFilter == GPEmployeeWork::$STATUS_ACTIVE ){
+                $table = DBT_GPEMPLOYEEWORKS;
+            } else {
+                $table = DBT_GPEMPLOYEEWORKSARCHIVE;
+                $archiveFlag = true;
+                // add subitem cols here
+                $colsToFetch[] = "sub_items";
+            }
+            $q = GPDBFetch::action($table, $colsToFetch,
+                array(
+                    "limit"         => $rrp,
+                    "start_index"   => $startIndex,
+                    "order_by"      => $orderBy
+                ),
+                array( "keys" => "employee_id = ? && status = ?", "vals" => array( $this->details["id"], $statusFilter ) )
+            );
+            return $this->addSubItemsToData( $archiveFlag, $q );
+        }
+
+        public function searchWorksForDekstopApp( $keyword, $colsToFetch, $rrp, $startIndex, $orderBy, $statusFilter ){
+            $archiveFlag = false;
+            if( $statusFilter == GPEmployeeWork::$STATUS_ACTIVE ){
+                $table = DBT_GPEMPLOYEEWORKS;
+            } else {
+                $table = DBT_GPEMPLOYEEWORKSARCHIVE;
+                $archiveFlag = true;
+                // add subitem cols here
+                $colsToFetch[] = "sub_items";
+            }
+            $q = GPDBFetch::search($table, $colsToFetch,
+                array(
+                    "limit"         => $rrp,
+                    "start_index"   => $startIndex,
+                    "order_by"      => $orderBy
+                ),
+                array("key" => "name", "keyword" => $keyword),
+                array( "keys" => "employee_id = ? && status = ?", "vals" => array( $this->details["id"], $statusFilter ) )
+            );
+            return $this->addSubItemsToData( $archiveFlag, $q );
+        }
+
+        /*
+         *  common method for searchWorksForDekstopApp and getWorksForDekstopApp to fetch subItems of workdata
+         * */
+        private function addSubItemsToData( $archiveFlag, $data ){
+            if( $archiveFlag ){
+                // sub items already in sub_items col as jsonarray
+                foreach( $data as $index => $workItem ){
+                    // decode json array to avoid twice encoding when outputing data
+                    $workItem["sub_items"] = json_decode($workItem["sub_items"], true);
+                    $data[$index] = $workItem;
+                }
+            } else {
+                // fetch sub items and add them to output array
+                foreach( $data as $index => $workItem ){
+                    $GWork = new GPEmployeeWork();
+                    foreach( $workItem as $key => $val ) $GWork->setDetails( $key, $val );
+                    $GWork->fetchSubItems();
+                    $workItem["sub_items"] = $GWork->getDetails("sub_items");
+                    $data[$index] = $workItem;
+                }
+            }
+            return $data;
+        }
+
+        // @DEPRECATED 15.09.2018
         private function getWorks( $settings, $whereClause = null ){
             $q = GPDBFetch::action(DBT_GPEMPLOYEEWORKS, array("id", "name", "details", "date_added", "status", "due_date", "date_last_modified"),
                 $settings,
@@ -233,7 +304,7 @@
             }
             return $q;
         }
-
+        // @DEPRECATED 15.09.2018
         public function getActiveWorks(){
             return $this->getWorks(
                 array(
@@ -245,7 +316,7 @@
                 )
             );
         }
-
+        // @DEPRECATED 15.09.2018
         public function getLastWorks(){
             return $this->getWorks(
                 array(
