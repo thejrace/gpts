@@ -28,12 +28,15 @@ class GPEmployeeWorkTemplate extends GPDataCommon {
         // check if template already exists
         $Template = new GPEmployeeWorkTemplate( $workObject->getDetails("name") );
         if( $Template->getStatusFlag() ) return false;
-        // download subitems and convert them to json objects for db
-        $workObject->fetchSubItems();
+        $subItems = $workObject->getDetails("sub_items");
+        foreach( $subItems as $key => $val ){
+            $subItems[$key]["id"] = 0;
+            $subItems[$key]["status"] = GPEmployeeWorkSubItem::$STATUS_ACTIVE;
+        }
         return array(
             "name" => $workObject->getDetails("name"),
             "details" => $workObject->getDetails("details"),
-            "sub_items" => json_encode($workObject->getDetails("sub_items"))
+            "sub_items" => json_encode($subItems)
         );
     }
 

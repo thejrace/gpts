@@ -227,7 +227,8 @@
                 $TEXT = $GPWork->getReturnText();
                 $DATA = array(
                     "id" => $GPWork->getDetails("id"),
-                    "date_added" => $GPWork->getDetails("date_added")
+                    "date_added" => $GPWork->getDetails("date_added"),
+                    "added_sub_items_data" => $GPWork->getDetails("added_sub_items_data")
                 );
 
             break;

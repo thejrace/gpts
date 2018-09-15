@@ -201,10 +201,10 @@
     //add_employee_group_test();
     //add_relation_test();
     //get_relations_test();
-    //add_work();
+    add_work();
     //work_change_status();
     //search_work_template();
     //download_employee_active_works();
     //employee_works_download();
-    employee_works_search();
+    //employee_works_search();
     //edit_work();

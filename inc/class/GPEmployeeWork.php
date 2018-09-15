@@ -64,6 +64,23 @@
                         $this->returnText = $GWorkSubItem->getReturnText();
                         return false;
                     }
+                    if( $GWorkSubItem->getDetails("status") == GPEmployeeWorkSubItem::$STATUS_ACTIVE ||
+                        $GWorkSubItem->getDetails("status") == GPEmployeeWorkSubItem::$STATUS_WAITING
+                    ){
+                        if( $input["status"] == GPEmployeeWork::$STATUS_COMPLETED  ){
+                            $GWorkSubItem->editCol(array("status" => GPEmployeeWorkSubItem::$STATUS_COMPLETED ) );
+                        } else if( $input["status"] == GPEmployeeWork::$STATUS_CANCELED ){
+                            $GWorkSubItem->editCol(array("status" => GPEmployeeWorkSubItem::$STATUS_CANCELED ) );
+                        } else if( $input["status"] == GPEmployeeWork::$STATUS_EXPIRED ){
+                            $GWorkSubItem->editCol(array("status" => GPEmployeeWorkSubItem::$STATUS_EXPIRED ) );
+                        }
+                    }
+                    // save newly added subitem's ID's with step order for desktop app
+                    $this->details["added_sub_items_data"][] = array(
+                        "status" => $GWorkSubItem->getDetails("status"),
+                        "step_order" => $GWorkSubItem->getDetails("step_order"),
+                        "id" => $GWorkSubItem->getDetails("id")
+                    );
                 }
             }
             // perform extra status actions
@@ -114,6 +131,21 @@
                             $this->returnText = $GWorkSubItem->getReturnText();
                             return false;
                         }
+                        // GWork has certain states that will inherit to it's !!waiting or active!! subItems ( completed, canceled, expired )
+                        // when those states will occur we change subItems status manually because;
+                        // $clientSubItemData[$existingSubItemID] is an encoded string, so it's hard to change status data.
+                        // therefore after edit action, we manually edit status col of subItem
+                        if( $GWorkSubItem->getDetails("status") == GPEmployeeWorkSubItem::$STATUS_ACTIVE ||
+                            $GWorkSubItem->getDetails("status") == GPEmployeeWorkSubItem::$STATUS_WAITING
+                        ){
+                            if( $input["status"] == GPEmployeeWork::$STATUS_COMPLETED  ){
+                                $GWorkSubItem->editCol(array("status" => GPEmployeeWorkSubItem::$STATUS_COMPLETED ) );
+                            } else if( $input["status"] == GPEmployeeWork::$STATUS_CANCELED ){
+                                $GWorkSubItem->editCol(array("status" => GPEmployeeWorkSubItem::$STATUS_CANCELED ) );
+                            } else if( $input["status"] == GPEmployeeWork::$STATUS_EXPIRED ){
+                                $GWorkSubItem->editCol(array("status" => GPEmployeeWorkSubItem::$STATUS_EXPIRED ) );
+                            }
+                        }
                     } else {
                         // subItem is been deleted
                         if( !$GWorkSubItem->delete() ){
@@ -147,41 +179,32 @@
             }
         }
 
+        /*
+         *  will be called from add and edit methods
+         *  */
         public function changeStatus( $newStatus ){
-            if( $newStatus == self::$STATUS_COMPLETED ){
-                // try to convert it to template if not already exists
-                $convertOutput = GPEmployeeWorkTemplate::convert( $this );
-                if( is_array( $convertOutput ) ){
-                    $Template = new GPEmployeeWorkTemplate();
-                    if( !$Template->add( $convertOutput ) ){
-                        $this->returnText = $Template->getReturnText();
-                        return false;
-                    }
-                    // we already fetchSubitems in Template::convert, so we can use it when
-                    // moving item to archive
-                    $this->details["sub_items"] = $convertOutput["sub_items"];
-                    $subItemsTemp = json_decode( $convertOutput["sub_items"], true );
+            // no further actions required for active work
+            if( $newStatus == self::$STATUS_ACTIVE ) return true;
+            // a lot of stuff happening in add and edit
+            // avoid any confusion, just fetch last updated subItem data
+            $this->fetchSubItems();
+            // try to convert it to template if not already exists
+            $convertOutput = GPEmployeeWorkTemplate::convert( $this );
+            if( is_array( $convertOutput ) ){
+                $Template = new GPEmployeeWorkTemplate();
+                if( !$Template->add( $convertOutput ) ){
+                    $this->returnText = $Template->getReturnText();
+                    return false;
                 }
-                // move work data to archive
-                if( !isset($this->details["sub_items"] ) ){
-                    // if Template::convert is not performed, we fetch sub items and format them as json data
-                    $this->fetchSubItems();
-                    // keep a copy for deleting sub items from their tables
-                    $subItemsTemp = $this->details["sub_items"];
-                    $this->details["sub_items"] = json_encode( $this->details["sub_items"] );
-                }
-                if( !$this->moveToArchiveTable( false ) ) return false;
-                // remove all subitems from table
-                foreach( $subItemsTemp as $subItemData ){
-                    $SubItem = new GPEmployeeWorkSubItem( $subItemData["id"] );
-                    if( $SubItem->getDetails("status") == GPEmployeeWorkSubItem::$STATUS_ACTIVE || $SubItem->getDetails("status") == GPEmployeeWorkSubItem::$STATUS_WAITING ) {
-                        $SubItem->editCol(array("status" => GPEmployeeWorkSubItem::$STATUS_COMPLETED));
-                    }
-                    $SubItem->delete();
-                }
-            } else if( $newStatus == self::$STATUS_EXPIRED ) {
-                // todo
             }
+            // remove all subitems from table
+            foreach( $this->details["sub_items"] as $subItemData ){
+                $SubItem = new GPEmployeeWorkSubItem( $subItemData["id"] );
+                $SubItem->delete();
+            }
+            // move work data to archive with subItems encoded as jsonarray
+            $this->details["sub_items"] = json_encode( $this->details["sub_items"] );
+            if( !$this->moveToArchiveTable( false ) ) return false;
             return true;
         }
 

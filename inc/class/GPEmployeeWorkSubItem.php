@@ -6,8 +6,9 @@ class GPEmployeeWorkSubItem extends GPDataCommon {
         $STATUS_WAITING = 0,
         $STATUS_ACTIVE = 1,
         $STATUS_WAITS_VALIDATION = 2,
-        $STATUS_WAITS_CANCELED = 3,
-        $STATUS_COMPLETED = 4;
+        $STATUS_CANCELED = 3,
+        $STATUS_COMPLETED = 4,
+        $STATUS_EXPIRED = 5;
 
     public function __construct( $val = null ){
         if( is_array($val) ){
