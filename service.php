@@ -231,6 +231,19 @@
 
             break;
 
+
+            case 'edit_work':
+
+                require CLASS_DIR . "GPEmployeeWorkTemplate.php";
+                require CLASS_DIR . "GPEmployeeWorkSubItem.php";
+                require CLASS_DIR . "GPEmployeeWork.php";
+
+                $GPWork = new GPEmployeeWork( $_POST["item_id"]);
+                $OK = (int)$GPWork->edit($_POST);
+                $TEXT = $GPWork->getReturnText();
+
+            break;
+
             case 'complete_work':
 
                 require CLASS_DIR . "GPEmployeeWorkTemplate.php";
@@ -254,14 +267,14 @@
 
             break;
 
-            case 'download_employee_last_works':
+            case 'download_employee_active_works':
 
                 require CLASS_DIR . "GPEmployeeWorkSubItem.php";
                 require CLASS_DIR . "GPEmployeeWork.php";
                 require CLASS_DIR . "GPEmployee.php";
 
                 $Employee = new GPEmployee( $User->getDetails("email") );
-                $DATA = $Employee->getLastWorks();
+                $DATA = $Employee->getActiveWorks();
 
             break;
 

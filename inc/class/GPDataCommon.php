@@ -135,6 +135,7 @@
 				// add vals and keys to collection
 				$updateKeys[] = $key;
 				$updateVals[] = $input[$key];
+				$this->details[$key] = $input[$key];
 			}
 			// update the database
 			$this->pdo->query("UPDATE " . $this->table . " SET " . implode(" = ?, " , $updateKeys ) . " = ? WHERE id = ?",

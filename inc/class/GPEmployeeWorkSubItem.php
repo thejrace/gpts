@@ -34,20 +34,17 @@ class GPEmployeeWorkSubItem extends GPDataCommon {
                 "label" 		=> "Açıklama"
             ),
             "needs_validation" => array(
-                "label" 		=> "Onay Bekliyor",
-                "validation" 	=> array( "posnum" => true )
+                "label" 		=> "Onay Bekliyor"
             ),
             "step_order" => array(
                 "label" 		=> "Sıra",
                 "validation" 	=> array( "req" => true, "posnum" => true )
             ),
             "date_added" => array(
-                "label" 		=> "Eklenme Tarihi",
-                "validation" 	=> array( "req" => true )
+                "label" 		=> "Eklenme Tarihi [ GWorkSubItem ]"
             ),
             "added_employee" => array(
-                "label" 		=> "Ekleyen Personel",
-                "validation" 	=> array( "req" => true )
+                "label" 		=> "Ekleyen Personel"
             )
         );
     }
@@ -64,8 +61,7 @@ class GPEmployeeWorkSubItem extends GPDataCommon {
         $params = explode("#", $input);
         foreach( $params as $param ){
             $data = explode("=", $param );
-            // we dont send status and validation data, instead we use their default val on the database
-            //if( $data[0] == "status" || $data[0] == "needs_validation" ) continue;
+            if( $data[1] == "null" ) $data[1] = "";
             $paramsOrdered[ $data[0] ] = $data[1];
         }
         if( !parent::add( $paramsOrdered ) ) return false;
@@ -80,6 +76,7 @@ class GPEmployeeWorkSubItem extends GPDataCommon {
         // additional param here is parentWorkID
         foreach( $params as $param ){
             $data = explode("=", $param );
+            if( $data[1] == "null" ) $data[1] = "";
             $paramsOrdered[ $data[0] ] = $data[1];
         }
         if( !parent::edit( $paramsOrdered ) ) return false;

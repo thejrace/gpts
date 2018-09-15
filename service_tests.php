@@ -116,6 +116,7 @@
                     "req"               => "add_work",
                     "name" 	            => "Test Work OBarey",
                     "details"           => "test details",
+                    "status"            => "0",
                     "sub_items_encoded" => "id=0#name=Testobo1#details=testers#step_order=1#status=0|id=0#name=Keke 2#details=#step_order=2#status=0|id=0#name=Bbebe 1234#details=#step_order=3#status=0"
                 )
             )
@@ -154,6 +155,20 @@
         ));
     }
 
+    function edit_work(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"                    => "edit_work",
+                    "sub_items_encoded"      => "id=21#name=test 123#details=at#step_order=1#status=0|id=22#name=test 444#details=4131341#step_order=2#status=0",
+                    "item_id"                => "8",
+                    "name"                   => "Yeni i\u015f",
+                    "details"                => "beybe",
+                    "status"                 => "1"
+                )
+            )
+        ));
+    }
     echo '<pre>';
     //loginTest();
     //employees_download();
@@ -166,4 +181,5 @@
     //add_work();
     //work_change_status();
     //search_work_template();
-    download_employee_active_works();
+    //download_employee_active_works();
+    edit_work();
