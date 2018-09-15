@@ -218,6 +218,7 @@
 
             case 'add_work':
 
+                require CLASS_DIR . "GPEmployeeWorkTemplate.php";
                 require CLASS_DIR . "GPEmployeeWorkSubItem.php";
                 require CLASS_DIR . "GPEmployeeWork.php";
 
@@ -268,6 +269,7 @@
             break;
 
             case 'download_employee_active_works':
+
 
                 require CLASS_DIR . "GPEmployeeWorkSubItem.php";
                 require CLASS_DIR . "GPEmployeeWork.php";

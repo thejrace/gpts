@@ -114,9 +114,9 @@
             array_merge(LOGINPARAMS,
                 array(
                     "req"               => "add_work",
-                    "name" 	            => "Test Work OBarey",
+                    "name" 	            => "Overdrive 3",
                     "details"           => "test details",
-                    "status"            => "0",
+                    "status"            => "1",
                     "sub_items_encoded" => "id=0#name=Testobo1#details=testers#step_order=1#status=0|id=0#name=Keke 2#details=#step_order=2#status=0|id=0#name=Bbebe 1234#details=#step_order=3#status=0"
                 )
             )
@@ -160,9 +160,9 @@
             array_merge(LOGINPARAMS,
                 array(
                     "req"                    => "edit_work",
-                    "sub_items_encoded"      => "id=21#name=test 123#details=at#step_order=1#status=0|id=22#name=test 444#details=4131341#step_order=2#status=0",
-                    "item_id"                => "8",
-                    "name"                   => "Yeni i\u015f",
+                    "sub_items_encoded"      => "id=69#name=Adım 1#details=#step_order=1#status=0|id=68#name=Adım 2#details=test 2#step_order=2#status=0",
+                    "item_id"                => "22",
+                    "name"                   => "Yağ Obarey",
                     "details"                => "beybe",
                     "status"                 => "1"
                 )

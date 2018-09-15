@@ -48,16 +48,20 @@
             $this->details["date_added"] = $input["date_added"];
             $this->details["date_last_modified"] = $input["date_last_modified"];
             if( !parent::add( $input ) ) return false;
-            $subItems = explode( "|", $input["sub_items_encoded"] );
-            foreach( $subItems as $itemEncoded ){
-                // add parent work id to encoded string
-                $itemEncoded .= "#parent_work_id=".$this->details["id"];
-                $GWorkSubItem = new GPEmployeeWorkSubItem();
-                if( !$GWorkSubItem->add( $itemEncoded ) ){
-                    $this->returnText = $GWorkSubItem->getReturnText();
-                    return false;
+            if( $input["sub_items_encoded"] != "" ){
+                $subItems = explode( "|", $input["sub_items_encoded"] );
+                foreach( $subItems as $itemEncoded ){
+                    // add parent work id to encoded string
+                    $itemEncoded .= "#parent_work_id=".$this->details["id"];
+                    $GWorkSubItem = new GPEmployeeWorkSubItem();
+                    if( !$GWorkSubItem->add( $itemEncoded ) ){
+                        $this->returnText = $GWorkSubItem->getReturnText();
+                        return false;
+                    }
                 }
             }
+            // perform extra status actions
+            $this->changeStatus($input["status"]);
             return true;
         }
 
@@ -65,49 +69,51 @@
             $input["added_employee"] = Client::getUser()->getDetails("id");
             $input["date_last_modified"] = Common::getCurrentDateTime();
             if( !parent::edit( $input ) ) return false;
-            $subItems = explode( "|", $input["sub_items_encoded"] );
-            // download subItems for comparasion
-            $this->fetchSubItems();
-            // will use these two arrays to determine newly added and deleted subItems
-            $existingSubItemsIDArray = array();
-            $clientSubItemsIDArray = array();
-            $clientSubItemData = array();
-            foreach( $this->details["sub_items"] as $item ) $existingSubItemsIDArray[] = $item["id"];
-            foreach( $subItems as $itemEncoded ){
-                // add parent work id to encoded string
-                $itemEncoded .= "#parent_work_id=".$this->details["id"];
-                $params = explode("#", $itemEncoded);
-                $idExploded = explode( "=", $params[0] );
-                // if id is submitted as 0, we add the subItem
-                if( $idExploded[1] == 0 ){
-                    $GWorkSubItem = new GPEmployeeWorkSubItem();
-                    if( !$GWorkSubItem->add( $itemEncoded ) ){
-                        $this->returnText = $GWorkSubItem->getReturnText();
-                        return false;
+            if( $input["sub_items_encoded"] != "" ){
+                $subItems = explode( "|", $input["sub_items_encoded"] );
+                // download subItems for comparasion
+                $this->fetchSubItems();
+                // will use these two arrays to determine newly added and deleted subItems
+                $existingSubItemsIDArray = array();
+                $clientSubItemsIDArray = array();
+                $clientSubItemData = array();
+                foreach( $this->details["sub_items"] as $item ) $existingSubItemsIDArray[] = $item["id"];
+                foreach( $subItems as $itemEncoded ){
+                    // add parent work id to encoded string
+                    $itemEncoded .= "#parent_work_id=".$this->details["id"];
+                    $params = explode("#", $itemEncoded);
+                    $idExploded = explode( "=", $params[0] );
+                    // if id is submitted as 0, we add the subItem
+                    if( $idExploded[1] == 0 ){
+                        $GWorkSubItem = new GPEmployeeWorkSubItem();
+                        if( !$GWorkSubItem->add( $itemEncoded ) ){
+                            $this->returnText = $GWorkSubItem->getReturnText();
+                            return false;
+                        }
+                    } else {
+                        // newly added subItems wont be included in comparasion
+                        $clientSubItemsIDArray[] = $idExploded[1];
+                        $clientSubItemData[$idExploded[1]] = $itemEncoded;
                     }
-                } else {
-                    // newly added subItems wont be included in comparasion
-                    $clientSubItemsIDArray[] = $idExploded[1];
-                    $clientSubItemData[$idExploded[1]] = $itemEncoded;
                 }
-            }
-            // comparasion
-            // since we ruled out newly added subItems, $clientSubItemsIDArray will only hold previously
-            // existed subItems. So when we loop through already existing subItems, we can easily determine
-            // which ones are deleted by checking if $clientSubItemsIDArray contains that subItem.
-            foreach( $existingSubItemsIDArray as $existingSubItemID ){
-                $GWorkSubItem = new GPEmployeeWorkSubItem( $existingSubItemID );
-                if( in_array( $existingSubItemID, $clientSubItemsIDArray ) ){
-                    // subItem is not been deleted
-                    if( !$GWorkSubItem->edit( $clientSubItemData[$existingSubItemID] ) ){
-                        $this->returnText = $GWorkSubItem->getReturnText();
-                        return false;
-                    }
-                } else {
-                    // subItem is been deleted
-                    if( !$GWorkSubItem->delete() ){
-                        $this->returnText = $GWorkSubItem->getReturnText();
-                        return false;
+                // comparasion
+                // since we ruled out newly added subItems, $clientSubItemsIDArray will only hold previously
+                // existed subItems. So when we loop through already existing subItems, we can easily determine
+                // which ones are deleted by checking if $clientSubItemsIDArray contains that subItem.
+                foreach( $existingSubItemsIDArray as $existingSubItemID ){
+                    $GWorkSubItem = new GPEmployeeWorkSubItem( $existingSubItemID );
+                    if( in_array( $existingSubItemID, $clientSubItemsIDArray ) ){
+                        // subItem is not been deleted
+                        if( !$GWorkSubItem->edit( $clientSubItemData[$existingSubItemID] ) ){
+                            $this->returnText = $GWorkSubItem->getReturnText();
+                            return false;
+                        }
+                    } else {
+                        // subItem is been deleted
+                        if( !$GWorkSubItem->delete() ){
+                            $this->returnText = $GWorkSubItem->getReturnText();
+                            return false;
+                        }
                     }
                 }
             }
@@ -158,7 +164,7 @@
                     $subItemsTemp = $this->details["sub_items"];
                     $this->details["sub_items"] = json_encode( $this->details["sub_items"] );
                 }
-                if( !$this->moveToArchiveTable() ) return false;
+                if( !$this->moveToArchiveTable( false ) ) return false;
                 // remove all subitems from table
                 foreach( $subItemsTemp as $subItemData ){
                     $SubItem = new GPEmployeeWorkSubItem( $subItemData["id"] );

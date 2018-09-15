@@ -65,7 +65,7 @@
 		*	( can be overriden by the child class )
 		*		@input : request parameters
 		*/
-		public function delete(){
+		public function delete( $clearDetailsProp = true ){
 		    // reset action flag
 			$this->pdo->query("DELETE FROM " . $this->table . " WHERE id = ?", array($this->details["id"]));
 			if( $this->pdo->error() ){
@@ -74,7 +74,7 @@
 			}
             if( !$this->addApiTrigger( GPApiTrigger::$ACTION_DELETE ) ) return false;
 			// clear data from object
-			$this->details = array();
+            if( $clearDetailsProp ) $this->details = array();
 			$this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
 			return true;
 		}
@@ -184,6 +184,7 @@
 				}
 				// input is ok, save it
 				$insertArray[$key] = $input[$key];
+                $this->details[$key] = $input[$key];
 			}
 			$this->pdo->insert( $this->table, $insertArray );
 			if( $this->pdo->error() ){
@@ -218,7 +219,7 @@
          *  - moves the record to archive table
          *
          * */
-        public function moveToArchiveTable(){
+        public function moveToArchiveTable( $clearDetailsProp = true ){
             $insertArray = array(
                 "prev_id" => $this->details["id"]
             );
@@ -234,7 +235,7 @@
                 return false;
             }
             // remove record from actual table
-            if( !$this->delete() ) return false;
+            if( !$this->delete( $clearDetailsProp ) ) return false;
             // save id for if additional actions will be done by child class
             $this->details["id"] = $insertArray["prev_id"];
             return true;

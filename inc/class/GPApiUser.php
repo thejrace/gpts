@@ -166,11 +166,4 @@
             return true;
         }
 
-        /*
-         *  delete user, this method is triggered from Employee->delete() method.
-         *  additional actions to the super->delete() will be performed here, ( deleting devices etc. )
-         * */
-        public function delete(){
-
-        }
     }
