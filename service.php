@@ -180,6 +180,7 @@
 
             break;
 
+            // deprecated ( 15.09.2018 )
             case 'tasks_download':
 
                 // todo permission check
@@ -196,6 +197,7 @@
                 $DATA = $q;
             break;
 
+            // deprecated ( 15.09.2018 )
             case 'tasks_search':
 
                 // todo permission check
@@ -215,6 +217,8 @@
                 }
                 $DATA = $q;
             break;
+
+
 
             case 'add_work':
 
@@ -264,10 +268,49 @@
 
             break;
 
+            case 'works_download':
+
+                // todo permission check
+
+                $q = GPDBFetch::action(DBT_GPEMPLOYEEWORKTEMPLATES, array("id", "name", "details", "sub_items"),
+                    array(
+                        "limit" => $_POST["rrp"],
+                        "start_index" => $_POST["start_index"],
+                        "order_by" => array("name ASC")
+                    ));
+                foreach ($q as $key => $val) {
+                    $q[$key]["sub_items"] = json_decode($q[$key]["sub_items"], true);
+                }
+                $DATA = $q;
+
+                break;
+
             case 'search_work_template':
 
                 require CLASS_DIR . "GPEmployeeWorkTemplate.php";
-                $DATA = GPEmployeeWorkTemplate::search( $_POST["search_keyword"] );
+                if( isset($_POST["rrp"]) && isset($_POST["start_index"] ) ){
+                    $DATA = GPEmployeeWorkTemplate::searchForDesktopApp(
+                        $_POST["keyword"],
+                        array( "id", "name", "details", "sub_items"),
+                        $_POST["rrp"],
+                        $_POST["start_index"],
+                        array("name ASC")
+                    );
+                } else {
+                    $DATA = GPEmployeeWorkTemplate::search( $_POST["search_keyword"] );
+                }
+
+            break;
+
+            case 'download_work_templates':
+
+                require CLASS_DIR . "GPEmployeeWorkTemplate.php";
+                $DATA = GPEmployeeWorkTemplate::getForDesktopApp(
+                    array( "id", "name", "details", "sub_items"),
+                    $_POST["rrp"],
+                    $_POST["start_index"],
+                    array("name ASC")
+                );
 
             break;
 

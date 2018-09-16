@@ -77,9 +77,9 @@
                     }
                     // save newly added subitem's ID's with step order for desktop app
                     $this->details["added_sub_items_data"][] = array(
-                        "status" => $GWorkSubItem->getDetails("status"),
-                        "step_order" => $GWorkSubItem->getDetails("step_order"),
-                        "id" => $GWorkSubItem->getDetails("id")
+                        "status"        => $GWorkSubItem->getDetails("status"),
+                        "step_order"    => $GWorkSubItem->getDetails("step_order"),
+                        "id"            => $GWorkSubItem->getDetails("id")
                     );
                 }
             }

@@ -40,6 +40,33 @@ class GPEmployeeWorkTemplate extends GPDataCommon {
         );
     }
 
+    public static function searchForDesktopApp( $keyword, $colsToFetch, $rrp, $startIndex, $orderBy ){
+        $q = GPDBFetch::search(DBT_GPEMPLOYEEWORKTEMPLATES, $colsToFetch,
+            array(
+                "limit"         => $rrp,
+                "start_index"   => $startIndex,
+                "order_by"      => $orderBy
+            ),
+            array("key" => "name", "keyword" => $keyword )
+        );
+        foreach ($q as $key => $val) $q[$key]["sub_items"] = json_decode($q[$key]["sub_items"], true);
+        return $q;
+    }
+
+    public static function getForDesktopApp( $colsToFetch, $rrp, $startIndex, $orderBy ){
+        $q = GPDBFetch::action(DBT_GPEMPLOYEEWORKTEMPLATES, $colsToFetch,
+            array(
+                "limit"         => $rrp,
+                "start_index"   => $startIndex,
+                "order_by"      => $orderBy
+            ));
+        foreach ($q as $key => $val) $q[$key]["sub_items"] = json_decode($q[$key]["sub_items"], true);
+        return $q;
+    }
+
+    /*
+     *  used to download template from GWorkForm add
+     * */
     public static function search( $keyword, $colsToFetch = array( "name", "details", "sub_items") ){
         return GPDBFetch::search(DBT_GPEMPLOYEEWORKTEMPLATES, $colsToFetch,
             array(
