@@ -314,6 +314,25 @@
 
             break;
 
+            case 'add_work_template':
+
+                require CLASS_DIR . "GPEmployeeWorkSubItem.php";
+                require CLASS_DIR . "GPEmployeeWorkTemplate.php";
+
+                $Template = new GPEmployeeWorkTemplate();
+                // explode sub items and decode actions
+                $subItems = array();
+                foreach( explode("|", $_POST["sub_items_encoded"] ) as $param ) $subItems[] = GPEmployeeWorkSubItem::decodeParams( $param );
+                $params = array(
+                    "name"      => $_POST["name"],
+                    "details"   => $_POST["details"],
+                    "sub_items" => json_encode( $subItems )
+                );
+                $OK = (int) $Template->add($params);
+                $TEXT = $Template->getReturnText();
+
+            break;
+
             // deprecated ( 15.09.2018 )
             case 'download_employee_active_works':
                 require CLASS_DIR . "GPEmployeeWorkSubItem.php";

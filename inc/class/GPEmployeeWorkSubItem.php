@@ -50,39 +50,34 @@ class GPEmployeeWorkSubItem extends GPDataCommon {
         );
     }
 
-    /*
-     *  @input -> params are seperated with # ( name=x#details=y#... )
-     * */
     public function add( $input ){
-        $paramsOrdered = array(
-            "date_added"          => Common::getCurrentDateTime(),
-            "added_employee"      => Client::getUser()->getDetails("id"),
-            "date_last_modified"  => Common::getCurrentDateTime()
-        );
-        $params = explode("#", $input);
-        foreach( $params as $param ){
-            $data = explode("=", $param );
-            if( $data[1] == "null" ) $data[1] = "";
-            $paramsOrdered[ $data[0] ] = $data[1];
-        }
+        $paramsOrdered = self::decodeParams( $input );
+        $paramsOrdered["date_added"] = Common::getCurrentDateTime();
+        $paramsOrdered["added_employee"] = Client::getUser()->getDetails("id");
+        $paramsOrdered["date_last_modified"] = Common::getCurrentDateTime();
         if( !parent::add( $paramsOrdered ) ) return false;
         return true;
     }
 
     public function edit( $input ){
-        $paramsOrdered = array(
-            "date_last_modified"  => Common::getCurrentDateTime()
-        );
-        $params = explode("#", $input);
-        // additional param here is parentWorkID
+        $paramsOrdered = self::decodeParams( $input );
+        $paramsOrdered["date_last_modified"] = Common::getCurrentDateTime();
+        if( !parent::edit( $paramsOrdered ) ) return false;
+        return true;
+    }
+
+    /*
+     *   @input -> params are seperated with # ( name=x#details=y#... )
+     * */
+    public static function decodeParams( $encodedParams ){
+        $paramsOrdered = array();
+        $params = explode("#", $encodedParams);
         foreach( $params as $param ){
             $data = explode("=", $param );
             if( $data[1] == "null" ) $data[1] = "";
             $paramsOrdered[ $data[0] ] = $data[1];
         }
-        if( !parent::edit( $paramsOrdered ) ) return false;
-        return true;
+        return $paramsOrdered;
     }
-
 
 }

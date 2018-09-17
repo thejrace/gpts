@@ -164,6 +164,18 @@
             )
         ));
     }
+    function add_work_template(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"                     => "add_work_template",
+                    "name"                    => "Test work template",
+                    "details"                 => "test work template details beybe",
+                    "sub_items_encoded"       => "id=0#name=Obarey adım 1#details=null#step_order=1#status=0|id=0#name=Obarey adım 2#details=null#step_order=2#status=0"
+                )
+            )
+        ));
+    }
 
     function download_employee_active_works(){ // deprecated ( 15.09.2018 )
         print_r( post(URL,
@@ -210,11 +222,12 @@
     //add_employee_group_test();
     //add_relation_test();
     //get_relations_test();
-    add_work();
+    //add_work();
     //work_change_status();
     //search_work_template();
     //search_work_template_with_settings();
     //download_work_templates();
+    add_work_template();
     //download_employee_active_works();
     //employee_works_download();
     //employee_works_search();

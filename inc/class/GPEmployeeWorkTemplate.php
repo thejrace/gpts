@@ -30,8 +30,14 @@ class GPEmployeeWorkTemplate extends GPDataCommon {
         if( $Template->getStatusFlag() ) return false;
         $subItems = $workObject->getDetails("sub_items");
         foreach( $subItems as $key => $val ){
-            $subItems[$key]["id"] = 0;
-            $subItems[$key]["status"] = GPEmployeeWorkSubItem::$STATUS_ACTIVE;
+            // these are not needed for template
+            unset( $subItems[$key]["parent_work_id"] );
+            unset( $subItems[$key]["id"] );
+            unset( $subItems[$key]["needs_validation"] );
+            unset( $subItems[$key]["date_added"] );
+            unset( $subItems[$key]["added_employee"] );
+            unset( $subItems[$key]["date_last_modified"] );
+            unset( $subItems[$key]["status"] );
         }
         return array(
             "name" => $workObject->getDetails("name"),
