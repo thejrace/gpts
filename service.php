@@ -320,13 +320,19 @@
                 require CLASS_DIR . "GPEmployeeWorkTemplate.php";
 
                 $Template = new GPEmployeeWorkTemplate();
-                // explode sub items and decode actions
-                $subItems = array();
-                foreach( explode("|", $_POST["sub_items_encoded"] ) as $param ) $subItems[] = GPEmployeeWorkSubItem::decodeParams( $param );
+                // explode sub items and decode action
+                if( $_POST["sub_items_encoded"] != "" ){
+                    $subItems = array();
+                    foreach( explode("|", $_POST["sub_items_encoded"] ) as $param ) $subItems[] = GPEmployeeWorkSubItem::decodeParams( $param );
+                    $subItemsEncoded = json_encode( $subItems );
+                } else {
+                    // if no subItem is submitted, use empty jsonarray
+                    $subItemsEncoded = "[]";
+                }
                 $params = array(
                     "name"      => $_POST["name"],
                     "details"   => $_POST["details"],
-                    "sub_items" => json_encode( $subItems )
+                    "sub_items" => $subItemsEncoded
                 );
                 $OK = (int) $Template->add($params);
                 $TEXT = $Template->getReturnText();
@@ -342,12 +348,18 @@
                 $Template = new GPEmployeeWorkTemplate( $_POST["item_id"]);
                 if( $Template->getStatusFlag() ){
                     // explode sub items and decode actions
-                    $subItems = array();
-                    foreach( explode("|", $_POST["sub_items_encoded"] ) as $param ) $subItems[] = GPEmployeeWorkSubItem::decodeParams( $param );
+                    if( $_POST["sub_items_encoded"] != "" ){
+                        $subItems = array();
+                        foreach( explode("|", $_POST["sub_items_encoded"] ) as $param ) $subItems[] = GPEmployeeWorkSubItem::decodeParams( $param );
+                        $subItemsEncoded = json_encode( $subItems );
+                    } else {
+                        // if no subItem is submitted, use empty jsonarray
+                        $subItemsEncoded = "[]";
+                    }
                     $params = array(
                         "name"      => $_POST["name"],
                         "details"   => $_POST["details"],
-                        "sub_items" => json_encode( $subItems )
+                        "sub_items" => $subItemsEncoded
                     );
                     $OK = (int) $Template->edit($params);
                 } else {
