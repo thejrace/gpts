@@ -330,6 +330,31 @@
                 );
                 $OK = (int) $Template->add($params);
                 $TEXT = $Template->getReturnText();
+                $DATA = $Template->getDetails("id");
+
+            break;
+
+            case 'edit_work_template':
+
+                require CLASS_DIR . "GPEmployeeWorkSubItem.php";
+                require CLASS_DIR . "GPEmployeeWorkTemplate.php";
+
+                $Template = new GPEmployeeWorkTemplate( $_POST["item_id"]);
+                if( $Template->getStatusFlag() ){
+                    // explode sub items and decode actions
+                    $subItems = array();
+                    foreach( explode("|", $_POST["sub_items_encoded"] ) as $param ) $subItems[] = GPEmployeeWorkSubItem::decodeParams( $param );
+                    $params = array(
+                        "name"      => $_POST["name"],
+                        "details"   => $_POST["details"],
+                        "sub_items" => json_encode( $subItems )
+                    );
+                    $OK = (int) $Template->edit($params);
+                } else {
+                    $OK = 0;
+                }
+                $TEXT = $Template->getReturnText();
+
 
             break;
 
