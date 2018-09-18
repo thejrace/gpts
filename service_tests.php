@@ -225,8 +225,29 @@
         ));
     }
 
+    function define_work_to_employee(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"                        => "define_work_to",
+                    "employee_id"                => "2",
+                    "periodic_flag"              => "0",
+                    "start_date"                 => "2018-09-28 14:45:00",
+                    "due_date"                   => "2018-09-31 14:45:00",
+                    "due_date_periodic"          => "null",
+                    "define_interval"            => "null",
+                    "name"                       => "Vampiria define 25",
+                    "details"                    => "Vampiria define details",
+                    "sub_items_encoded"          => "id=0#name=Obarey adım 13#details=null#step_order=1#status=0|id=0#name=Obarey adım 333332#details=null#step_order=2#status=0"
+                )
+            )
+        ));
+    }
+
+
 
     echo '<pre>';
+
     //loginTest();
     //employees_download();
     //add_daily_plan_schema_test();
@@ -246,3 +267,4 @@
     //employee_works_download();
     //employee_works_search();
     //edit_work();
+    define_work_to_employee();

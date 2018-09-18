@@ -2,7 +2,6 @@
 
 class GPEmployeeWorkDefinition extends GPDataCommon {
 
-
     public function __construct( $val = null, $archive = false ){
         if( isset($val) && isset($archive) && $archive ) $this->archiveFlag = true;
         $this->archiveTable = DBT_GPEMPLOYEEWORKDEFINITIONSARCHIVE;
@@ -13,28 +12,23 @@ class GPEmployeeWorkDefinition extends GPDataCommon {
                 "validation" 	=> array( "req" => true )
             ),
             "work_template_id" => array(
-                "label" 		=> "İş Şablon ID",
-                "validation" 	=> array( "req" => true )
+                "label" 		=> "İş Şablon ID"
             ),
             "start" => array(
-                "label" 		=> "Başlangıç",
-                "validation" 	=> array( "req" => true  )
+                "label" 		=> "Başlangıç"
             ),
             "time_length" => array(
                 "label" 		=> "Süre",
-                "validation" 	=> array( "req" => true, "posnum" => true  )
+                "validation" 	=> array( "posnum" => true  )
             ),
-            "end" => array(
-                "label" 		=> "Bitiş",
-                "validation" 	=> array( "req" => true )
+            "due_date" => array(
+                "label" 		=> "Bitiş"
             ),
             "date_added" => array(
-                "label" 		=> "Eklenme Tarihi",
-                "validation" 	=> array( "req" => true  )
+                "label" 		=> "Eklenme Tarihi"
             ),
             "date_last_update" => array(
-                "label" 		=> "Son Güncellenme Tarihi",
-                "validation" 	=> array( "req" => true )
+                "label" 		=> "Son Güncellenme Tarihi"
             ),
             "added_employee" => array(
                 "label" 		=> "Ekleyen",

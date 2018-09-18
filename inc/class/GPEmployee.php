@@ -158,6 +158,47 @@
         }
 
         /*
+         *  define given work_template to employee
+         *    @name
+         *    @details
+         *    @sub_items_encoded
+         *    @periodic_flag
+         *    @start_date ( optional value = null )
+         *    @due_date ( optional value = null )
+         *    @time_length  ( optional value = null )
+         *    @define_interval ( not optional when periodic flag is set )
+         * */
+        public function defineWork( $input ){
+
+            /*$Template = new GPEmployeeWorkTemplate( $input["work_template_id"] );
+            if( !$Template->getStatusFlag() ){
+                $this->returnText = $Template->getReturnText();
+                return false;
+            }*/
+
+            if( (bool)$input["periodic_flag"] ){
+
+            } else {
+                $insertArray = array(
+                    "name"                  => $input["name"],
+                    "details"               => $input["details"],
+                    "sub_items_encoded"     => $input["sub_items_encoded"],
+                    "status"                => GPEmployeeWork::$STATUS_ACTIVE
+                );
+                if( $input["start_date"] != "null" ){
+                    $insertArray["date_added"] = $input["start_date"];
+                    $insertArray["status"] = GPEmployeeWork::$STATUS_PENDING;
+                }
+                $Work = new GPEmployeeWork();
+                if( !$Work->add( $insertArray ) ){
+                    $this->returnText = $Work->getReturnText();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /*
          *  returns employee's sub employees for desktop application
          *  it's a fetch - search action
          * */
@@ -188,20 +229,29 @@
         /*
          *  returns employee's sub employees for desktop application's search action
          * */
-        public function searchRelatedEmployeesForDesktopApp( $keyword, $colsToFetch, $rrp, $startIndex ){
+        public function searchRelatedEmployeesForDesktopApp( $keyword, $colsToFetch, $rrp = null, $startIndex = null ){
             $fetchParams = $this->prepareRelatedEmployeesSQL();
-            $q = GPDBFetch::search(DBT_GPEMPLOYEES, $colsToFetch,
-                array(
-                    "limit" => $rrp,
-                    "start_index" => $startIndex,
-                    "order_by" => array("name ASC")
-                ),
-                array("key" => "name", "keyword" => $keyword),
-                array( "keys" => implode(" || ", $fetchParams[0]), "vals" => $fetchParams[1] ));
-            foreach ($q as $key => $val) {
-                $q[$key]["task_status"] = 2;
-                $q[$key]["task_count"] = 3;
-                $q[$key]["group"] = "Filo Yönetim";
+            if( isset($rrp) && isset($startIndex) ){
+                $q = GPDBFetch::search(DBT_GPEMPLOYEES, $colsToFetch,
+                    array(
+                        "limit" => $rrp,
+                        "start_index" => $startIndex,
+                        "order_by" => array("name ASC")
+                    ),
+                    array("key" => "name", "keyword" => $keyword),
+                    array( "keys" => implode(" || ", $fetchParams[0]), "vals" => $fetchParams[1] ));
+                foreach ($q as $key => $val) {
+                    $q[$key]["task_status"] = 2;
+                    $q[$key]["task_count"] = 3;
+                    $q[$key]["group"] = "Filo Yönetim";
+                }
+            } else {
+                $q = GPDBFetch::search(DBT_GPEMPLOYEES, $colsToFetch,
+                    array(
+                        "order_by" => array("name ASC")
+                    ),
+                    array( "key" => "name", "keyword" => $keyword ),
+                    array( "keys" => implode(" || ", $fetchParams[0]), "vals" => $fetchParams[1] ));
             }
             return $q;
         }

@@ -4,7 +4,8 @@
         public static $STATUS_ACTIVE = 0,
                       $STATUS_COMPLETED = 1,
                       $STATUS_EXPIRED = 2,
-                      $STATUS_CANCELED = 3;
+                      $STATUS_CANCELED = 3,
+                      $STATUS_PENDING  = 4; // this status only for server-side
         public function __construct( $val = null, $archive = false ){
             if( isset($val) && isset($archive) && $archive ) $this->archiveFlag = true;
             $this->archiveTable = DBT_GPEMPLOYEEWORKSARCHIVE;
@@ -44,7 +45,7 @@
 
         public function add( $input ){
             // first add the task to the database
-            $input["date_added"] = Common::getCurrentDateTime();
+            if( !isset($input["date_added"] ) ) $input["date_added"] = Common::getCurrentDateTime();
             $input["added_employee"] = Client::getUser()->getDetails("id");
             // if employee defined his/her job employee_id is not submitted
             // if it's defined to the employee, it will be included in the form

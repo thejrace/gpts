@@ -151,7 +151,12 @@
 
                 require CLASS_DIR . "GPEmployee.php";
                 $Employee = new GPEmployee($User->getDetails("email"));
-                $DATA = $Employee->searchRelatedEmployeesForDesktopApp($_POST["keyword"], array("id", "name", "email", "employee_group", "nick"), $_POST["rrp"], $_POST["start_index"]);
+                if( isset($_POST["rrp"]) && isset($_POST["start_index"] ) ){
+                    $DATA = $Employee->searchRelatedEmployeesForDesktopApp($_POST["keyword"], array("id", "name", "email", "employee_group", "nick"), $_POST["rrp"], $_POST["start_index"]);
+                } else {
+                    $DATA = $Employee->searchRelatedEmployeesForDesktopApp($_POST["keyword"], array("id", "name") );
+                }
+
 
                 break;
 
@@ -406,6 +411,38 @@
                     array("id", "name", "details", "date_added", "status", "due_date", "date_last_modified"),
                     $_POST["rrp"], $_POST["start_index"], array("id DESC"), $_POST["status_filter"]
                 );
+
+            break;
+
+            case 'define_work_to':
+
+                require CLASS_DIR . "GPEmployeeWorkTemplate.php";
+                require CLASS_DIR . "GPEmployeeWorkSubItem.php";
+                require CLASS_DIR . "GPEmployeeWork.php";
+                require CLASS_DIR . "GPEmployee.php";
+
+                if( isset($_POST["emp_group_id"] ) ){
+                    // define to employee group related to employee who defined the task
+
+                } else {
+                    // define to employee
+                    $Employee = new GPEmployee( $_POST["employee_id"] );
+                    if( $Employee->getStatusFlag() ){
+                        $OK = (int)$Employee->defineWork( array(
+                                        "name"              => $_POST["name"],
+                                        "details"           => $_POST["details"],
+                                        "sub_items_encoded" => $_POST["sub_items_encoded"],
+                                        "periodic_flag"     => $_POST["periodic_flag"],
+                                        "start_date"        => $_POST["start_date"],
+                                        "due_date"          => $_POST["due_date"],
+                                        "time_length"       => $_POST["due_date_periodic"],
+                                        "define_interval"   => $_POST["define_interval"] ));
+                    } else {
+                        $OK = 0;
+                    }
+                    $TEXT = $Employee->getReturnText();
+
+                }
 
             break;
 
