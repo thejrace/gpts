@@ -183,7 +183,8 @@
                     "name"                  => $input["name"],
                     "details"               => $input["details"],
                     "sub_items_encoded"     => $input["sub_items_encoded"],
-                    "status"                => GPEmployeeWork::$STATUS_ACTIVE
+                    "status"                => GPEmployeeWork::$STATUS_ACTIVE,
+                    "employee_id"           => $this->details["id"]
                 );
                 if( $input["start_date"] != "null" ){
                     $insertArray["date_added"] = $input["start_date"];
@@ -194,7 +195,9 @@
                     $this->returnText = $Work->getReturnText();
                     return false;
                 }
+                $this->returnText = $Work->getReturnText();
             }
+
             return true;
         }
 

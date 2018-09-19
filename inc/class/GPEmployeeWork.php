@@ -185,7 +185,7 @@
          *  */
         public function changeStatus( $newStatus ){
             // no further actions required for active work
-            if( $newStatus == self::$STATUS_ACTIVE ) return true;
+            if( $newStatus == self::$STATUS_ACTIVE || $newStatus == self::$STATUS_PENDING ) return true;
             // a lot of stuff happening in add and edit
             // avoid any confusion, just fetch last updated subItem data
             $this->fetchSubItems();
