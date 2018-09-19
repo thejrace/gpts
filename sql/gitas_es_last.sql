@@ -1,8 +1,8 @@
--- MySQL dump 10.16  Distrib 10.1.25-MariaDB, for Win32 (AMD64)
+-- MySQL dump 10.16  Distrib 10.1.31-MariaDB, for Win32 (AMD64)
 --
 -- Host: localhost    Database: gitas_es
 -- ------------------------------------------------------
--- Server version	10.1.25-MariaDB
+-- Server version	10.1.31-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -123,7 +123,7 @@ CREATE TABLE `gp_api_user_devices` (
 
 LOCK TABLES `gp_api_user_devices` WRITE;
 /*!40000 ALTER TABLE `gp_api_user_devices` DISABLE KEYS */;
-INSERT INTO `gp_api_user_devices` VALUES (1,1,1,'test device name','test hash','::1','Windows','2018-06-17 19:51:05','2018-06-27 00:05:20',1,0),(2,1,1,'test device name 2','test hash 2','::1','Windows','2018-06-27 00:07:00','2018-06-27 00:07:00',0,0),(3,1,1,'test device name 2','test hash 3','::1','Windows','2018-06-27 00:08:30','2018-09-19 19:34:32',1,0);
+INSERT INTO `gp_api_user_devices` VALUES (1,1,1,'test device name','test hash','::1','Windows','2018-06-17 19:51:05','2018-06-27 00:05:20',1,0),(2,1,1,'test device name 2','test hash 2','::1','Windows','2018-06-27 00:07:00','2018-06-27 00:07:00',0,0),(3,1,1,'test device name 2','test hash 3','::1','Windows','2018-06-27 00:08:30','2018-09-19 19:40:11',1,0);
 /*!40000 ALTER TABLE `gp_api_user_devices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -862,4 +862,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-19 20:35:09
+-- Dump completed on 2018-09-19 22:55:16
