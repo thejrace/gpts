@@ -123,7 +123,7 @@ CREATE TABLE `gp_api_user_devices` (
 
 LOCK TABLES `gp_api_user_devices` WRITE;
 /*!40000 ALTER TABLE `gp_api_user_devices` DISABLE KEYS */;
-INSERT INTO `gp_api_user_devices` VALUES (1,1,1,'test device name','test hash','::1','Windows','2018-06-17 19:51:05','2018-06-27 00:05:20',1,0),(2,1,1,'test device name 2','test hash 2','::1','Windows','2018-06-27 00:07:00','2018-06-27 00:07:00',0,0),(3,1,1,'test device name 2','test hash 3','::1','Windows','2018-06-27 00:08:30','2018-09-19 19:40:11',1,0);
+INSERT INTO `gp_api_user_devices` VALUES (1,1,1,'test device name','test hash','::1','Windows','2018-06-17 19:51:05','2018-06-27 00:05:20',1,0),(2,1,1,'test device name 2','test hash 2','::1','Windows','2018-06-27 00:07:00','2018-06-27 00:07:00',0,0),(3,1,1,'test device name 2','test hash 3','::1','Windows','2018-06-27 00:08:30','2018-09-20 23:08:38',1,0);
 /*!40000 ALTER TABLE `gp_api_user_devices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -367,7 +367,7 @@ CREATE TABLE `gp_employee_periodic_work_definitions` (
   `define_interval` double NOT NULL,
   `date_last_defined` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -376,6 +376,7 @@ CREATE TABLE `gp_employee_periodic_work_definitions` (
 
 LOCK TABLES `gp_employee_periodic_work_definitions` WRITE;
 /*!40000 ALTER TABLE `gp_employee_periodic_work_definitions` DISABLE KEYS */;
+INSERT INTO `gp_employee_periodic_work_definitions` VALUES (7,1,2,NULL,NULL,50,350,NULL);
 /*!40000 ALTER TABLE `gp_employee_periodic_work_definitions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -614,7 +615,7 @@ CREATE TABLE `gp_employee_works` (
   `added_employee` int(11) NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -623,7 +624,7 @@ CREATE TABLE `gp_employee_works` (
 
 LOCK TABLES `gp_employee_works` WRITE;
 /*!40000 ALTER TABLE `gp_employee_works` DISABLE KEYS */;
-INSERT INTO `gp_employee_works` VALUES (7,1,'Şablolo edit','',0,'2018-09-17 21:38:51',NULL,1,'2018-09-19 19:34:31'),(8,1,'Tuvalet kağıdı','obarey beybe',0,'2018-09-17 22:06:58',NULL,1,'2018-09-19 19:33:57');
+INSERT INTO `gp_employee_works` VALUES (7,1,'Yağ değişim test','',0,'2018-09-17 21:38:51',NULL,1,'2018-09-20 20:11:16'),(8,1,'Test İş ','obarey beybe',0,'2018-09-17 22:06:58',NULL,1,'2018-09-20 20:11:10'),(9,2,'Vampiria define 25','Vampiria define details',4,'2018-09-28 14:45:00',NULL,1,'2018-09-20 21:10:35'),(10,2,'Vampiria define 25','Vampiria define details',4,'2018-09-30 14:45:00',NULL,1,'2018-09-20 21:11:15'),(11,2,'Cenkordem','Vampiria define details',4,'2018-09-30 14:45:00',NULL,1,'2018-09-20 23:07:26'),(12,2,'Cenkordem','Vampiria define details',0,'2018-09-20 23:07:46',NULL,1,'2018-09-20 23:07:46');
 /*!40000 ALTER TABLE `gp_employee_works` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -647,7 +648,7 @@ CREATE TABLE `gp_employee_works_archive` (
   `added_employee` int(11) NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -679,7 +680,7 @@ CREATE TABLE `gp_employee_works_sub_items` (
   `added_employee` int(11) NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -688,7 +689,7 @@ CREATE TABLE `gp_employee_works_sub_items` (
 
 LOCK TABLES `gp_employee_works_sub_items` WRITE;
 /*!40000 ALTER TABLE `gp_employee_works_sub_items` DISABLE KEYS */;
-INSERT INTO `gp_employee_works_sub_items` VALUES (15,7,'kevro 1','',1,0,0,'2018-09-17 21:38:51',1,NULL),(16,7,'kevro 2','',2,4,0,'2018-09-17 21:38:51',1,NULL),(17,8,'Adım 1','',1,0,0,'2018-09-17 22:06:58',1,NULL),(18,8,'Adım 2','',2,3,0,'2018-09-17 22:06:58',1,NULL);
+INSERT INTO `gp_employee_works_sub_items` VALUES (15,7,'kevro 1','',1,0,0,'2018-09-17 21:38:51',1,NULL),(16,7,'kevro 2','',2,4,0,'2018-09-17 21:38:51',1,NULL),(17,8,'Adım 1','',1,0,0,'2018-09-17 22:06:58',1,NULL),(18,8,'Adım 2','',2,3,0,'2018-09-17 22:06:58',1,NULL),(19,9,'Obarey adım 13','',1,0,0,'2018-09-20 21:10:35',1,NULL),(20,9,'Obarey adım 333332','',2,0,0,'2018-09-20 21:10:35',1,NULL),(21,10,'Obarey adım 13','',1,0,0,'2018-09-20 21:11:15',1,NULL),(22,10,'Obarey adım 333332','',2,0,0,'2018-09-20 21:11:15',1,NULL),(23,11,'Obarey adım 13','',1,0,0,'2018-09-20 23:07:26',1,NULL),(24,11,'Obarey adım 333332','',2,0,0,'2018-09-20 23:07:26',1,NULL),(25,12,'Obarey adım 13','',1,0,0,'2018-09-20 23:07:46',1,NULL),(26,12,'Obarey adım 333332','',2,0,0,'2018-09-20 23:07:46',1,NULL);
 /*!40000 ALTER TABLE `gp_employee_works_sub_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -705,7 +706,7 @@ CREATE TABLE `gp_employee_works_templates` (
   `details` text,
   `sub_items` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -862,4 +863,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-19 22:55:16
+-- Dump completed on 2018-09-21  0:09:39
