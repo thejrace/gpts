@@ -159,25 +159,40 @@
 
         /*
          *  define given work_template to employee
+         *    @work_template_id
          *    @name
          *    @details
          *    @sub_items_encoded
          *    @periodic_flag
-         *    @start_date ( optional value = null )
-         *    @due_date ( optional value = null )
-         *    @time_length  ( optional value = null )
-         *    @define_interval ( not optional when periodic flag is set )
+         *    @start_date ( both, optional value = null )
+         *    @due_date ( normal, optional value = null )
+         *    @time_length ( periodic, optional value = null )
+         *    @define_interval ( periodic, not optional when periodic flag is set )
          * */
         public function defineWork( $input ){
-
-            /*$Template = new GPEmployeeWorkTemplate( $input["work_template_id"] );
-            if( !$Template->getStatusFlag() ){
-                $this->returnText = $Template->getReturnText();
-                return false;
-            }*/
-
             if( (bool)$input["periodic_flag"] ){
-
+                $PeriodicDef = new GPEmployeeWorkPeriodicDefinition(array(
+                    "work_template_id"  => $input["work_template_id"],
+                    "def_type_key"      => "employee_id",
+                    "def_type_id"       => $this->details["id"]
+                ));
+                if( $PeriodicDef->getStatusFlag() ){
+                    $this->returnText = "Bu iş zaten periyodik olarak tanımlanmış.";
+                    return false;
+                }
+                $insertArray = array(
+                    "work_template_id"  => $input["work_template_id"],
+                    "define_interval"   => $input["define_interval"],
+                    "employee_id"       => $this->details["id"],
+                    "time_length"       => $input["time_length"]
+                );
+                if( $input["start_date"] != "null" ) $insertArray["start"] = $input["start_date"];
+                if( $input["time_length"] == "null" ) $insertArray["time_length"] = 0;
+                $PeriodicDef = new GPEmployeeWorkPeriodicDefinition();
+                if( !$PeriodicDef->add( $insertArray) ){
+                    $this->returnText = $PeriodicDef->getReturnText();
+                    return false;
+                }
             } else {
                 $insertArray = array(
                     "name"                  => $input["name"],
@@ -197,7 +212,7 @@
                 }
                 $this->returnText = $Work->getReturnText();
             }
-
+            $this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
             return true;
         }
 
@@ -205,26 +220,36 @@
          *  returns employee's sub employees for desktop application
          *  it's a fetch - search action
          * */
-        public function getRelatedEmployeesForDesktopApp( $colsToFetch, $rrp, $startIndex ){
+        public function getRelatedEmployeesForDesktopApp( $colsToFetch, $settings, $empGroupName = null ){
             // get related child employees' ID's to filter others out for SQL fetch
             $fetchParams = $this->prepareRelatedEmployeesSQL();
-            $q = GPDBFetch::action(DBT_GPEMPLOYEES, $colsToFetch,
-                array(
-                    "limit" => $rrp,
-                    "start_index" => $startIndex,
-                    "order_by" => array("name ASC")
-                ),
-                array( "keys" => implode(" || ", $fetchParams[0]), "vals" => $fetchParams[1] )
-            );
-            foreach ($q as $key => $val) {
-                if ($val["name"] == "Serpil Boyacıoğlu") {
+            $valSqlSyntax = implode(" || ", $fetchParams[0]);
+            if( isset($empGroupName) ){
+                // check employee's child employees that has a specific employee_group
+                $EmpGroup = new GPEmployeeGroup($empGroupName);
+                $valSqlSyntax = "( " . $valSqlSyntax . " ) && employee_group = ? ";
+                $fetchParams[1][] = $EmpGroup->getDetails("id");
+            }
+            if( isset($settings["rrp"]) && isset($settings["start_index"] ) ){
+                $q = GPDBFetch::action(DBT_GPEMPLOYEES, $colsToFetch,
+                    array(
+                        "limit" => $settings["rrp"],
+                        "start_index" => $settings["start_index"],
+                        "order_by" => array("name ASC")
+                    ),
+                    array( "keys" => $valSqlSyntax, "vals" => $fetchParams[1] )
+                );
+            } else {
+                $q = GPDBFetch::action(DBT_GPEMPLOYEES, $colsToFetch,
+                    array( "order_by" => array("name ASC") ),
+                    array( "keys" => $valSqlSyntax, "vals" => $fetchParams[1] )
+                );
+            }
+            if( !isset($empGroupName) ){
+                foreach ($q as $key => $val) {
+                    $q[$key]["task_count"] = 3;
                     $q[$key]["task_status"] = 1;
-                } else if ($val["name"] == "Veli Konstantin") {
-                    $q[$key]["task_status"] = 2;
-                } else {
-                    $q[$key]["task_status"] = 0;
                 }
-                $q[$key]["task_count"] = 3;
             }
             return $q;
         }

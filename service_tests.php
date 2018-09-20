@@ -230,12 +230,13 @@
             array_merge(LOGINPARAMS,
                 array(
                     "req"                        => "define_work_to",
+                    "work_template_id"           => "1",
                     "employee_id"                => "2",
-                    "periodic_flag"              => "0",
-                    "start_date"                 => "2018-09-28 14:45:00",
+                    "periodic_flag"              => "1",
+                    "start_date"                 => "2018-09-30 14:45:00",
                     "due_date"                   => "2018-09-31 14:45:00",
-                    "due_date_periodic"          => "null",
-                    "define_interval"            => "null",
+                    "time_length"                => "50",
+                    "define_interval"            => "350",
                     "name"                       => "Vampiria define 25",
                     "details"                    => "Vampiria define details",
                     "sub_items_encoded"          => "id=0#name=Obarey adım 13#details=null#step_order=1#status=0|id=0#name=Obarey adım 333332#details=null#step_order=2#status=0"
@@ -244,6 +245,25 @@
         ));
     }
 
+    function define_work_to_employee_group(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"                        => "define_work_to",
+                    "work_template_id"           => "1",
+                    "employee_group_name"        => "Muhasebe",
+                    "periodic_flag"              => "1",
+                    "start_date"                 => "null",
+                    "due_date"                   => "null",
+                    "time_length"                => "50",
+                    "define_interval"            => "350",
+                    "name"                       => "Cenkordem",
+                    "details"                    => "Vampiria define details",
+                    "sub_items_encoded"          => "id=0#name=Obarey adım 13#details=null#step_order=1#status=0|id=0#name=Obarey adım 333332#details=null#step_order=2#status=0"
+                )
+            )
+        ));
+    }
 
 
     echo '<pre>';
@@ -267,4 +287,5 @@
     //employee_works_download();
     //employee_works_search();
     //edit_work();
-    define_work_to_employee();
+    // define_work_to_employee();
+    //define_work_to_employee_group();

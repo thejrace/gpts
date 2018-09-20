@@ -141,7 +141,9 @@
 
                 require CLASS_DIR . "GPEmployee.php";
                 $Employee = new GPEmployee($User->getDetails("email"));
-                $DATA = $Employee->getRelatedEmployeesForDesktopApp(array("id", "name", "email", "employee_group", "nick"), $_POST["rrp"], $_POST["start_index"]);
+                $DATA = $Employee->getRelatedEmployeesForDesktopApp(
+                    array("id", "name", "email", "employee_group", "nick"),
+                    array( "rrp" => $_POST["rrp"], "start_index" => $_POST["start_index"]));
 
             break;
 
@@ -416,26 +418,43 @@
 
             case 'define_work_to':
 
+                require CLASS_DIR . "GPEmployeeWorkPeriodicDefinition.php";
                 require CLASS_DIR . "GPEmployeeWorkTemplate.php";
                 require CLASS_DIR . "GPEmployeeWorkSubItem.php";
                 require CLASS_DIR . "GPEmployeeWork.php";
                 require CLASS_DIR . "GPEmployee.php";
+                require CLASS_DIR . "GPEmployeeGroup.php";
 
-                if( isset($_POST["emp_group_id"] ) ){
+                if( isset($_POST["employee_group_name"] ) ){
                     // define to employee group related to employee who defined the task
-
+                    $ActiveEmployee = new GPEmployee($User->getDetails("email"));
+                    foreach(  $ActiveEmployee->getRelatedEmployeesForDesktopApp( array("id"), array(), $_POST["employee_group_name"] ) as $empData ){
+                        $ChildEmployee = new GPEmployee( $empData["id"] );
+                        $OK = (int)$ChildEmployee->defineWork(array(
+                                "work_template_id"  => $_POST["work_template_id"],
+                                "name"              => $_POST["name"],
+                                "details"           => $_POST["details"],
+                                "sub_items_encoded" => $_POST["sub_items_encoded"],
+                                "periodic_flag"     => $_POST["periodic_flag"],
+                                "start_date"        => $_POST["start_date"],
+                                "due_date"          => $_POST["due_date"],
+                                "time_length"       => $_POST["time_length"],
+                                "define_interval"   => $_POST["define_interval"] ));
+                        $TEXT = $ChildEmployee->getReturnText();
+                    }
                 } else {
                     // define to employee
                     $Employee = new GPEmployee( $_POST["employee_id"] );
                     if( $Employee->getStatusFlag() ){
                         $OK = (int)$Employee->defineWork( array(
+                                        "work_template_id"  => $_POST["work_template_id"],
                                         "name"              => $_POST["name"],
                                         "details"           => $_POST["details"],
                                         "sub_items_encoded" => $_POST["sub_items_encoded"],
                                         "periodic_flag"     => $_POST["periodic_flag"],
                                         "start_date"        => $_POST["start_date"],
                                         "due_date"          => $_POST["due_date"],
-                                        "time_length"       => $_POST["due_date_periodic"],
+                                        "time_length"       => $_POST["time_length"],
                                         "define_interval"   => $_POST["define_interval"] ));
                     } else {
                         $OK = 0;

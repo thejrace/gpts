@@ -9,8 +9,13 @@
     class GPDBFetch {
         public static function action( $table, $dbKeysToFetch, $settings, $whereClause = null ){;
             ( !empty( $dbKeysToFetch ) ) ? $star = implode(", ", $dbKeysToFetch ) : $star = "*";
-            ( isset($settings["order_by"] ) ) ? $orderby = "ORDER BY " . implode(", ", $settings["order_by"] ) : $orderby = "";
-            ( isset($settings["limit"]) ) ? $limit = "LIMIT ".$settings["start_index"]."," . $settings["limit"] : $limit = "";
+            $orderby = "";
+            $limit = "";
+            if( !empty($settings) ){
+                if( isset($settings["order_by"]) ) $orderby = "ORDER BY " . implode(", ", $settings["order_by"] );
+                if( isset($settings["limit"]) ) $limit = "LIMIT ".$settings["start_index"]."," . $settings["limit"];
+            }
+
             if( isset($whereClause) ){
                 $q = DB::getInstance()->query("SELECT ".$star." FROM " . $table . " WHERE ". $whereClause["keys"] . " " . $orderby . " " . $limit, $whereClause["vals"] )->results();
                 if( DB::getInstance()->error() ){
@@ -29,8 +34,10 @@
         }
         public static function search( $table, $dbKeysToFetch, $settings, $searchParams, $whereClause = null ){
             ( !empty( $dbKeysToFetch ) ) ? $star = implode(", ", $dbKeysToFetch ) : $star = "*";
-            ( isset($settings["order_by"] ) ) ? $orderby = "ORDER BY " . implode(", ", $settings["order_by"] ) : $orderby = "";
-            ( isset($settings["limit"]) ) ? $limit = "LIMIT ".$settings["start_index"]."," . $settings["limit"] : $limit = "";
+            if( !empty($settings) ){
+                ( isset($settings["order_by"]) ) ? $orderby = "ORDER BY " . implode(", ", $settings["order_by"] ) : $orderby = "";
+                ( isset($settings["limit"]) ) ? $limit = "LIMIT ".$settings["start_index"]."," . $settings["limit"] : $limit = "";
+            }
             if( isset($whereClause) ){
                 $q = DB::getInstance()->query("SELECT ".$star." FROM " . $table . " WHERE ("
                     .$searchParams["key"] . " LIKE ? || "
