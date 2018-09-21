@@ -41,8 +41,8 @@
                 "phone_2" => array(
                     "label" 		=> "Tel 2"
                 ),
-                "has_task" => array(
-                    "label" 		=> "Görev Tanımlı"
+                "work_status" => array(
+                    "label" 		=> "İş Durumu"
                 )
 			);
 		}
@@ -246,9 +246,18 @@
                 );
             }
             if( !isset($empGroupName) ){
+                $empGroupNamesCache = array();
                 foreach ($q as $key => $val) {
-                    $q[$key]["task_count"] = 3;
-                    $q[$key]["task_status"] = 1;
+                    $Emp = new GPEmployee( $q[$key]["id"] );
+                    $wCount = $Emp->getWorkCount();
+                    $q[$key]["work_count"] = $wCount[0]["obarey"];
+                    if( !array_key_exists($q[$key]["employee_group"], $empGroupNamesCache) ){
+                        $EmpGroup = new GPEmployeeGroup( $q[$key]["employee_group"] );
+                        $q[$key]["employee_group"] = $EmpGroup->getDetails("name");
+                        $empGroupNamesCache[$q[$key]["employee_group"]] = $EmpGroup->getDetails("name");
+                    } else {
+                        $q[$key]["employee_group"] = $empGroupNamesCache[$q[$key]["employee_group"]];
+                    }
                 }
             }
             return $q;
@@ -268,10 +277,18 @@
                     ),
                     array("key" => "name", "keyword" => $keyword),
                     array( "keys" => implode(" || ", $fetchParams[0]), "vals" => $fetchParams[1] ));
+                $empGroupNamesCache = array();
                 foreach ($q as $key => $val) {
-                    $q[$key]["task_status"] = 2;
-                    $q[$key]["task_count"] = 3;
-                    $q[$key]["group"] = "Filo Yönetim";
+                    $Emp = new GPEmployee( $q[$key]["id"] );
+                    $wCount = $Emp->getWorkCount();
+                    $q[$key]["work_count"] = $wCount[0]["obarey"];
+                    if( !array_key_exists($q[$key]["employee_group"], $empGroupNamesCache) ){
+                        $EmpGroup = new GPEmployeeGroup( $q[$key]["employee_group"] );
+                        $q[$key]["employee_group"] = $EmpGroup->getDetails("name");
+                        $empGroupNamesCache[$q[$key]["employee_group"]] = $EmpGroup->getDetails("name");
+                    } else {
+                        $q[$key]["employee_group"] = $empGroupNamesCache[$q[$key]["employee_group"]];
+                    }
                 }
             } else {
                 $q = GPDBFetch::search(DBT_GPEMPLOYEES, $colsToFetch,
@@ -296,7 +313,9 @@
             return array( $whereKeys, $whereVals );
         }
 
-
+        public function getWorkCount(){
+            return $this->pdo->query("SELECT COUNT(id) AS obarey FROM " . DBT_GPEMPLOYEEWORKS ." WHERE employee_id = ?", array($this->details["id"]) )->results();
+        }
 
         public function getWorksForDesktopApp( $colsToFetch, $rrp, $startIndex, $orderBy, $statusFilter ){
             $archiveFlag = false;

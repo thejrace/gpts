@@ -140,9 +140,10 @@
                 // todo permission check
 
                 require CLASS_DIR . "GPEmployee.php";
+                require CLASS_DIR . "GPEmployeeGroup.php";
                 $Employee = new GPEmployee($User->getDetails("email"));
                 $DATA = $Employee->getRelatedEmployeesForDesktopApp(
-                    array("id", "name", "email", "employee_group", "nick"),
+                    array("id", "name", "email", "employee_group", "nick", "work_status"),
                     array( "rrp" => $_POST["rrp"], "start_index" => $_POST["start_index"]));
 
             break;
@@ -152,9 +153,10 @@
                 // todo permission check
 
                 require CLASS_DIR . "GPEmployee.php";
+                require CLASS_DIR . "GPEmployeeGroup.php";
                 $Employee = new GPEmployee($User->getDetails("email"));
                 if( isset($_POST["rrp"]) && isset($_POST["start_index"] ) ){
-                    $DATA = $Employee->searchRelatedEmployeesForDesktopApp($_POST["keyword"], array("id", "name", "email", "employee_group", "nick"), $_POST["rrp"], $_POST["start_index"]);
+                    $DATA = $Employee->searchRelatedEmployeesForDesktopApp($_POST["keyword"], array("id", "name", "email", "employee_group", "nick", "work_status"), $_POST["rrp"], $_POST["start_index"]);
                 } else {
                     $DATA = $Employee->searchRelatedEmployeesForDesktopApp($_POST["keyword"], array("id", "name") );
                 }
