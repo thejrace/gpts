@@ -438,7 +438,6 @@
                                 "periodic_flag"     => $_POST["periodic_flag"],
                                 "start_date"        => $_POST["start_date"],
                                 "due_date"          => $_POST["due_date"],
-                                "time_length"       => $_POST["time_length"],
                                 "define_interval"   => $_POST["define_interval"] ));
                         $TEXT = $ChildEmployee->getReturnText();
                     }
@@ -454,13 +453,11 @@
                                         "periodic_flag"     => $_POST["periodic_flag"],
                                         "start_date"        => $_POST["start_date"],
                                         "due_date"          => $_POST["due_date"],
-                                        "time_length"       => $_POST["time_length"],
                                         "define_interval"   => $_POST["define_interval"] ));
                     } else {
                         $OK = 0;
                     }
                     $TEXT = $Employee->getReturnText();
-
                 }
 
             break;

@@ -165,8 +165,7 @@
          *    @sub_items_encoded
          *    @periodic_flag
          *    @start_date ( both, optional value = null )
-         *    @due_date ( normal, optional value = null )
-         *    @time_length ( periodic, optional value = null )
+         *    @due_date ( both, optional value = null ( int for periodic, datetime for normal )
          *    @define_interval ( periodic, not optional when periodic flag is set )
          * */
         public function defineWork( $input ){
@@ -184,10 +183,10 @@
                     "work_template_id"  => $input["work_template_id"],
                     "define_interval"   => $input["define_interval"],
                     "employee_id"       => $this->details["id"],
-                    "time_length"       => $input["time_length"]
+                    "time_length"       => $input["due_date"]
                 );
                 if( $input["start_date"] != "null" ) $insertArray["start"] = $input["start_date"];
-                if( $input["time_length"] == "null" ) $insertArray["time_length"] = 0;
+                if( $input["due_date"] == "null" ) $insertArray["time_length"] = 0;
                 $PeriodicDef = new GPEmployeeWorkPeriodicDefinition();
                 if( !$PeriodicDef->add( $insertArray) ){
                     $this->returnText = $PeriodicDef->getReturnText();
@@ -205,6 +204,7 @@
                     $insertArray["date_added"] = $input["start_date"];
                     $insertArray["status"] = GPEmployeeWork::$STATUS_PENDING;
                 }
+                if( $input["due_date"] != "null" ) $insertArray["due_date"] = $input["due_date"];
                 $Work = new GPEmployeeWork();
                 if( !$Work->add( $insertArray ) ){
                     $this->returnText = $Work->getReturnText();
