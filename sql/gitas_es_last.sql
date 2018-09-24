@@ -123,7 +123,7 @@ CREATE TABLE `gp_api_user_devices` (
 
 LOCK TABLES `gp_api_user_devices` WRITE;
 /*!40000 ALTER TABLE `gp_api_user_devices` DISABLE KEYS */;
-INSERT INTO `gp_api_user_devices` VALUES (1,1,1,'test device name','test hash','::1','Windows','2018-06-17 19:51:05','2018-06-27 00:05:20',1,0),(2,1,1,'test device name 2','test hash 2','::1','Windows','2018-06-27 00:07:00','2018-06-27 00:07:00',0,0),(3,1,1,'test device name 2','test hash 3','::1','Windows','2018-06-27 00:08:30','2018-09-22 00:47:18',1,0);
+INSERT INTO `gp_api_user_devices` VALUES (1,1,1,'test device name','test hash','::1','Windows','2018-06-17 19:51:05','2018-06-27 00:05:20',1,0),(2,1,1,'test device name 2','test hash 2','::1','Windows','2018-06-27 00:07:00','2018-06-27 00:07:00',0,0),(3,1,1,'test device name 2','test hash 3','::1','Windows','2018-06-27 00:08:30','2018-09-24 13:58:26',1,0);
 /*!40000 ALTER TABLE `gp_api_user_devices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -704,7 +704,7 @@ CREATE TABLE `gp_employee_works_templates` (
   `details` text,
   `sub_items` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -861,4 +861,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-22  1:48:14
+-- Dump completed on 2018-09-24 21:32:57
