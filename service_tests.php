@@ -267,7 +267,7 @@
     echo '<pre>';
 
     //loginTest();
-    employees_download();
+    //employees_download();
     //add_daily_plan_schema_test();
     //app_server_sync_test();
     //add_employee_test();

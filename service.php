@@ -395,11 +395,21 @@
                 require CLASS_DIR . "GPEmployeeWork.php";
                 require CLASS_DIR . "GPEmployee.php";
 
-                $Employee = new GPEmployee( $User->getDetails("email") );
-                $DATA = $Employee->getWorksForDesktopApp(
-                    array("id", "name", "details", "date_added", "status", "due_date", "date_last_modified"),
-                    $_POST["rrp"], $_POST["start_index"], array("id DESC"), $_POST["status_filter"]
-                );
+                // we can download works of active user or other employees
+                if( isset($_POST["employee_id"] ) ){
+                    $Employee = new GPEmployee( $_POST["employee_id"] );
+                    if( !$Employee->getStatusFlag() ){
+                        $OK = 0;
+                    }
+                } else {
+                    $Employee = new GPEmployee( $User->getDetails("email") );
+                }
+                if( $OK == 1 ){
+                    $DATA = $Employee->getWorksForDesktopApp(
+                        array("id", "name", "details", "date_added", "status", "due_date", "date_last_modified"),
+                        $_POST["rrp"], $_POST["start_index"], array("id DESC"), $_POST["status_filter"]
+                    );
+                }
 
             break;
 
