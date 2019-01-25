@@ -40,6 +40,21 @@
         ));
     }
 
+    // ayarli
+    function employees_download(){
+        print_r( post( URL,
+            array_merge(LOGINPARAMS, array("req" => "employees_download", "rrp" => 1, "start_index" => 0 ))
+        ));
+    }
+
+    function employees_search(){
+        print_r( post( URL,
+            array_merge(LOGINPARAMS, array("req" => "employees_search", "rrp" => 1, "start_index" => 0, "keyword" => "emr" ))
+        ));
+    }
+
+
+
     function add_employee_group_test(){
         print_r( post(URL,
             array_merge(LOGINPARAMS,
@@ -55,4 +70,6 @@
 
     //loginTest();
     //download_employees()
+    //employees_download();
+    //employees_search();
     //add_employee_group_test();

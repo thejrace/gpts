@@ -11,11 +11,15 @@
         public function __construct( $parentEmployee = null, $childEmployee = null ){
             if( isset($parentEmployee) && isset($childEmployee) ){
                 // looking relation with two employees ID's
-                $check = DB::getInstance()->query("SELECT * FROM " . DBT_GPEMPLOYEERELATIONS . " WHERE parent_employee = ? && child_employee = ?",
+                $this->table = DBT_GPEMPLOYEERELATIONS;
+                $this->pdo = DB::getInstance();
+                $check = $this->pdo->query("SELECT * FROM " . $this->table . " WHERE parent_employee = ? && child_employee = ?",
                     array( $parentEmployee, $childEmployee))->results();
                 if( count($check) == 1 ){
                     $this->details = $check[0];
                     $this->ok = true;
+                } else {
+                    $this->returnText = "Böyle bir kayıt yok.";
                 }
             } else {
                 // regular check with ID

@@ -178,7 +178,7 @@ CREATE TABLE `gp_cached_data_flags` (
 
 LOCK TABLES `gp_cached_data_flags` WRITE;
 /*!40000 ALTER TABLE `gp_cached_data_flags` DISABLE KEYS */;
-INSERT INTO `gp_cached_data_flags` VALUES (1,'plan_schemas.cache','2018-06-29 15:53:11'),(2,'plan_schemas.cache','2018-07-01 15:46:05'),(3,'user_groups.cache','2018-07-01 21:46:53'),(4,'user_groups.cache','2018-07-01 21:48:27'),(5,'user_groups.cache','2018-07-30 13:01:11');
+INSERT INTO `gp_cached_data_flags` VALUES (1,'plan_schemas.cache','2018-06-29 15:53:11'),(2,'plan_schemas.cache','2018-07-01 15:46:05'),(3,'employee_groups.cache','2018-07-01 21:46:53'),(4,'employee_groups.cache','2018-07-01 21:48:27'),(5,'employee_groups.cache','2018-07-30 13:01:11');
 /*!40000 ALTER TABLE `gp_cached_data_flags` ENABLE KEYS */;
 UNLOCK TABLES;
 

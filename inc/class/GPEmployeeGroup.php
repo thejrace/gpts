@@ -14,7 +14,7 @@
 			parent::__construct( DBT_GPEMPLOYEEGROUPS, array( "id", "name" ), $val );
             $this->apiTriggerKey = "name";
             $this->apiTriggerType = 3;
-            $this->cacheDataFileName = "user_groups.cache";
+            $this->cacheDataFileName = "employee_groups.cache";
 			// unique groups should be on top to save time for unique checks
 			$this->dbFormKeys = array(
 				"name" => array(
@@ -31,6 +31,4 @@
                 ) // todo cache de olmayacak
 			);
 		}
-
-
 	}

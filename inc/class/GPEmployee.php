@@ -70,6 +70,15 @@
             return true;
         }
 
+        public function edit( $input ){
+            $EmpGroup = new GPEmployeeGroup( $input["employee_group"]);
+            if( !$EmpGroup->getStatusFlag() ) return false;
+            // form submits employee_group's name, we convert it to id
+            $input["employee_group"] = $EmpGroup->getDetails("id");
+            if( !parent::edit( $input ) ) return false;
+            return true;
+        }
+
 		/*
 		 *  define the given plan schema to employee
 		 *  @dailyPlanArray : array containing array of daily plan input data and dailyPlanSchema ID
@@ -142,6 +151,13 @@
                 $this->returnText = "Bu iki personel zaten ilişkilendirilmiş.";
                 return false;
             }
+
+            $Relation = new GPEmployeeRelation( $subEmployeeID, $this->details["id"] );
+            if( $Relation->getStatusFlag() ){
+                $this->returnText = "Bu iki personel zaten ilişkilendirilmiş.";
+                return false;
+            }
+
             $Relation = new GPEmployeeRelation();
             if( !$Relation->add(array(
                 "parent_employee"  => $this->details["id"],
@@ -237,12 +253,12 @@
                         "start_index" => $settings["start_index"],
                         "order_by" => array("name ASC")
                     ),
-                    array( "keys" => $valSqlSyntax, "vals" => $fetchParams[1] )
+                    array( "keys" => $valSqlSyntax . " && deleted = ?", "vals" => array_merge($fetchParams[1], array(0) ) )
                 );
             } else {
                 $q = GPDBFetch::action(DBT_GPEMPLOYEES, $colsToFetch,
                     array( "order_by" => array("name ASC") ),
-                    array( "keys" => $valSqlSyntax, "vals" => $fetchParams[1] )
+                    array( "keys" => $valSqlSyntax . " && deleted = ?", "vals" => array_merge($fetchParams[1], array(0) ) )
                 );
             }
             if( !isset($empGroupName) ){
@@ -276,7 +292,7 @@
                         "order_by" => array("name ASC")
                     ),
                     array("key" => "name", "keyword" => $keyword),
-                    array( "keys" => implode(" || ", $fetchParams[0]), "vals" => $fetchParams[1] ));
+                    array( "keys" => "( " . implode(" || ", $fetchParams[0]) . " ) && deleted = ?" , "vals" => array_merge($fetchParams[1], array(0) )));
                 $empGroupNamesCache = array();
                 foreach ($q as $key => $val) {
                     $Emp = new GPEmployee( $q[$key]["id"] );
@@ -296,14 +312,40 @@
                         "order_by" => array("name ASC")
                     ),
                     array( "key" => "name", "keyword" => $keyword ),
-                    array( "keys" => implode(" || ", $fetchParams[0]), "vals" => $fetchParams[1] ));
+                    array( "keys" => "( " . implode(" || ", $fetchParams[0]) . " ) && deleted = ?" , "vals" => array_merge($fetchParams[1], array(0) )));
             }
             return $q;
         }
 
+        private function getRelatedEmployeesDown(){
+            return $this->pdo->query("SELECT child_employee FROM " . DBT_GPEMPLOYEERELATIONS . " WHERE parent_employee = ?", array( $this->details["id"]))->results();
+        }
+
+        private function getRelatedEmployeesUp(){
+            return $this->pdo->query("SELECT parent_employee FROM " . DBT_GPEMPLOYEERELATIONS . " WHERE child_employee = ?", array( $this->details["id"]))->results();
+        }
+
+        // convert ID's to names for admin panel
+        public function beautifyRelatedEmployees(){
+            $empsDown = $this->getRelatedEmployeesDown();
+            $empsUp = $this->getRelatedEmployeesUp();
+            $output = array();
+            foreach( $empsDown as $emp ){
+                $Employee = new GPEmployee($emp["child_employee"]);
+                if( !$Employee->getStatusFlag() || $Employee->getDetails("deleted") == 1 ) continue;
+                $output["down"][$emp["child_employee"]] = array( "name" => $Employee->getDetails("name"), "employee_group" => $Employee->getDetails("employee_group") );
+            }
+            foreach( $empsUp as $emp ){
+                $Employee = new GPEmployee($emp["parent_employee"]);
+                if( !$Employee->getStatusFlag() || $Employee->getDetails("deleted") == 1 ) continue;
+                $output["up"][$emp["parent_employee"]] = array( "name" => $Employee->getDetails("name"), "employee_group" => $Employee->getDetails("employee_group") );
+            }
+            return $output;
+        }
+
         // common method to prepare parameters for GPDBFetch actions to download related employees
         private function prepareRelatedEmployeesSQL(){
-            $childrenEmps = $this->pdo->query("SELECT child_employee FROM " . DBT_GPEMPLOYEERELATIONS . " WHERE parent_employee = ?", array( $this->details["id"]))->results();
+            $childrenEmps = $this->getRelatedEmployeesDown();
             $whereKeys = array();
             $whereVals = array();
             foreach( $childrenEmps as $c ){

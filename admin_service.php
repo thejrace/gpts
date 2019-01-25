@@ -30,16 +30,65 @@
 
         switch ($_POST["req"]) {
 
-            case 'download_employees':
+            case 'employees_download':
 
-                $DATA["employees"] = GPDBFetch::action(DBT_GPEMPLOYEES, array( "id", "name", "employee_group" ), array(), array("keys" => "employee_group != ?", "vals" => array(GPApiUser::$ADMIN) ) );
-                $DATA["employee_groups"] = GPDBFetch::action(DBT_GPEMPLOYEEGROUPS, array( "id" , "name",  "parent"  ), array());
+                $DATA = GPDBFetch::action(
+                    DBT_GPEMPLOYEES,
+                    array( "id", "name", "employee_group" ),
+                    array(
+                        "limit" => $_POST["rrp"],
+                        "start_index" => $_POST["start_index"],
+                        "order_by" => array("name ASC")
+                    ),
+                    array("keys" => "employee_group != ? && deleted = ?", "vals" => array(GPApiUser::$ADMIN, 0) ) );
 
             break;
 
-            case 'download_employee_groups':
-                $DATA["employee_groups"] = GPDBFetch::action(DBT_GPEMPLOYEEGROUPS, array( "id" , "name",  "parent"  ), array());
+            case 'employees_search':
+
+                if( isset($_POST["rrp"]) && isset($_POST["start_index"])){
+                    $settings = array(
+                        "limit" => $_POST["rrp"],
+                        "start_index" => $_POST["start_index"]
+                    );
+                } else {
+                    $settings = array( "order_by" => array("name ASC") );
+                }
+
+                $DATA = GPDBFetch::search(
+                    DBT_GPEMPLOYEES,
+                    array( "id", "name", "employee_group" ),
+                    $settings,
+                    array("key" => "name", "keyword" => $_POST["keyword"]),
+                    array("keys" => "employee_group != ?", "vals" => array(GPApiUser::$ADMIN) ) );
+
             break;
+
+            case 'employee_groups_download':
+
+                $DATA = GPDBFetch::action(
+                    DBT_GPEMPLOYEEGROUPS,
+                    array( "id" , "name",  "parent" ),
+                    array(
+                        "limit" => $_POST["rrp"],
+                        "start_index" => $_POST["start_index"],
+                        "order_by" => array("name ASC")
+                    ));
+            break;
+
+            case 'employee_groups_search':
+
+                $DATA = GPDBFetch::search(
+                    DBT_GPEMPLOYEEGROUPS,
+                    array( "id" , "name",  "parent" ),
+                    array(
+                        "limit" => $_POST["rrp"],
+                        "start_index" => $_POST["start_index"],
+                        "order_by" => array("name ASC")
+                    ),
+                    array("key" => "name", "keyword" => $_POST["keyword"] ) );
+            break;
+
 
 
             case 'add_employee':
@@ -54,6 +103,67 @@
 
             break;
 
+            case 'delete_employee':
+
+                require CLASS_DIR . "GPEmployee.php";
+                $Employee = new GPEmployee( $_POST["item_id"]);
+                $OK = (int) $Employee->editCol(array("deleted" => 1));
+                $TEXT = $Employee->getReturnText();
+
+
+            break;
+
+            case 'download_related_employees':
+
+                require CLASS_DIR . "GPEmployee.php";
+                $Employee = new GPEmployee( $_POST["item_id"] );
+                $OK = (int)$Employee->getStatusFlag();
+                $DATA = $Employee->beautifyRelatedEmployees();
+                $TEXT = $Employee->getReturnText();
+
+            break;
+
+            case 'add_employee_relation':
+
+                require CLASS_DIR . "GPEmployeeRelation.php";
+                require CLASS_DIR . "GPEmployee.php";
+
+                $Parent = new GPEmployee($_POST["parent_employee"]);
+                $OK = (int)$Parent->addRelation( $_POST["child_employee"]);
+                $TEXT = $Parent->getReturnText();
+
+            break;
+
+            case 'delete_employee_relation':
+
+                require CLASS_DIR . "GPEmployeeRelation.php";
+                $Relation = new GPEmployeeRelation( $_POST["parent_employee"],  $_POST["child_employee"] );
+                $OK = (int)$Relation->delete();
+                $TEXT =  $Relation->getReturnText();
+
+            break;
+
+
+            case 'edit_employee':
+
+                require CLASS_DIR . "GPEmployeeGroup.php";
+                require CLASS_DIR . "GPEmployee.php";
+                $Employee = new GPEmployee( $_POST["item_id"]);
+                $OK = (int) $Employee->edit($_POST);
+                $TEXT = $Employee->getReturnText();
+
+            break;
+
+            case 'download_employee_data':
+
+                require CLASS_DIR . "GPEmployee.php";
+                $Employee = new GPEmployee($_POST["item_id"]);
+                $OK = (int)$Employee->getStatusFlag();
+                $DATA = $Employee->getDetails();
+                $TEXT = $Employee->getReturnText();
+
+            break;
+
             case 'add_employee_group':
 
                 require CLASS_DIR . "GPEmployeeGroup.php";
@@ -63,6 +173,20 @@
                 $TEXT = $EmployeeGroup->getReturnText();
 
 
+            break;
+
+
+
+
+            // @DEPRECATED
+            case 'download_employees':
+                $DATA["employees"] = GPDBFetch::action(DBT_GPEMPLOYEES, array( "id", "name", "employee_group" ), array(), array("keys" => "employee_group != ?", "vals" => array(GPApiUser::$ADMIN) ) );
+                $DATA["employee_groups"] = GPDBFetch::action(DBT_GPEMPLOYEEGROUPS, array( "id" , "name",  "parent"  ), array());
+            break;
+
+            // @DEPRECATED
+            case 'download_employee_groups_all':
+                $DATA = GPDBFetch::action(DBT_GPEMPLOYEEGROUPS, array( "id" , "name",  "parent"  ), array());
             break;
 
         }

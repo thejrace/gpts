@@ -13,6 +13,7 @@
 	//define("MAIN_DIR", $_SERVER["DOCUMENT_ROOT"] . "/gpts_web_service/");
 	define("MAIN_DIR", $_SERVER["DOCUMENT_ROOT"] . "/gpts/");
     define("INC_DIR", MAIN_DIR . "inc/");
+    define("DATA_CACHE_DIR", MAIN_DIR . "data_cache/");
     define("CLASS_DIR", INC_DIR . "class/");
 
     if( !isset($_SESSION) ) session_start();
