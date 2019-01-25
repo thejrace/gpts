@@ -20,7 +20,7 @@
     }
 
     define("LOGINPARAMS", array(
-        "api_email"         => "ahmet@obarey.com",
+        "api_email"         => "admin@gpts.com",
         "api_password"      => "wazzabii308",
         "api_device_hash"   => "test hash 3",
         "api_device_name"   => "test device name 2",
@@ -72,11 +72,11 @@
             array_merge(LOGINPARAMS,
                 array(
                     "req"               => "add_employee",
-                    "nick" 		        => "@coldplay",
-                    "email" 	        => "cold@test.com",
-                    "name" 		        => "Coldplay",
-                    "employee_group" 	=> "Filo Yönetim",
-                    "phone_1"           => "0533",
+                    "nick" 		        => "@admin",
+                    "email" 	        => "admin@obarey.com",
+                    "name" 		        => "Obarey Admin",
+                    "employee_group" 	=> "Admin",
+                    "phone_1"           => "",
                     "phone_2"           => ""
                 )
             )
@@ -87,7 +87,8 @@
             array_merge(LOGINPARAMS,
                 array(
                     "req"               => "add_employee_group",
-                    "name" 		        => "Mühendis"
+                    "name" 		        => "Admin",
+                    "permissions"       => "1111111111111111111111"
                 )
             )
         ));
@@ -271,7 +272,7 @@
     //add_daily_plan_schema_test();
     //app_server_sync_test();
     //add_employee_test();
-    //add_employee_group_test();
+    add_employee_group_test();
     //add_relation_test();
     //get_relations_test();
     //add_work();

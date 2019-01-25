@@ -59,8 +59,6 @@
 
             break;
 
-
-
             case 'add_daily_plan_schema':
 
                 // todo permission check
@@ -133,7 +131,6 @@
                 $TEXT = $EmployeeGroup->getReturnText();
 
             break;
-
 
             case 'employees_download':
 
@@ -227,8 +224,6 @@
                 $DATA = $q;
             break;
 
-
-
             case 'add_work':
 
                 require CLASS_DIR . "GPEmployeeWorkTemplate.php";
@@ -246,7 +241,6 @@
 
             break;
 
-
             case 'edit_work':
 
                 require CLASS_DIR . "GPEmployeeWorkTemplate.php";
@@ -258,7 +252,6 @@
                 $TEXT = $GPWork->getReturnText();
 
             break;
-
 
             // deprecated ( 15.09.2018 )
             case 'complete_work':
@@ -473,6 +466,8 @@
                 }
 
             break;
+
+
 
         }
 
