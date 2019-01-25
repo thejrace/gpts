@@ -267,10 +267,8 @@
             }
             // update cached data if exists
             if( $this->cacheDataFileName != "obarey" ){
-                $this->pdo->insert(DBT_GPCACHEDDATAFLAGS, array(
-                    "file_name"     => $this->cacheDataFileName,
-                    "date_added"    => Common::getCurrentDateTime()
-                ));
+                $newData = json_encode($this->pdo->query("SELECT * FROM " . $this->table )->results());
+                file_put_contents( DATA_CACHE_DIR . $this->cacheDataFileName, $newData );
             }
             return true;
         }
