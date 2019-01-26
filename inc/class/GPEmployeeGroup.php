@@ -31,4 +31,15 @@
                 ) // todo cache de olmayacak
 			);
 		}
+
+		public function delete( $clearDetailsProp = true ){
+		    $check = $this->pdo->query("SELECT * FROM " . DBT_GPEMPLOYEES . " WHERE employee_group = ?", array( $this->details["id"]))->results();
+		    if( count($check) > 0 ){
+		        $this->returnText = "Bu gruba dahil personeller mevcut. Silmek için, önce bu grup personellerini transfer edin.";
+		        return false;
+            }
+            if( !parent::delete() ) return false;
+		    return true;
+        }
+
 	}

@@ -175,7 +175,31 @@
 
             break;
 
+            case 'edit_employee_group':
 
+                require CLASS_DIR . "GPEmployeeGroup.php";
+                $EmployeeGroup = new GPEmployeeGroup( $_POST["item_id"]);
+                $OK = (int) $EmployeeGroup->edit($_POST);
+                $TEXT = $EmployeeGroup->getReturnText();
+
+            break;
+
+            case 'delete_employee_group':
+
+                require CLASS_DIR . "GPEmployeeGroup.php";
+                $EmployeeGroup = new GPEmployeeGroup($_POST["item_id"]);
+                $OK = (int)$EmployeeGroup->delete();
+                $TEXT = $EmployeeGroup->getReturnText();
+
+            break;
+
+            case 'download_employee_group_data':
+
+                require CLASS_DIR . "GPEmployeeGroup.php";
+                $EmployeeGroup = new GPEmployeeGroup($_POST["item_id"]);
+                $DATA = $EmployeeGroup->getDetails();
+
+            break;
 
 
             // @DEPRECATED
