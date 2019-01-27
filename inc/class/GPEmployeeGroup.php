@@ -42,4 +42,8 @@
 		    return true;
         }
 
+        public function downloadEmployees(){
+		    return $this->pdo->query("SELECT * FROM " . DBT_GPEMPLOYEES . " WHERE employee_group = ? && deleted = ?", array( $this->details["id"], 0 ) )->results();
+        }
+
 	}

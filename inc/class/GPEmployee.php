@@ -59,7 +59,7 @@
             if( !$ApiUser->add(array(
                 "email"         => $input["email"],
                 "password"      => "gitas_".$input["email"], // default password
-                "user_group"    => GPApiUser::$NORMAL, // add as a normal user
+                "user_group"    => $input["employee_group"], // add as a normal user
                 "permissions"   => $EmpGroup->getDetails("permissions"), // inherit employee group's permissions
                 "date_added"    => Common::getCurrentDateTime(),
                 "status"        => 1
@@ -144,32 +144,53 @@
         /*
          *  adds sub employee relations to current object
          * */
-        public function addRelation( $subEmployeeID ){
-            // check if two employees have already related
-            $Relation = new GPEmployeeRelation( $this->details["id"], $subEmployeeID );
-            if( $Relation->getStatusFlag() ){
-                $this->returnText = "Bu iki personel zaten ilişkilendirilmiş.";
-                return false;
+        public function addRelation( $empOrEmpGroupID, $empGroupFlag = false ){
+            if( $empGroupFlag ){
+                $EmpGroup = new GPEmployeeGroup( $empOrEmpGroupID );
+                if( !$EmpGroup->getStatusFlag() ){
+                    $this->returnText = $EmpGroup->getReturnText();
+                    return false;
+                }
+                foreach( $EmpGroup->downloadEmployees() as $employee ){
+                    if( $this->checkRelation( $employee["id"] ) ){
+                        $Relation = new GPEmployeeRelation();
+                        if( !$Relation->add(array(
+                            "parent_employee"  => $this->details["id"],
+                            "child_employee"   => $employee["id"]
+                        )) ){
+                            $this->returnText = $Relation->getReturnText();
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                if( !$this->checkRelation( $empOrEmpGroupID ) ) return false;
+                $Relation = new GPEmployeeRelation();
+                if( !$Relation->add(array(
+                    "parent_employee"  => $this->details["id"],
+                    "child_employee"   => $empOrEmpGroupID
+                )) ){
+                    $this->returnText = $Relation->getReturnText();
+                    return false;
+                }
             }
-
-            $Relation = new GPEmployeeRelation( $subEmployeeID, $this->details["id"] );
-            if( $Relation->getStatusFlag() ){
-                $this->returnText = "Bu iki personel zaten ilişkilendirilmiş.";
-                return false;
-            }
-
-            $Relation = new GPEmployeeRelation();
-            if( !$Relation->add(array(
-                "parent_employee"  => $this->details["id"],
-                "child_employee"   => $subEmployeeID
-            )) ){
-                $this->returnText = $Relation->getReturnText();
-                return false;
-            }
-
-            // todo API TRIGGER??
-
             $this->returnText = GPFormValidation::$SUCCESS_MESSAGE;
+            return true;
+        }
+
+        // returns true when they're not related
+        private function checkRelation( $empIDToCheck ){
+            // check if two employees have already related
+            $Relation = new GPEmployeeRelation( $this->details["id"], $empIDToCheck );
+            if( $Relation->getStatusFlag() ){
+                $this->returnText = "Bu iki personel zaten ilişkilendirilmiş.";
+                return false;
+            }
+            $Relation = new GPEmployeeRelation( $empIDToCheck, $this->details["id"] );
+            if( $Relation->getStatusFlag() ){
+                $this->returnText = "Bu iki personel zaten ilişkilendirilmiş.";
+                return false;
+            }
             return true;
         }
 

@@ -40,7 +40,7 @@
                         "start_index" => $_POST["start_index"],
                         "order_by" => array("name ASC")
                     ),
-                    array("keys" => "employee_group != ? && deleted = ?", "vals" => array(GPApiUser::$ADMIN, 0) ) );
+                    array("keys" => "employee_group != ? && deleted = ?", "vals" => array(GPApiUser::$ROOT, 0) ) );
 
             break;
 
@@ -49,7 +49,8 @@
                 if( isset($_POST["rrp"]) && isset($_POST["start_index"])){
                     $settings = array(
                         "limit" => $_POST["rrp"],
-                        "start_index" => $_POST["start_index"]
+                        "start_index" => $_POST["start_index"],
+                        "order_by" => array("name ASC")
                     );
                 } else {
                     $settings = array( "order_by" => array("name ASC") );
@@ -60,7 +61,7 @@
                     array( "id", "name", "employee_group" ),
                     $settings,
                     array("key" => "name", "keyword" => $_POST["keyword"]),
-                    array("keys" => "employee_group != ?", "vals" => array(GPApiUser::$ADMIN) ) );
+                    array("keys" => "employee_group != ?", "vals" => array(GPApiUser::$ROOT) ) );
 
             break;
 
@@ -78,14 +79,20 @@
 
             case 'employee_groups_search':
 
-                $DATA = GPDBFetch::search(
-                    DBT_GPEMPLOYEEGROUPS,
-                    array( "id" , "name",  "parent" ),
+                if( isset($_POST["rrp"]) && isset($_POST["start_index"])){
                     array(
                         "limit" => $_POST["rrp"],
                         "start_index" => $_POST["start_index"],
                         "order_by" => array("name ASC")
-                    ),
+                    );
+                } else {
+                    $settings = array( "order_by" => array("name ASC") );
+                }
+
+                $DATA = GPDBFetch::search(
+                    DBT_GPEMPLOYEEGROUPS,
+                    array( "id" , "name",  "parent" ),
+                    $settings,
                     array("key" => "name", "keyword" => $_POST["keyword"] ) );
             break;
 
@@ -126,10 +133,11 @@
             case 'add_employee_relation':
 
                 require CLASS_DIR . "GPEmployeeRelation.php";
+                require CLASS_DIR . "GPEmployeeGroup.php";
                 require CLASS_DIR . "GPEmployee.php";
 
-                $Parent = new GPEmployee($_POST["parent_employee"]);
-                $OK = (int)$Parent->addRelation( $_POST["child_employee"]);
+                $Parent = new GPEmployee($_POST["parent"]);
+                $OK = (int)$Parent->addRelation( $_POST["child"], ( $_POST["rel_type"] == "eg" ) );
                 $TEXT = $Parent->getReturnText();
 
             break;
@@ -137,7 +145,7 @@
             case 'delete_employee_relation':
 
                 require CLASS_DIR . "GPEmployeeRelation.php";
-                $Relation = new GPEmployeeRelation( $_POST["parent_employee"],  $_POST["child_employee"] );
+                $Relation = new GPEmployeeRelation( $_POST["parent"],  $_POST["child"] );
                 $OK = (int)$Relation->delete();
                 $TEXT =  $Relation->getReturnText();
 

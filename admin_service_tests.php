@@ -67,9 +67,23 @@
         ));
     }
 
+    function add_relation_test(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "add_employee_relation",
+                    "rel_type" 		     => "e",
+                    "parent"            => "2",
+                    "child"             => "4"
+                )
+            )
+        ));
+    }
+
 
     //loginTest();
     //download_employees()
     //employees_download();
     //employees_search();
     //add_employee_group_test();
+    add_relation_test();
