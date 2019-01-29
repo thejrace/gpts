@@ -2,16 +2,20 @@
     /* Gitaş - Obarey Inc. 2018 */
 	require 'datatables.php';
 
-	define("DB_NAME", "gitas_es");
-	define("DB_USER", "root");
-	define("DB_PASS", "");
-	//define("DB_PASS", 'mEP3isJVWqYPL');
-	define("DB_IP", "localhost:3306");
+    define("APP_VERSION", "v1.0.0.0");
+    define("LOCAL", true );
+    if( LOCAL ){
+        define("DB_USER", "root");
+        define("DB_PASS", "");
+        define("MAIN_DIR", $_SERVER["DOCUMENT_ROOT"] . "/gpts/");
+    } else {
+        define("DB_USER", "root");
+        define("DB_PASS", 'mEP3isJVWqYPL');
+        define("MAIN_DIR", $_SERVER["DOCUMENT_ROOT"] . "/gpts_web_service/");
+    }
 
-	define("APP_VERSION", "v1.0.0.0");
-
-	//define("MAIN_DIR", $_SERVER["DOCUMENT_ROOT"] . "/gpts_web_service/");
-	define("MAIN_DIR", $_SERVER["DOCUMENT_ROOT"] . "/gpts/");
+    define("DB_NAME", "gitas_es");
+    define("DB_IP", "localhost:3306");
     define("INC_DIR", MAIN_DIR . "inc/");
     define("DATA_CACHE_DIR", MAIN_DIR . "data_cache/");
     define("CLASS_DIR", INC_DIR . "class/");

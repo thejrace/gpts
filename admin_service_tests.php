@@ -1,7 +1,7 @@
 <?php
 
-    define("URL", "http://localhost/gpts/admin_service.php");
-    //define("URL", "http://178.18.206.163/gpts_web_service/service.php");
+    require 'inc/test_defs.php';
+    define( "URL", ADMIN_SERVICE_URL );
 
     function serializeParams( $data ){
         $joinArray = array();
@@ -80,10 +80,11 @@
         ));
     }
 
+    echo '<pre>';
 
     //loginTest();
     //download_employees()
     //employees_download();
     //employees_search();
     //add_employee_group_test();
-    add_relation_test();
+    //add_relation_test();

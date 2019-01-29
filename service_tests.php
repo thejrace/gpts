@@ -1,7 +1,8 @@
 <?php
 
-    define("URL", "http://localhost/gpts/service.php");
-    //define("URL", "http://178.18.206.163/gpts_web_service/service.php");
+    require 'inc/test_defs.php';
+    define( "URL", SERVICE_URL );
+
 
     function serializeParams( $data ){
         $joinArray = array();
@@ -273,6 +274,16 @@
         ));
     }
 
+    function download_cached_data_test(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"                        => "download_cached_data"
+                )
+            )
+        ));
+    }
+
 
     echo '<pre>';
 
@@ -297,4 +308,5 @@
     //edit_work();
     // define_work_to_employee();
     //define_work_to_employee_group();
-device_check_test();
+    //device_check_test();
+    download_cached_data_test();

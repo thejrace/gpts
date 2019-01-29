@@ -14,7 +14,7 @@
 			parent::__construct( DBT_GPEMPLOYEEGROUPS, array( "id", "name" ), $val );
             $this->apiTriggerKey = "name";
             $this->apiTriggerType = 3;
-            $this->cacheDataFileName = "employee_groups.cache";
+            $this->cacheDataFileName = "employee_groups.json";
 			// unique groups should be on top to save time for unique checks
 			$this->dbFormKeys = array(
 				"name" => array(
@@ -33,7 +33,7 @@
 		}
 
 		public function delete( $clearDetailsProp = true ){
-		    $check = $this->pdo->query("SELECT * FROM " . DBT_GPEMPLOYEES . " WHERE employee_group = ?", array( $this->details["id"]))->results();
+		    $check = $this->pdo->query("SELECT * FROM " . DBT_GPEMPLOYEES . " WHERE employee_group = ? && deleted = ?", array( $this->details["id"], 0))->results();
 		    if( count($check) > 0 ){
 		        $this->returnText = "Bu gruba dahil personeller mevcut. Silmek için, önce bu grup personellerini transfer edin.";
 		        return false;

@@ -58,9 +58,9 @@
 
             case 'download_cached_data':
 
-                /*$DATA["user_groups"] = "obarey";
-                $DATA["permissions_template"] = "obarey";
-                $DATA["plan_schemas"] = "iteroy";*/
+                $DATA["employee_groups"] = file_get_contents(DATA_CACHE_DIR . "employee_groups.json" );
+                $DATA["permissions_template"] = file_get_contents(DATA_CACHE_DIR . "permissions_template.json" );
+                $DATA["plan_schemas"] = file_get_contents(DATA_CACHE_DIR . "plan_schemas.json" );
 
             break;
 
@@ -68,8 +68,6 @@
 
                 // download static data for first sync or if some
                 // cached files in client's computer are deleted
-
-
 
             break;
 
