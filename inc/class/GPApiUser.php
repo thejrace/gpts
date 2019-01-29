@@ -76,8 +76,10 @@
             // validate the inputs first
             $Validation = new GPFormValidation;
             $validFlag = $Validation->check( "req", $input["api_email"], true, "Eposta" ) &&
-                         $Validation->check( "email", $input["api_email"], true, "Eposta" ) &&
-                         $Validation->check( "req", $input["api_password"], true, "Şifre" );
+                         $Validation->check( "email", $input["api_email"], true, "Eposta" );
+            if( isset($input["api_password"] ) ){
+                $validFlag = $validFlag && $Validation->check( "req", $input["api_password"], true, "Şifre" );
+            }
             if( !$validFlag ){
                 $this->returnText = $Validation->getErrorMessage();
                 return false;
@@ -88,10 +90,12 @@
                 $this->returnText = "Başarısız giriş.[1]";
                 return false;
             }
-            // password check
-            if( !password_verify( $input["api_password"], $checkQuery[0]["password"] ) ){
-                $this->returnText = "Başarısız giriş.[2]";
-                return false;
+            if( isset($input["api_password"] ) ){
+                // password check
+                if( !password_verify( $input["api_password"], $checkQuery[0]["password"] ) ){
+                    $this->returnText = "Başarısız giriş.[2]";
+                    return false;
+                }
             }
             $this->details = $checkQuery[0];
             // admin login from panel check

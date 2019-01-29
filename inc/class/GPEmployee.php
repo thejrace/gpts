@@ -274,7 +274,7 @@
                         "start_index" => $settings["start_index"],
                         "order_by" => array("name ASC")
                     ),
-                    array( "keys" => $valSqlSyntax . " && deleted = ?", "vals" => array_merge($fetchParams[1], array(0) ) )
+                    array( "keys" => "( " . $valSqlSyntax . " ) && deleted = ?", "vals" => array_merge($fetchParams[1], array(0) ) )
                 );
             } else {
                 $q = GPDBFetch::action(DBT_GPEMPLOYEES, $colsToFetch,

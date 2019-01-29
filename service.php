@@ -12,7 +12,7 @@
         // login
         $User = new GPApiUser(array(
             "api_email"         => $_POST["api_email"],
-            "api_password"      => $_POST["api_password"],
+            "api_password"      => @$_POST["api_password"],
             "api_device_hash"   => $_POST["api_device_hash"],
             "api_device_name"   => $_POST["api_device_name"],
             "api_device_type"   => $_POST["api_device_type"],
@@ -30,6 +30,20 @@
         // todo - permission check yap each action için
 
         switch ($_POST["req"]) {
+
+            case 'device_check':
+
+                $OK = 1;
+                $TEXT = $User->getReturnText();
+
+            break;
+
+            case 'desktop_login':
+
+                $OK = 1;
+                $TEXT = $User->getReturnText();
+
+            break;
 
             case 'app_server_sync':
 

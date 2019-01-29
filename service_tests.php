@@ -20,10 +20,9 @@
     }
 
     define("LOGINPARAMS", array(
-        "api_email"         => "admin@gpts.com",
-        "api_password"      => "wazzabii308",
-        "api_device_hash"   => "test hash 3",
-        "api_device_name"   => "test device name 2",
+        "api_email"         => "ahmet@ahmet.com",
+        "api_device_hash"   => "ce457a246dc6cb6e78957c0287697b944209af594bcb85bcc4677eda6b2d93f8",
+        "api_device_name"   => "DESKTOP-9PQ3U3N",
         "api_device_type"   => 1,
         "api_device_os"     => "Windows"
     ));
@@ -264,6 +263,16 @@
         ));
     }
 
+    function device_check_test(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"                        => "device_check"
+                )
+            )
+        ));
+    }
+
 
     echo '<pre>';
 
@@ -272,7 +281,7 @@
     //add_daily_plan_schema_test();
     //app_server_sync_test();
     //add_employee_test();
-    add_employee_group_test();
+    //add_employee_group_test();
     //add_relation_test();
     //get_relations_test();
     //add_work();
@@ -288,3 +297,4 @@
     //edit_work();
     // define_work_to_employee();
     //define_work_to_employee_group();
+device_check_test();
