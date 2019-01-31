@@ -30,6 +30,34 @@
 
         switch ($_POST["req"]) {
 
+            case 'release_new_desktop_app_version':
+
+                require CLASS_DIR . "GPApiDesktopAppUpdateCheck.php";
+                $AttemptedVer = new GPApiDesktopAppUpdateCheck( $_POST["version_info"] );
+                // first check if version code is unique
+                if( $AttemptedVer->getStatusFlag() ){
+                    $TEXT = "Bu version kodu zaten kullanımda.";
+                    $OK = 0;
+                } else {
+                    // update last stable for previous version
+                    $PrevVer = new GPApiDesktopAppUpdateCheck( GPApiDesktopAppUpdateCheck::getLastStableVer() );
+                    if( $PrevVer->editCol( array( "last_stable" => 0 ) ) ){
+                        // add new version
+                        $OK = (int)$AttemptedVer->add(array(
+                            "version_info"  => $_POST["version_info"],
+                            "details"       => $_POST["details"],
+                            "released"      => Common::getCurrentDateTime(),
+                            "last_stable"   => 1
+                        ));
+                        $TEXT = $AttemptedVer->getReturnText();
+                    } else {
+                        $OK = 0;
+                        $TEXT = $PrevVer->getReturnText();
+                    }
+                }
+
+            break;
+
             case 'employees_download':
 
                 $DATA = GPDBFetch::action(

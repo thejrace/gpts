@@ -284,6 +284,17 @@
         ));
     }
 
+    function desktop_app_update_check(){
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"                        => "update_check",
+                    "version_info"                        => "1.0.0",
+                )
+            )
+        ));
+    }
+
 
     echo '<pre>';
 
@@ -309,4 +320,5 @@
     // define_work_to_employee();
     //define_work_to_employee_group();
     //device_check_test();
-    download_cached_data_test();
+    //download_cached_data_test();
+desktop_app_update_check();

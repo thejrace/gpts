@@ -30,3 +30,4 @@
 	define( "DBT_GPEMPLOYEEWORKDEFINITIONSARCHIVE", "gp_employee_work_definitions_archive");
 	define( "DBT_GPEMPLOYEEWORKSVALIDATIONREQUESTS", "gp_employee_works_validation_requests");
 	define( "DBT_GPEMPLOYEERELATIONS", "gp_employee_relations");
+	define( "DBT_GPAPIDESKTOPAPPUPDATES", "gp_api_desktop_app_updates");

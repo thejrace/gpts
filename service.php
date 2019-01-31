@@ -31,6 +31,18 @@
 
         switch ($_POST["req"]) {
 
+            case 'update_check':
+
+                require CLASS_DIR . "GPApiDesktopAppUpdateCheck.php";
+                $Ver = new GPApiDesktopAppUpdateCheck( $_POST["version_info"] );
+                if( $Ver->getStatusFlag() ){
+                    $OK = (int)$Ver->getDetails("last_stable");
+                } else {
+                    $OK = 0;
+                }
+
+            break;
+
             case 'device_check':
 
                 $OK = 1;

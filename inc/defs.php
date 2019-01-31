@@ -3,7 +3,7 @@
 	require 'datatables.php';
 
     define("APP_VERSION", "v1.0.0.0");
-    define("LOCAL", false );
+    define("LOCAL", true );
     if( LOCAL ){
         define("DB_USER", "root");
         define("DB_PASS", "");

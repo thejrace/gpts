@@ -36,7 +36,7 @@
 
     function download_employees(){
         print_r( post( URL,
-            array_merge(LOGINPARAMS, array("req" => "download_employees"))
+                array_merge(LOGINPARAMS, array("req" => "download_employees"))
         ));
     }
 
@@ -80,6 +80,20 @@
         ));
     }
 
+    // KULLANIRKEN DİKKATLİ OL
+    function release_new_desktop_app_version_test(){
+
+        print_r( post(URL,
+            array_merge(LOGINPARAMS,
+                array(
+                    "req"               => "release_new_desktop_app_version",
+                    "version_info" 		     => "1.0.1",
+                    "details"            => "test"
+                )
+            )
+        ));
+    }
+
     echo '<pre>';
 
     //loginTest();
@@ -88,3 +102,4 @@
     //employees_search();
     //add_employee_group_test();
     //add_relation_test();
+    //release_new_desktop_app_version_test();

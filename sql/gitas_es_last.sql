@@ -42,6 +42,33 @@ INSERT INTO `gp_admin_session_tokens` VALUES (1,1,'8Pa8Swbi5uan8XHeG1m1Zul3S57Wc
 UNLOCK TABLES;
 
 --
+-- Table structure for table `gp_api_desktop_app_updates`
+--
+
+DROP TABLE IF EXISTS `gp_api_desktop_app_updates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `gp_api_desktop_app_updates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `version_info` text NOT NULL,
+  `details` text,
+  `released` datetime NOT NULL,
+  `last_stable` int(1) DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gp_api_desktop_app_updates`
+--
+
+LOCK TABLES `gp_api_desktop_app_updates` WRITE;
+/*!40000 ALTER TABLE `gp_api_desktop_app_updates` DISABLE KEYS */;
+INSERT INTO `gp_api_desktop_app_updates` VALUES (1,'1.0.0','First release','2019-01-31 00:00:00',1);
+/*!40000 ALTER TABLE `gp_api_desktop_app_updates` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `gp_api_triggers`
 --
 
@@ -123,7 +150,7 @@ CREATE TABLE `gp_api_user_devices` (
 
 LOCK TABLES `gp_api_user_devices` WRITE;
 /*!40000 ALTER TABLE `gp_api_user_devices` DISABLE KEYS */;
-INSERT INTO `gp_api_user_devices` VALUES (1,1,1,'admin_service_test','admin_service_test','::1','Windows','2019-01-24 15:02:51','2019-01-29 16:43:05',1,0),(2,1,1,'gpts desktop test','gpts desktop test','127.0.0.1','Windows','2019-01-24 23:39:56','2019-01-28 17:52:35',1,0),(3,5,1,'DESKTOP-9PQ3U3N','ce457a246dc6cb6e78957c0287697b944209af594bcb85bcc4677eda6b2d93f8','127.0.0.1','Windows','2019-01-28 23:12:19','2019-01-29 18:51:18',1,0);
+INSERT INTO `gp_api_user_devices` VALUES (1,1,1,'admin_service_test','admin_service_test','::1','Windows','2019-01-24 15:02:51','2019-01-31 15:32:26',1,0),(2,1,1,'gpts desktop test','gpts desktop test','127.0.0.1','Windows','2019-01-24 23:39:56','2019-01-28 17:52:35',1,0),(3,5,1,'DESKTOP-9PQ3U3N','ce457a246dc6cb6e78957c0287697b944209af594bcb85bcc4677eda6b2d93f8','127.0.0.1','Windows','2019-01-28 23:12:19','2019-01-31 16:51:05',1,0);
 /*!40000 ALTER TABLE `gp_api_user_devices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -860,4 +887,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-29 21:17:11
+-- Dump completed on 2019-01-31 18:53:39
