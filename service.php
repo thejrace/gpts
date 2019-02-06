@@ -45,8 +45,12 @@
 
             case 'device_check':
 
+                require CLASS_DIR . "GPEmployeeGroup.php";
+
                 $OK = 1;
                 $TEXT = $User->getReturnText();
+                $EmpGroup = new GPEmployeeGroup( $User->getDetails("user_group") );
+                $DATA["permissions"] = $EmpGroup->getDetails("permissions");
 
             break;
 

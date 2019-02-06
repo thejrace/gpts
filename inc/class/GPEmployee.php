@@ -76,6 +76,12 @@
             // form submits employee_group's name, we convert it to id
             $input["employee_group"] = $EmpGroup->getDetails("id");
             if( !parent::edit( $input ) ) return false;
+
+            $ApiUser = new GPApiUser($input["email"]);
+            if( !$ApiUser->editCol(array("user_group" => $input["employee_group"])) ){
+                $this->returnText = $ApiUser->getReturnText();
+                return false;
+            }
             return true;
         }
 

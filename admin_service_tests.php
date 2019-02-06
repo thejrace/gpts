@@ -87,8 +87,8 @@
             array_merge(LOGINPARAMS,
                 array(
                     "req"               => "release_new_desktop_app_version",
-                    "version_info" 		     => "1.0.1",
-                    "details"            => "test"
+                    "version_info" 		 => "1.0.12",
+                    "details"           => "Setup - config intergration bug fix."
                 )
             )
         ));
@@ -102,4 +102,4 @@
     //employees_search();
     //add_employee_group_test();
     //add_relation_test();
-    //release_new_desktop_app_version_test();
+    release_new_desktop_app_version_test();
